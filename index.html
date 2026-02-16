@@ -1,194 +1,138 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <meta name="description" content="Juego de simulación de batallas entre Buenos y Malos">
-    <meta name="author" content="Survivors Game">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survivors - Batalla Épica</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-    <div class="game-wrapper">
-        <!-- HEADER: Título -->
-        <header class="game-header">
-            <h1 class="game-title">⚔️ SURVIVORS ⚔️</h1>
+    <div class="game-container">
+        <h1>⚔️ SURVIVORS ⚔️</h1>
+        
+        <!-- Panel de estadísticas (oculto inicialmente) -->
+        <div class="stats-panel hidden" id="statsPanel" aria-label="Estadísticas de la batalla">
+            <div class="stat-item total" role="status" aria-live="polite">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value total" id="totalStats">0</span>
+            </div>
+            <div class="stat-item buenos" role="status" aria-live="polite">
+                <span class="stat-label">Buenos:</span>
+                <span class="stat-value buenos" id="buenosStats">0</span>
+            </div>
+            <div class="stat-item malos" role="status" aria-live="polite">
+                <span class="stat-label">Malos:</span>
+                <span class="stat-value malos" id="malosStats">0</span>
+            </div>
+        </div>
 
-            <!-- Panel de estadísticas - AHORA CON CLASE HIDDEN INICIAL -->
-            <div class="stats-panel hidden" id="statsPanel" aria-label="Estadísticas de la batalla">
-                <div class="stat-item total" role="status" aria-live="polite">
+        <!-- Panel de menú -->
+        <div id="menuPanel" class="menu-panel">
+            <h2>⚙️ CONFIGURACIÓN INICIAL</h2>
+            
+            <div class="info-display">
+                <div class="screen-info">
+                    <span class="info-label">Tu pantalla:</span>
+                    <span class="info-value" id="screenDimensions">1920x1080</span>
+                </div>
+                <div class="screen-info">
+                    <span class="info-label">Tamaño recomendado:</span>
+                    <span class="info-value" id="recommendedDimensions">40x20</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label for="alturaInput">Altura del tablero:</label>
+                    <input type="number" id="alturaInput" min="10" max="100" step="2" value="30">
+                </div>
+                <div class="input-row">
+                    <label for="anchuraInput">Anchura del tablero:</label>
+                    <input type="number" id="anchuraInput" min="10" max="100" step="2" value="30">
+                </div>
+                <button onclick="ajustarDimensionesRecomendadas()" class="btn-reset small-btn">
+                    🔄 Usar recomendado
+                </button>
+            </div>
+
+            <div class="menu-options">
+                <h3>📊 GENERACIÓN DE PERSONAJES</h3>
+                <div class="options-grid">
+                    <button onclick="seleccionarOpcion(1)" class="menu-btn option1" id="opcion1Btn">
+                        <span class="btn-icon">⚖️</span>
+                        <span class="btn-text">Mitad Buenos y Malos</span>
+                        <span class="btn-desc">Tú eliges el número</span>
+                    </button>
+                    <button onclick="seleccionarOpcion(2)" class="menu-btn option2" id="opcion2Btn">
+                        <span class="btn-icon">🎲</span>
+                        <span class="btn-text">Totalmente Aleatorio</span>
+                        <span class="btn-desc">Número y distribución</span>
+                    </button>
+                    <button onclick="seleccionarOpcion(3)" class="menu-btn option3" id="opcion3Btn">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">Mitad Aleatoria</span>
+                        <span class="btn-desc">Número aleatorio par</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input para número de personajes (solo para opción 1) -->
+            <div id="nPersonajesInput" class="input-row hidden">
+                <label for="numPersonajes">Número de personajes:</label>
+                <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2">
+                <span class="input-hint">máx. 200</span>
+            </div>
+
+            <button onclick="iniciarSimulacion()" class="btn-start big-btn" id="startBtn" disabled>
+                ▶ COMENZAR BATALLA
+            </button>
+        </div>
+
+        <!-- Tablero de juego -->
+        <div id="tablero" class="tablero hidden">
+            <div class="board-container" id="tableroContainer"></div>
+        </div>
+
+        <!-- Panel de resultado final -->
+        <div id="resultadoPanel" class="resultado-panel hidden">
+            <h2 id="resultadoTitulo"></h2>
+            <div class="resultado-stats">
+                <div class="stat-item total">
                     <span class="stat-label">Total:</span>
-                    <span class="stat-value total" id="totalStats" aria-label="Total de personajes">0</span>
+                    <span class="stat-value total" id="resultadoTotal">0</span>
                 </div>
-                <div class="stat-item buenos" role="status" aria-live="polite">
+                <div class="stat-item buenos">
                     <span class="stat-label">Buenos:</span>
-                    <span class="stat-value buenos" id="buenosStats" aria-label="Personajes buenos">0</span>
+                    <span class="stat-value buenos" id="resultadoBuenos">0</span>
                 </div>
-                <div class="stat-item malos" role="status" aria-live="polite">
+                <div class="stat-item malos">
                     <span class="stat-label">Malos:</span>
-                    <span class="stat-value malos" id="malosStats" aria-label="Personajes malos">0</span>
+                    <span class="stat-value malos" id="resultadoMalos">0</span>
                 </div>
             </div>
-        </header>
+            <button onclick="volverAlMenu()" class="btn-reset big-btn">
+                ↺ VOLVER AL MENÚ
+            </button>
+        </div>
 
-        <!-- MAIN: Contenido principal del juego -->
-        <main class="game-main">
-            <!-- SECCIÓN DE CONFIGURACIÓN (Menú inicial) -->
-            <section id="menuPanel" class="menu-section" aria-label="Configuración del juego">
-                <h2 class="section-title">⚙️ CONFIGURACIÓN DE BATALLA</h2>
-
-                <article class="screen-info-card" aria-label="Información de pantalla">
-                    <div class="info-display">
-                        <div class="screen-info">
-                            <span class="info-label">🖥️ Tu pantalla:</span>
-                            <span class="info-value" id="screenDimensions"
-                                aria-label="Dimensiones de tu pantalla">1920x1080</span>
-                        </div>
-                        <div class="screen-info">
-                            <span class="info-label">📊 Tamaño recomendado:</span>
-                            <span class="info-value" id="recommendedDimensions"
-                                aria-label="Dimensiones recomendadas">40x20</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="config-card" aria-label="Configuración del tablero">
-                    <h3 class="card-title">🗺️ DIMENSIONES DEL TABLERO</h3>
-
-                    <div class="input-group">
-                        <div class="input-row">
-                            <label for="alturaInput">Altura (filas):</label>
-                            <input type="number" id="alturaInput" min="10" max="100" step="2"
-                                aria-describedby="alturaHelp" aria-label="Número de filas">
-                            <span id="alturaHelp" class="input-hint">par, min 10</span>
-                        </div>
-
-                        <div class="input-row">
-                            <label for="anchuraInput">Anchura (columnas):</label>
-                            <input type="number" id="anchuraInput" min="10" max="100" step="2"
-                                aria-describedby="anchuraHelp" aria-label="Número de columnas">
-                            <span id="anchuraHelp" class="input-hint">par, min 10</span>
-                        </div>
-
-                        <div class="button-row">
-                            <button onclick="ajustarDimensionesRecomendadas()" class="btn-reset small-btn"
-                                aria-label="Usar dimensiones recomendadas">
-                                🔄 Usar recomendado
-                            </button>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="config-card" aria-label="Tipo de generación">
-                    <h3 class="card-title">🎲 GENERACIÓN DE PERSONAJES</h3>
-
-                    <div class="options-grid" role="radiogroup" aria-label="Opciones de generación">
-                        <button onclick="seleccionarOpcion(1)" class="menu-btn option1" id="opcion1Btn"
-                            aria-label="Mitad Buenos y Malos (tú eliges el número)">
-                            <span class="btn-icon" aria-hidden="true">⚖️</span>
-                            <span class="btn-text">Mitad Buenos y Malos</span>
-                            <span class="btn-desc">Tú eliges el número</span>
-                        </button>
-
-                        <button onclick="seleccionarOpcion(2)" class="menu-btn option2" id="opcion2Btn"
-                            aria-label="Totalmente Aleatorio">
-                            <span class="btn-icon" aria-hidden="true">🎲</span>
-                            <span class="btn-text">Totalmente Aleatorio</span>
-                            <span class="btn-desc">Número y distribución</span>
-                        </button>
-
-                        <button onclick="seleccionarOpcion(3)" class="menu-btn option3" id="opcion3Btn"
-                            aria-label="Mitad Aleatoria">
-                            <span class="btn-icon" aria-hidden="true">🔄</span>
-                            <span class="btn-text">Mitad Aleatoria</span>
-                            <span class="btn-desc">Número aleatorio par</span>
-                        </button>
-                    </div>
-
-                    <!-- Input para número de personajes (solo para opción 1) -->
-                    <div id="nPersonajesInput" class="input-row hidden" aria-hidden="true">
-                        <label for="numPersonajes">Número de personajes:</label>
-                        <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2"
-                            aria-label="Número total de personajes">
-                        <span class="input-hint">máx. 200</span>
-                    </div>
-                </article>
-
-                <div class="action-bar">
-                    <button onclick="iniciarSimulacion()" class="btn-start big-btn" id="startBtn" disabled
-                        aria-label="Comenzar la batalla">
-                        ▶ COMENZAR BATALLA
-                    </button>
-                </div>
-            </section>
-
-            <!-- SECCIÓN DE JUEGO (Tablero) -->
-            <section id="tablero" class="game-board-section hidden" aria-label="Tablero de batalla">
-                <h2 class="visually-hidden">Tablero de juego</h2>
-                <div class="board-container" id="tableroContainer">
-                    <!-- El tablero se genera aquí dinámicamente -->
-                </div>
-            </section>
-
-            <!-- SECCIÓN DE RESULTADO -->
-            <section id="resultadoPanel" class="result-section hidden" aria-label="Resultado de la batalla">
-                <h2 id="resultadoTitulo" class="result-title"></h2>
-
-                <div class="resultado-stats" role="status" aria-live="assertive">
-                    <div class="stat-item total">
-                        <span class="stat-label">Total:</span>
-                        <span class="stat-value total" id="resultadoTotal">0</span>
-                    </div>
-                    <div class="stat-item buenos">
-                        <span class="stat-label">Buenos:</span>
-                        <span class="stat-value buenos" id="resultadoBuenos">0</span>
-                    </div>
-                    <div class="stat-item malos">
-                        <span class="stat-label">Malos:</span>
-                        <span class="stat-value malos" id="resultadoMalos">0</span>
-                    </div>
-                </div>
-
-                <div class="action-bar">
-                    <button onclick="volverAlMenu()" class="btn-reset big-btn" aria-label="Volver al menú principal">
-                        ↺ VOLVER AL MENÚ
-                    </button>
-                </div>
-            </section>
-
-            <!-- BARRA DE CONTROL (visible durante el juego) -->
-            <div id="simulationControls" class="control-bar hidden" role="toolbar" aria-label="Controles de simulación">
-                <button onclick="detenerSimulacion()" class="btn-stop" aria-label="Detener simulación">
-                    ⏹ DETENER
-                </button>
-                <button onclick="volverAlMenu()" class="btn-reset" aria-label="Reiniciar y volver al menú">
-                    ↺ REINICIAR
-                </button>
-                <div class="speed-control" role="group" aria-label="Control de velocidad">
-                    <button onclick="ajustarVelocidad(-50)" class="btn-speed" aria-label="Disminuir velocidad">⚡
-                        -</button>
-                    <span id="velocidadDisplay" class="speed-display" aria-label="Velocidad actual">150ms</span>
-                    <button onclick="ajustarVelocidad(50)" class="btn-speed" aria-label="Aumentar velocidad">⚡
-                        +</button>
-                </div>
+        <!-- Controles de simulación -->
+        <div class="controls hidden" id="simulationControls">
+            <button onclick="detenerSimulacion()" class="btn-stop">⏹ DETENER</button>
+            <button onclick="volverAlMenu()" class="btn-reset">↺ REINICIAR</button>
+            <div class="speed-control">
+                <button onclick="ajustarVelocidad(-50)" class="btn-speed">⚡ -</button>
+                <span id="velocidadDisplay" class="speed-display">150ms</span>
+                <button onclick="ajustarVelocidad(50)" class="btn-speed">⚡ +</button>
             </div>
+        </div>
 
-            <!-- INDICADOR DE TURNO -->
-            <div class="turn-indicator" id="turnIndicator" role="presentation" aria-hidden="true"></div>
-        </main>
-
-        <!-- FOOTER: Información adicional -->
-        <footer class="game-footer">
-            <div class="footer-content">
-                <span class="footer-text">⚔️ Buenos (B) vs Malos (M) | Obstáculos (#) ⚔️</span>
-                <span class="footer-version">v2.0 - Batalla Épica</span>
-            </div>
-        </footer>
+        <div class="turn-indicator" id="turnIndicator"></div>
+        <div class="footer">
+            <span>⚔️ Buenos (B) vs Malos (M) | Obstáculos (#) ⚔️</span>
+        </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts en orden -->
     <script src="Entidades/Entidad.js"></script>
     <script src="Entidades/Personajes.js"></script>
     <script src="Entidades/Buenos.js"></script>
@@ -197,5 +141,4 @@
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
 </body>
-
 </html>
