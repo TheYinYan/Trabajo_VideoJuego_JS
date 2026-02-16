@@ -282,10 +282,24 @@ function actualizarJuego(altura, anchura, nPersonajes) {
  * ACTUALIZAR CONTADORES VISUALES
  */
 function actualizarContadoresVisuales() {
-    document.getElementById('totalStats').textContent = Personajes.getnPersonajes();
-    document.getElementById('buenosStats').textContent = Buenos.getnBuenos();
-    document.getElementById('malosStats').textContent = Malos.getnMalos();
+    const total = Personajes.getnPersonajes();
+    const buenos = Buenos.getnBuenos();
+    const malos = malos.getnMalos();
+    
+    // Actualizar textos
+    document.getElementById('totalStats').textContent = total;
+    document.getElementById('buenosStats').textContent = buenos;
+    document.getElementById('malosStats').textContent = malos;
+    
+    // MOSTRAR U OCULTAR SEGÚN HAYA PERSONAJES
+    const statsPanel = document.getElementById('statsPanel');
+    if (total > 0) {
+        statsPanel.classList.remove('hidden');
+    } else {
+        statsPanel.classList.add('hidden');
+    }
 }
+
 
 /**
  * DETENER SIMULACIÓN
