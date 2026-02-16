@@ -122,7 +122,7 @@ survivors-js/
 
 ## 📚 EXPLICACIÓN DEL CÓDIGO
 
-### 1. HTML (index.html)
+### [1. HTML (index.html)](index.html)
 
 El HTML define la estructura visual del juego con **IDs específicos** que JavaScript utiliza para interactuar:
 
@@ -143,7 +143,7 @@ El HTML define la estructura visual del juego con **IDs específicos** que JavaS
 - `id=""` - Identificador único para JavaScript
 - `onclick=""` - Evento que llama a funciones JavaScript
 
-### 2. CSS (style.css)
+### [2. CSS (style.css)](css/style.css)
 
 El CSS utiliza **variables** y **media queries** para adaptarse a diferentes pantallas:
 
@@ -180,7 +180,7 @@ El CSS utiliza **variables** y **media queries** para adaptarse a diferentes pan
 
 ### 3. Clases JavaScript
 
-#### Entidad.js - Clase Base
+#### [Entidad.js - Clase Base](Entidades/Entidad.js)
 ```javascript
 class Entidad {
     constructor(y, x, vx, vy) {
@@ -202,7 +202,7 @@ class Entidad {
 }
 ```
 
-#### Personajes.js
+#### [Personajes.js](Entidades/Personajes.js)
 ```javascript
 class Personajes extends Entidad {
     static nPersonajes = 0; // Variable estática
@@ -215,7 +215,7 @@ class Personajes extends Entidad {
 }
 ```
 
-#### Buenos.js
+#### [Buenos.js](Entidades/Buenos.js)
 ```javascript
 class Buenos extends Personajes {
     static nBuenos = 0;
@@ -240,7 +240,7 @@ class Buenos extends Personajes {
 }
 ```
 
-#### Malos.js
+#### [Malos.js](Entidades/Malos.js)
 ```javascript
 class Malos extends Personajes {
     static nMalos = 0;
@@ -263,7 +263,7 @@ class Malos extends Personajes {
 }
 ```
 
-#### Obstaculos.js
+#### [Obstaculos.js](Entidades/Obstaculos.js)
 ```javascript
 class Obstaculos extends Entidad {
     constructor(y, x) {
@@ -274,7 +274,7 @@ class Obstaculos extends Entidad {
 }
 ```
 
-### 4. Funciones Utilitarias (Funciones.js)
+### [4. Funciones Utilitarias (Funciones.js)](Entidades/ListFunciones/Funciones.js)
 
 ```javascript
 const Funciones = {
@@ -319,7 +319,7 @@ const Funciones = {
 };
 ```
 
-### 5. Control Principal (survivors.js)
+### [5. Control Principal (survivors.js)](survivors.js)
 
 ```javascript
 // Variables globales
