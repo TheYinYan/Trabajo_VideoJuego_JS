@@ -1,5 +1,3 @@
-## 📄 **README.md (ACTUALIZADO Y COMPLETO)**
-
 # ⚔️ SURVIVORS - Batalla Épica
 
 Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
