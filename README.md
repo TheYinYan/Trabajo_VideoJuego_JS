@@ -1,184 +1,405 @@
-# Trabajo del Video Juego
+# ⚔️ SURVIVORS - Batalla Épica
 
-## Notas para actualizar
+Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-- Conversión Java a JavaScript
-- Mirar si se pueden Poner Funciones en private o protejido 
-- Hacer los Arrays -> ArrayLists
+![Versión](https://img.shields.io/badge/versión-2.0-blue)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
+![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
-## [Codigo Java del MAIN](src/App.java) 
+---
 
-### Funcionamiento 
+## 📑 ÍNDICE
 
-1. Pedir Por consola el **anchura y altura del tablero**
-    - *Comprobando que el número introducido:*
-        - Sea mayor que 0
-        - Sea un número par
+- [⚔️ SURVIVORS - Batalla Épica](#️-survivors---batalla-épica)
+  - [📑 ÍNDICE](#-índice)
+  - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
+  - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
+  - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
+  - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
+  - [📚 EXPLICACIÓN DEL CÓDIGO](#-explicación-del-código)
+    - [1. HTML (index.html)](#1-html-indexhtml)
+    - [2. CSS (style.css)](#2-css-stylecss)
+    - [3. Clases JavaScript](#3-clases-javascript)
+      - [Entidad.js - Clase Base](#entidadjs---clase-base)
+      - [Personajes.js](#personajesjs)
+      - [Buenos.js](#buenosjs)
+      - [Malos.js](#malosjs)
+      - [Obstaculos.js](#obstaculosjs)
+    - [4. Funciones Utilitarias (Funciones.js)](#4-funciones-utilitarias-funcionesjs)
+    - [5. Control Principal (survivors.js)](#5-control-principal-survivorsjs)
+  - [🔄 FLUJO DEL JUEGO](#-flujo-del-juego)
+  - [⚙️ OPCIONES DE CONFIGURACIÓN](#️-opciones-de-configuración)
+  - [🎨 PERSONALIZACIÓN](#-personalización)
+    - [Cambiar colores](#cambiar-colores)
+    - [Cambiar velocidad](#cambiar-velocidad)
+    - [Cambiar tamaño del tablero](#cambiar-tamaño-del-tablero)
+    - [Añadir nuevos tipos de personajes](#añadir-nuevos-tipos-de-personajes)
+  - [🐛 SOLUCIÓN DE PROBLEMAS COMUNES](#-solución-de-problemas-comunes)
+  - [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
 
-2. Eliges **opción:**
-    1. Mitad Buenos y Mitad Malos 
-    2. Numero Personaje Aleatorios
-    3. Mitad Buenos y Mitad Malos Aleatorios
+---
 
-3. Si **opción**: 
-    - Es **1** pedir por consola el **Nº Personajes**
-        - De los cuales la mitad son **Buenos** y la otra mitad son **Malos** 
-        - *Comprobando que el número introducido*
-    - Es **2** Nª Aleatorios para **Buenos** y Nª Aleatorios para **Malos**
-    - Es **3** Nª Aleatorios de personajes, de los cuales la mitad son **Buenos** y la otra mitad son **Malos**
+## 🎮 DESCRIPCIÓN DEL JUEGO
 
-4. Crear de forma aleatoria los obstáculos en función de las dimensiones del tablero
+**Survivors** es una simulación de batalla entre dos bandos:
+- **Buenos (B)** - Representados en color verde 🟢
+- **Malos (M)** - Representados en color rojo 🔴
+- **Obstáculos (#)** - Elementos estáticos que bloquean el paso
 
-5. Crear array del **arrayPersonajes** y **arrayEntidades** con los datos recibidos  
+Los personajes se mueven aleatoriamente por el tablero, pero cuando detectan un enemigo cercano, se mueven hacia él para combatir. El combate se resuelve mediante un sistema de probabilidad basado en la vida de cada personaje.
 
-6. Pintar Tablero con las entidades 
+---
 
-7. **Mover los Personajes** para que no colisionen con un **Personaje** del mismo tipo o con un **Obstaculo**
+## 📁 ESTRUCTURA DE ARCHIVOS
+survivors-js/ <br>
+│<br>
+├── 📄 index.html # Interfaz de usuario<br>
+├── 📁 css/<br>
+│ └── 📄 style.css # Estilos visuales<br>
+├── 📁 Entidades/ # Clases del juego<br>
+│ ├── 📄 Entidad.js # Clase base<br>
+│ ├── 📄 Personajes.js # Clase para personajes<br>
+│ ├── 📄 Buenos.js # Buenos (hereda de Personajes)<br>
+│ ├── 📄 Malos.js # Malos (hereda de Personajes)<br>
+│ ├── 📄 Obstaculos.js # Obstáculos (hereda de Entidad)<br>
+│ └── 📁 ListFunciones/<br>
+└── 📄 survivors.js # Control principal<br>
 
-8. **Actualizar de el array** se comprueba **arrayEntidades** para saber si:
+---
+
+## 🚀 CÓMO EJECUTAR
+
+1. **Descarga todos los archivos** manteniendo la estructura de carpetas
+2. **Abre el archivo `index.html`** en cualquier navegador moderno (Chrome, Firefox, Edge, etc.)
+3. **Configura el juego**:
+   - Ajusta las dimensiones del tablero (pares, mínimo 10)
+   - Selecciona el modo de generación de personajes
+   - Si eliges la opción 1, introduce el número de personajes
+4. **Haz clic en "COMENZAR BATALLA"**
+5. **Observa la batalla** en tiempo real
+6. **Usa los controles** para detener, reiniciar o ajustar la velocidad
+
+---
+
+## 🎯 CARACTERÍSTICAS PRINCIPALES
+
+- ✅ **Interfaz responsive** - Se adapta a móviles, tablets y desktop
+- ✅ **Cálculo automático** de dimensiones óptimas según tu pantalla
+- ✅ **Tres modos de generación** de personajes
+- ✅ **Sistema de combate** basado en probabilidad
+- ✅ **Persecución inteligente** - Los personajes persiguen a sus enemigos
+- ✅ **Estadísticas en tiempo real** - Total, Buenos y Malos
+- ✅ **Control de velocidad** - Ajusta la velocidad de la simulación
+- ✅ **Diseño cyberpunk** con efectos neón y animaciones
+
+---
+
+## 📚 EXPLICACIÓN DEL CÓDIGO
+
+### 1. HTML (index.html)
+
+El HTML define la estructura visual del juego con **IDs específicos** que JavaScript utiliza para interactuar:
+
+| ID | Propósito |
+|----|-----------|
+| `totalStats`, `buenosStats`, `malosStats` | Contadores que se actualizan |
+| `menuPanel` | Panel de configuración (se oculta/muestra) |
+| `tablero` | Contenedor del tablero (se oculta/muestra) |
+| `tableroContainer` | Donde se pinta el tablero |
+| `resultadoPanel` | Panel de resultados |
+| `startBtn` | Botón de inicio |
+| `alturaInput`, `anchuraInput` | Inputs de dimensiones |
+
+**Conceptos clave:**
+- `class="hidden"` - Clase utility para ocultar elementos
+- `id=""` - Identificador único para JavaScript
+- `onclick=""` - Evento que llama a funciones JavaScript
+
+### 2. CSS (style.css)
+
+El CSS utiliza **variables** y **media queries** para adaptarse a diferentes pantallas:
+
+```css
+/* Variables CSS para facilitar cambios */
+:root {
+    --color-neon-blue: #00ffff;
+    --color-neon-green: #00ff00;
+    --spacing-md: clamp(15px, 3vw, 25px);
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+    }
+}
+
+/* Animaciones */
+@keyframes neonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+```
+### 3. Clases JavaScript
+
+Entidad.js - Clase Base
+``` javascript
+class Entidad {
+    constructor(y, x, vx, vy) {
+        this.y = y;  // Posición Y
+        this.x = x;  // Posición X
+        this.vy = vy; // Velocidad Y
+        this.vx = vx; // Velocidad X
+    }
     
-    - La posición esta libre se moverse
-    - La posición esta ocupada por un **Personaje** de distinto tipo pelear
+    distanciaCon(ent) {
+        // Fórmula de distancia euclidiana
+        return Math.sqrt(Math.pow(this.x - ent.x, 2) + Math.pow(this.y - ent.y, 2));
+    }
+    
+    mover(ancho, alto, arrayEntidades) {
+        // Movimiento aleatorio en 8 direcciones
+        const direcciones = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
+        // ... lógica de movimiento
+    }
+}
+```
 
-9. **Pelear** es sumar las vidas de los **Personaje** y aleatorizarla un resultado con ella haciedo que si:
+Personajes.js
+```javascript
 
-    - El resultado es menor que la vida del atacante gana él.
-    - El resultado es menor que la vida del atacante gana el defensor.
+```
 
-10. Comprobar el número de Personajes **Buenos** y **Malos**  para saber quien gana si no, se sigue el código
+Buenos.js
+```javascript
+class Buenos extends Personajes {
+    static nBuenos = 0;
+    
+    constructor(y, x) {
+        super(y, x, 1, 1);
+        this.malos = null; // Referencia al malo más cercano
+        Buenos.nBuenos++;
+    }
+    
+    mover(ancho, alto, arrayEntidades) {
+        if (this.malos && this.estaCercaDe(this.malos, 10)) {
+            // Persigue al malo
+            if (this.x < this.malos.x) this.setVx(-1);
+            // ... lógica de persecución
+        } else {
+            super.mover(ancho, alto, arrayEntidades); // Movimiento aleatorio
+        }
+    }
+}
+```
 
+Malos.js
+```javascript
+class Malos extends Personajes {
+    static nMalos = 0;
+    
+    constructor(y, x) {
+        super(y, x, 1, 1);
+        this.bueno = null; // Referencia al bueno más cercano
+        Malos.nMalos++;
+    }
+    
+    mover(ancho, alto, arrayEntidades) {
+        // Lógica similar a Buenos pero con direcciones invertidas
+    }
+}
+```
 
-### Atributos static
-- **AZUL** -> Cambia a color Azul para el texto
-- **NARANJA** -> Cambia a color Naranja para el texto
+Obstaculos.js
+```javascript
+class Obstaculos extends Entidad {
+    constructor(y, x) {
+        super(y, x, 0, 0); // No se mueve
+    }
+    
+    toString() { return '#'; }
+}
+```
 
-## [Clase Funciones](src/Entidades/ListFunciones/Funciones.java)
+### 4. Funciones Utilitarias (Funciones.js)
+```javascript
+const Funciones = {
+    numPorcent(altura, anchura) {
+        // Calcula número aleatorio basado en área
+        return Math.floor(Math.random() * (altura * anchura * 0.005)) + 1;
+    },
+    
+    generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcion) {
+        // Genera obstáculos primero
+        this.generadorEntidades(altura, anchura, arrayEntidades, 0.01);
+        // Luego personajes según opción
+        // ...
+    },
+    
+    pintarTablero(altura, anchura, arrayEntidades) {
+        // Construye el HTML del tablero
+        let sb = '╔' + '═'.repeat(anchura) + '╗\n';
+        // ...
+        return '<div class="board-content">' + sb + '</div>';
+    },
+    
+    eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, x, y) {
+        // Elimina un personaje y actualiza contadores
+        for (let i = 0; i < nPersonajes; i++) {
+            if (arrayPersonajes[i] === entidad) {
+                arrayPersonajes[i] = null;
+                arrayEntidades[y][x] = null;
+                // Actualizar contadores estáticos
+                Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
+                // ...
+            }
+        }
+    }
+};
+```
 
-Equivalente a la clase estática Funciones de Java.
-Contiene todas las funciones utilitarias del juego:
+### 5. Control Principal (survivors.js)
+```javascript
+// Variables globales
+let intervaloSimulacion = null;
+let opcionSeleccionada = null;
 
-- Generación de tablero y personajes
-- Visualización
-- Lógica de combate
-- Movimiento global
-- Detección de fin de juego
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    calcularDimensionesRecomendadas();
+    // Configurar event listeners
+});
 
-### Atributos static
-- **CLEAN_SCREEN** -> Limpia la consola
-- **RED** -> Cambia a color Rojo para el texto
-- **AZUL** -> Cambia a color Azul para el texto
-- **RESET** -> Resetea el formato del texto al por defecto
-- **opcion** -> Opciones para el **menu**
+function iniciarSimulacion() {
+    // Resetear contadores
+    Personajes.setnPersonajes(0);
+    Buenos.setnBuenos(0);
+    Malos.setnMalos(0);
+    
+    // Crear arrays y generar mundo
+    arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
+    
+    // Iniciar bucle
+    intervaloSimulacion = setInterval(() => actualizarJuego(), velocidadActual);
+}
 
-### Funciones
-- **CLEANSCREEN** -> Limpiar Pantalla con flush
-- **titulo** -> Pintar un titulo en un cuadrado dinamicamente de pendiendo del texto
-- **menu** -> Pinta un menu con las opciones de Crear **Personajes**
-- **coprobaciones** -> Comprueba que los número introducido:
-    - Sea mayor que 0
-    - Sea un número par
-- **generador** -> Dependiendo de la **Opcion** llama a un **generadorEntidades** distinto 
-- **generadorEntidades** -> Genera **Obstaculos** o **Personajes** o **Buenos** y **Malos**, dependiendo:
-    - Si introduces un array de **Personajes** y pones el **porcentaje** genera genera **Buenos** y **Malos** con es porcentaje
-    - Si introduces un array de **Personajes** y no pones el **porcentaje** genera **Buenos** y **Malos** mitad y mitad 
-    - Sino genera **Obstaculos**
-- **pintarTablero** -> Pinta el Tablero
-- **asignarPersonajesCercanos** -> Asigna a los personajes otro personaje dependiendo de la distancia
-- **eliminarPersonaje** -> Elimina un personaje del ArrayPersonajes y de ArrayEntidades
-- **movimento** -> Mueve el personaje
-- **terminar** -> Si uno de los **Bunenos** o los **Malos** se quedan sin personajes ganando el contario 
+function actualizarJuego() {
+    // 1. Actualizar referencias de enemigos
+    // 2. Mover personajes
+    // 3. Procesar combates
+    // 4. Actualizar visualización
+    // 5. Verificar fin del juego
+}
+```
 
-## [Clase Entidad](src/Entidades/Entidad.java) 
+## 🔄 FLUJO DEL JUEGO
+```text
+1. INICIO
+   ↓
+2. CONFIGURACIÓN (usuario elige opciones)
+   ↓
+3. GENERACIÓN DEL MUNDO
+   ├── Obstáculos aleatorios
+   └── Personajes según opción
+   ↓
+4. BUCLE PRINCIPAL (cada 150ms)
+   ├── Asignar enemigos cercanos
+   ├── Mover personajes
+   ├── Detectar colisiones
+   ├── Resolver combates
+   └── Actualizar pantalla
+   ↓
+5. FIN DEL JUEGO
+   ├── Victoria de Buenos
+   └── Victoria de Malos
+```
 
-Esta es la clase padre de todas las entidades del juego.
-En Java era abstracta, en JavaScript es una clase normal.
-Define las propiedades y comportamientos básicos que todas
-las entidades (personajes y obstáculos) comparten.
+## ⚙️ OPCIONES DE CONFIGURACIÓN
 
-### Atributos: 
-- **y** -> Posición vertical 
-- **x** -> Posición horizontal
-- **vy** -> Velocidad vertical
-- **vx** -> Velocidad horizontal
+|         Opción          |             Descripción                  |                      Cuándo usarla                    |
+|-------------------------|------------------------------------------|-------------------------------------------------------|
+| 1. Mitad Buenos y Malos | Tú eliges el número total (debe ser par) | Para controlar exactamente cuántos personajes quieres |
+| 2. Totalmente Aleatorio | Número y distribución aleatorios         | Para partidas rápidas e impredecibles                 |
+| 3. Mitad Aleatoria      | Número aleatorio pero par                | Para sorpresa pero con equilibrio                     |
 
-### Funciones
--  **Getters y Setters (y - x - vy - vx )** --> Obtienes y modificas esos **Atributos**
-- **distaciaCon** -> Opciones la distancia con otro **Entidad**
-- **estaCercaDe** -> Te devuelve **true** o **false** si está cerca de la distancia proporcionada
-- **mover** -> Hace que se mueva la entidad sin tocar **Entidades**, ni los bordes del tablero
+## 🎨 PERSONALIZACIÓN
 
-### Lo Heredan
-- **Personajes**
-- **Obstaculos**
+### Cambiar colores
+En `style.css`, modifica las variables CSS:
+```css
+:root {
+    --color-neon-blue: #00ffff;  /* Cambia este valor */
+    --color-neon-green: #00ff00; /* Color de Buenos */
+    --color-neon-red: #ff0000;   /* Color de Malos */
+}
+```
 
-## [Clase Obstaculos](src/Entidades/Obstaculos.java)
+### Cambiar velocidad
 
-Representa los obstáculos estáticos del tablero (#)
-Hereda de Entidad pero no se mueve.
-Los personajes no pueden atravesarlos.
+Modifica `velocidadActual` en `survivors.js` (valor en milisegundos):
 
-### Atributos: 
-- Atributos heredados de **Entidad**
+```javascript
+let velocidadActual = 150; // Menor = más rápido
+```
 
-### Funciones
-- Funciones heredados de **Personajes**
-- **toString** -> Como se va a ver cuando lo imprimas
+### Cambiar tamaño del tablero
 
-## [Clase Personajes](src/Entidades/Personajes.java)
+Ajusta los límites en `calcularDimensionesRecomendadas()`:
 
-Hereda de Entidad y representa a todos los personajes (Buenos y Malos)
-En Java era abstracta, aquí es clase normal.
-Añade la vida y el contador estático de personajes.
+```javascript
+maxColumns = Math.min(Math.max(maxColumns, 20), 80); // Mínimo 20, máximo 80
+maxRows = Math.min(Math.max(maxRows, 10), 40);       // Mínimo 10, máximo 40
+```
 
-### Atributos: 
-- Atributos heredados de **Entidad**
-- **Vida** -> El porcentaje de vida del personaje
-- **nPersonajes** -> Números de personajes totales 
+### Añadir nuevos tipos de personajes
 
-### Funciones
-- Funciones heredados de **Personajes**
-- **getVida** -> Obtienes la **vida** del **Personaje**
-- **getnPersonajes** -> Obtienes el número de **Personaje**
-- **setnPersonajes** -> Modifica el número de **Personaje**
+1. Crea una nueva clase que herede de `Personajes`
 
-### Lo Heredan
-- **Malos**
-- **Buenos**
+2. Implementa su lógica de movimiento específica
 
-## [Clase Malos](src/Entidades/Malos.java)
+3. Añade su representación en `toString()`
 
-Representa a los personajes malos (M en el tablero)
-Hereda de Personajes.
-Tienen la capacidad de detectar y perseguir a los buenos cercanos.
+4. Actualiza `Funciones.pintarTablero()` para mostrar el nuevo tipo
 
-### Atributos 
-- Atributos heredados de **Personajes**
-- **RED** -> Cambia a color Rojo para el texto
-- Al **Bueno** al que persigue
-- **nMalos** -> Número de **Malos** totales
+5. Añade un contador estático similar a `nBuenos`
 
-### Funciones
-- Funciones heredados de **Personajes**
-- **getBuenos** -> Obtienes al **Bueno** que persigue
-- **setBuenos** -> Modificas al **Bueno** que persigue
-- **getnMalos** -> Obtienes el número de **Malos** totales
-- **setnMalos** -> Modificas el número de **Malos** totales
-- **mover** -> Modificar la función **mover** del padre para perseguir al **Bueno** 
-- **toString** -> Como se va a ver cuando lo imprimas
+## 🐛 SOLUCIÓN DE PROBLEMAS COMUNES
 
-## [Clase Buenos](src/Entidades/Buenos.java)
-Representa a los personajes buenos (B en el tablero)
-Hereda de Personajes.
-Tienen la capacidad de detectar y perseguir a los malos cercanos.
+| Problema | Posible solución |
+|----------|------------------|
+| El tablero no se ve | Verifica que `tableroContainer` existe en el HTML |
+| Los contadores no se actualizan | Asegúrate de llamar a `actualizarContadoresVisuales()` |
+| Los personajes no se mueven | Comprueba que `mover()` está siendo llamado en el bucle |
+| El juego no termina | Verifica la condición en `if (Buenos.getnBuenos() <= 0...)` |
+| Error "Obstaculos is not defined" | Ajusta el orden de los scripts en el HTML |
+| El CSS no se aplica | Limpia caché del navegador (Ctrl+F5) |
 
-- Atributos heredados de **Personajes**
-- El **Malo** del que huye 
+## 📝 NOTAS PARA DESARROLLADORES
 
-### Funciones
-- Funciones heredados de **Personajes**
-- **getMalos** -> Obtienes al **Malo** al que huye
-- **setMalos** -> Modificas al **Malo** al que huye
- **getnBuenos** -> Obtienes el número de **Buenos** totales
-- **setnBuenos** -> Modificas el número de **Buenos** totales
-- **mover** -> Modificar la función **mover** del padre para huir del **Malo** 
-- **toString** -> Como se va a ver cuando lo imprimas
+Conceptos importantes a recordar:
+
+1. `static` - Variables/métodos pertenecen a la clase, no a las instancias
+
+2. `super() `- Llama al constructor de la clase padre
+
+3. `instanceof` - Verifica si un objeto es instancia de una clase
+
+4. `setInterval` - Ejecuta una función cada X milisegundos
+
+5. `classList` - Añade/elimina clases CSS (add(), remove(), toggle())
+
+6. `addEventListener` - Escucha eventos del usuario
+
+7. `Math.random()` - Genera número aleatorio entre 0 y 0.999...
+
+Para modificar el comportamiento del combate:<br>
+Busca en `actualizarJuego()` la sección donde se calcula resultado. La fórmula actual es:
+
+```javascript
+const resultado = Math.floor(Math.random() * (entidad.getVida() + defensor.getVida()));
+if (resultado < entidad.getVida()) { /* Gana atacante */ }
+```
+
+Para cambiar la distancia de detección:
+Modifica el segundo parámetro en `estaCercaDe()` (actualmente 10).
+
