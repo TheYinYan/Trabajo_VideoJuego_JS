@@ -167,7 +167,15 @@ class Entidad {
 
 Personajes.js
 ```javascript
-
+class Personajes extends Entidad {
+    static nPersonajes = 0; // Variable estática (compartida)
+    
+    constructor(y, x, vx, vy) {
+        super(y, x, vx, vy);
+        this.vida = Math.floor(Math.random() * 91) + 10; // Vida entre 10-100
+        Personajes.nPersonajes++;
+    }
+}
 ```
 
 Buenos.js
