@@ -1,12 +1,15 @@
+/**
+ * OBJETO FUNCIONES
+ * 
+ * Equivalente a la clase estática Funciones de Java.
+ * Contiene todas las funciones utilitarias del juego
+ */
 const Funciones = {
     // Constante para "limpiar" pantalla (en consola)
     CLEAN_SCREEN: '\n'.repeat(50),
 
     /**
      * DIBUJAR TÍTULO CON FORMATO
-     * Crea un título con bordes de asteriscos
-     * @param {string} texto - Texto del título
-     * @param {number} espacios - Espacios alrededor del texto
      */
     titulo(texto, espacios) {
         const ancho = espacios + texto.length + 2;
@@ -21,10 +24,6 @@ const Funciones = {
 
     /**
      * CALCULAR PORCENTAJE DE PERSONAJES
-     * Determina cuántos personajes de cada tipo generar
-     * @param {number} altura - Alto del tablero
-     * @param {number} anchura - Ancho del tablero
-     * @returns {number} Número de personajes a generar
      */
     numPorcent(altura, anchura) {
         const area = altura * anchura;
@@ -33,8 +32,6 @@ const Funciones = {
 
     /**
      * MENÚ DE CONFIGURACIÓN
-     * Permite al usuario elegir cómo generar personajes
-     * @returns {Object} { nPersonajes, opcion }
      */
     menu(nPersonajes, altura, anchura, porBuenos, porMalos) {
         console.log('=== Generar Personajes ===\n');
@@ -64,7 +61,6 @@ const Funciones = {
 
     /**
      * VALIDAR DATOS DE ENTRADA
-     * Comprueba que los números sean válidos (positivos, pares, etc)
      */
     coprobaciones(atributo, nombre, min) {
         while (atributo <= 0 || atributo % 2 !== 0 || atributo < min) {
@@ -78,7 +74,6 @@ const Funciones = {
 
     /**
      * GENERADOR PRINCIPAL
-     * Orquesta la generación de todo el tablero
      */
     generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcion) {
         // Generar obstáculos (1% del área)
@@ -94,7 +89,6 @@ const Funciones = {
 
     /**
      * GENERAR OBSTÁCULOS
-     * Coloca obstáculos aleatoriamente en el tablero
      */
     generadorEntidades(altura, anchura, arrayEntidades, porcentaje) {
         const area = altura * anchura;
@@ -102,7 +96,6 @@ const Funciones = {
         
         for (let i = 0; i < nEnt; i++) {
             let x, y;
-            // Buscar posición vacía
             do {
                 x = Math.floor(Math.random() * anchura);
                 y = Math.floor(Math.random() * altura);
@@ -114,7 +107,6 @@ const Funciones = {
 
     /**
      * GENERAR PERSONAJES MITAD Y MITAD
-     * Alterna Buenos y Malos (par/impar)
      */
     generadorPersonajesMitad(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
@@ -136,7 +128,6 @@ const Funciones = {
 
     /**
      * GENERAR PERSONAJES POR PORCENTAJE
-     * Distribuye según porcentaje dado
      */
     generadorPersonajesPorcentaje(altura, anchura, arrayEntidades, arrayPersonajes, porcentaje, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
@@ -157,17 +148,11 @@ const Funciones = {
     },
 
     /**
-     * PINTAR TABLERO
-     * Genera el HTML para mostrar el tablero
-     * @returns {string} HTML del tablero
+     * PINTAR TABLERO (VERSIÓN CORREGIDA - SIN ESTADÍSTICAS)
+     * Ahora SOLO pinta el tablero, las estadísticas están en el HTML
      */
     pintarTablero(altura, anchura, arrayEntidades) {
-        // Crear panel de estadísticas
-        const stats = document.createElement('div');
-        stats.style.color = '#8888ff';
-        stats.innerHTML = `Total de Personajes: ${Personajes.getnPersonajes()} | Buenos: ${Buenos.getnBuenos()} | Malos: ${Malos.getnMalos()}<br>`;
-        
-        // Construir tablero línea por línea
+        // Construir tablero línea por línea (SOLO EL TABLERO, SIN ESTADÍSTICAS)
         let sb = '╔' + '═'.repeat(anchura) + '╗\n';
         for (let i = 0; i < altura; i++) {
             sb += '║';
@@ -187,23 +172,21 @@ const Funciones = {
         }
         sb += '╚' + '═'.repeat(anchura) + '╝';
         
-        return stats.outerHTML + '<div style="font-family: monospace; white-space: pre;">' + sb + '</div>';
+        // Devolver SOLO el tablero, sin estadísticas
+        return '<div style="font-family: monospace; white-space: pre;">' + sb + '</div>';
     },
 
     /**
      * ASIGNAR PERSONAJES CERCANOS
-     * Para cada personaje, encuentra el enemigo más cercano
      */
     asignarPersonajesCercanos(nPersonajes, arrayPersonajes, tipoPersonaje, tipoPersonajeCerca) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === null) continue;
             
-            // Buscar solo para el tipo solicitado
             if (arrayPersonajes[i].constructor.name === tipoPersonaje) {
                 let distanciaMin = Infinity;
                 let entidadCerca = null;
                 
-                // Buscar enemigo más cercano
                 for (let j = 0; j < nPersonajes; j++) {
                     if (arrayPersonajes[j] === null) continue;
                     
@@ -216,7 +199,6 @@ const Funciones = {
                     }
                 }
                 
-                // Asignar la referencia
                 if (tipoPersonaje === 'Malos') {
                     arrayPersonajes[i].setBuenos(entidadCerca);
                 } else if (tipoPersonaje === 'Buenos') {
@@ -228,16 +210,13 @@ const Funciones = {
 
     /**
      * ELIMINAR PERSONAJE
-     * Cuando un personaje muere, lo elimina del juego
      */
     eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, x, y) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === entidad) {
-                // Eliminar de los arrays
                 arrayPersonajes[i] = null;
                 arrayEntidades[y][x] = null;
                 
-                // Actualizar contadores
                 Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
                 if (entidad instanceof Buenos) {
                     Buenos.setnBuenos(Buenos.getnBuenos() - 1);
@@ -251,7 +230,6 @@ const Funciones = {
 
     /**
      * MOVIMIENTO GLOBAL
-     * Mueve todos los personajes en el tablero
      */
     movimiento(altura, anchura, arrayEntidades) {
         for (let i = 0; i < altura; i++) {
@@ -266,8 +244,6 @@ const Funciones = {
 
     /**
      * VERIFICAR FIN DEL JUEGO
-     * Comprueba si un bando ha sido eliminado
-     * @returns {boolean} true si el juego terminó
      */
     terminar() {
         if (Buenos.getnBuenos() <= 0) {
