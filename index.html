@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survivors - Batalla Épica</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="game-container">
         <h1>⚔️ SURVIVORS ⚔️</h1>
-        
+
         <!-- Panel de estadísticas (oculto inicialmente) -->
         <div class="stats-panel hidden" id="statsPanel" aria-label="Estadísticas de la batalla">
             <div class="stat-item total" role="status" aria-live="polite">
@@ -29,7 +31,7 @@
         <!-- Panel de menú -->
         <div id="menuPanel" class="menu-panel">
             <h2>⚙️ CONFIGURACIÓN INICIAL</h2>
-            
+
             <div class="info-display">
                 <div class="screen-info">
                     <span class="info-label">Tu pantalla:</span>
@@ -117,7 +119,8 @@
 
         <!-- Controles de simulación -->
         <div class="controls hidden" id="simulationControls">
-            <button onclick="detenerSimulacion()" class="btn-stop">⏹ DETENER</button>
+            <button onclick="detenerSimulacion()" class="btn-stop" id="btnPausa">⏹ PAUSAR</button>
+            <button onclick="continuarSimulacion()" class="btn-start" id="btnContinuar">▶ CONTINUAR</button>
             <button onclick="volverAlMenu()" class="btn-reset">↺ REINICIAR</button>
             <div class="speed-control">
                 <button onclick="ajustarVelocidad(-50)" class="btn-speed">⚡ -</button>
@@ -141,4 +144,5 @@
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
 </body>
+
 </html>

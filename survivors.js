@@ -15,6 +15,11 @@ let velocidadActual = 150;
 let nPersonajesActual = 0;
 let alturaRecomendada = 30;
 let anchuraRecomendada = 30;
+let simulacionPausada = false;
+
+function limpiarConsola() {
+    console.clear();
+}
 
 /**
  * INICIALIZACIÓN
@@ -180,7 +185,7 @@ function actualizarContadoresVisuales() {
 }
 
 /**
- * INICIAR SIMULACIÓN
+ * INICIAR SIMULACIÓN (modificada)
  */
 function iniciarSimulacion() {
     if (!validarInputs()) {
@@ -189,6 +194,7 @@ function iniciarSimulacion() {
     }
     
     detenerSimulacion();
+    simulacionPausada = false; // Reiniciar estado de pausa
     
     // Resetear contadores
     Personajes.setnPersonajes(0);
@@ -215,8 +221,12 @@ function iniciarSimulacion() {
         }
     }
     
-    // Crear arrays y generar mundo
+    // Guardar para continuar después
     nPersonajesActual = nPersonajes;
+    alturaActual = altura;
+    anchuraActual = anchura;
+    
+    // Crear arrays y generar mundo
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     Funciones.generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcionSeleccionada);
@@ -291,14 +301,31 @@ function actualizarJuego(altura, anchura, nPersonajes) {
 }
 
 /**
- * DETENER SIMULACIÓN
+ * DETENER SIMULACIÓN (PAUSAR)
  */
 function detenerSimulacion() {
     if (intervaloSimulacion) {
         clearInterval(intervaloSimulacion);
         intervaloSimulacion = null;
+        simulacionPausada = true;
+        console.log('⏸️ Simulación pausada');
     }
 }
+
+/**
+ * CONTINUAR SIMULACIÓN
+ */
+function continuarSimulacion() {
+    if (simulacionPausada && arrayEntidades && arrayPersonajes) {
+        intervaloSimulacion = setInterval(
+            () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual), 
+            velocidadActual
+        );
+        simulacionPausada = false;
+        console.log('▶️ Simulación reanudada');
+    }
+}
+
 
 /**
  * MOSTRAR RESULTADO FINAL
@@ -328,14 +355,17 @@ function mostrarResultado() {
 }
 
 /**
- * VOLVER AL MENÚ
+ * VOLVER AL MENÚ (modificada)
  */
 function volverAlMenu() {
     detenerSimulacion();
+    simulacionPausada = false; // Resetear estado de pausa
     
     // Resetear variables
     opcionSeleccionada = null;
     nPersonajesConfig = null;
+    arrayEntidades = null;
+    arrayPersonajes = null;
     
     // Ocultar paneles
     document.getElementById('tablero').classList.add('hidden');
@@ -362,6 +392,9 @@ function volverAlMenu() {
     if (document.getElementById('tableroContainer')) {
         document.getElementById('tableroContainer').innerHTML = '';
     }
+
+    // Limpar consola
+    limpiarConsola()
 }
 
 // Hacer funciones globales
@@ -371,3 +404,4 @@ window.volverAlMenu = volverAlMenu;
 window.seleccionarOpcion = seleccionarOpcion;
 window.ajustarDimensionesRecomendadas = ajustarDimensionesRecomendadas;
 window.ajustarVelocidad = ajustarVelocidad;
+window.continuarSimulacion = continuarSimulacion;
