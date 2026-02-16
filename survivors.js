@@ -1,6 +1,6 @@
 /**
  * ARCHIVO PRINCIPAL
- * Versión con interfaz gráfica completa
+ * Versión con estructura semántica (header, main, footer)
  */
 
 let intervaloSimulacion = null;
@@ -10,22 +10,89 @@ let arrayEntidades = null;
 let arrayPersonajes = null;
 let alturaActual = 30;
 let anchuraActual = 30;
+let velocidadActual = 150;
+let nPersonajesActual = 0;
+let alturaRecomendada = 30;
+let anchuraRecomendada = 30;
 
 /**
  * INICIALIZACIÓN
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Mostrar menú inicial
+    calcularDimensionesRecomendadas();
     mostrarMenu();
     
-    // Configurar eventos de inputs
+    // Configurar eventos
     document.getElementById('alturaInput').addEventListener('input', validarInputs);
     document.getElementById('anchuraInput').addEventListener('input', validarInputs);
     document.getElementById('numPersonajes').addEventListener('input', () => {
         nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
         validarBotonInicio();
     });
+    
+    // Actualizar dimensiones si cambia el tamaño de la ventana
+    window.addEventListener('resize', () => {
+        calcularDimensionesRecomendadas();
+    });
 });
+
+/**
+ * CALCULAR DIMENSIONES RECOMENDADAS SEGÚN LA PANTALLA
+ */
+function calcularDimensionesRecomendadas() {
+    // Obtener dimensiones de la pantalla
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    document.getElementById('screenDimensions').textContent = `${screenWidth}x${screenHeight}`;
+    
+    // Calcular dimensiones óptimas para el tablero
+    // Un carácter en el tablero ocupa aproximadamente 20px de ancho y 24px de alto
+    const charWidth = 20;
+    const charHeight = 24;
+    
+    // Dejar espacio para el contenedor, padding, estadísticas, etc.
+    const availableWidth = screenWidth * 0.8; // 80% del ancho de pantalla
+    const availableHeight = screenHeight * 0.6; // 60% del alto de pantalla
+    
+    // Calcular máximas dimensiones
+    let maxColumns = Math.floor(availableWidth / charWidth);
+    let maxRows = Math.floor(availableHeight / charHeight);
+    
+    // Limitar a rangos razonables
+    maxColumns = Math.min(Math.max(maxColumns, 20), 80);
+    maxRows = Math.min(Math.max(maxRows, 10), 40);
+    
+    // Asegurar que sean pares
+    maxColumns = maxColumns % 2 === 0 ? maxColumns : maxColumns - 1;
+    maxRows = maxRows % 2 === 0 ? maxRows : maxRows - 1;
+    
+    // Guardar valores recomendados
+    alturaRecomendada = maxRows;
+    anchuraRecomendada = maxColumns;
+    
+    document.getElementById('recommendedDimensions').textContent = `${anchuraRecomendada}x${alturaRecomendada}`;
+    
+    // Establecer valores por defecto en los inputs
+    document.getElementById('alturaInput').value = alturaRecomendada;
+    document.getElementById('anchuraInput').value = anchuraRecomendada;
+    document.getElementById('alturaInput').max = maxRows + 20;
+    document.getElementById('anchuraInput').max = maxColumns + 20;
+    
+    alturaActual = alturaRecomendada;
+    anchuraActual = anchuraRecomendada;
+}
+
+/**
+ * AJUSTAR A DIMENSIONES RECOMENDADAS
+ */
+function ajustarDimensionesRecomendadas() {
+    document.getElementById('alturaInput').value = alturaRecomendada;
+    document.getElementById('anchuraInput').value = anchuraRecomendada;
+    alturaActual = alturaRecomendada;
+    anchuraActual = anchuraRecomendada;
+    validarInputs();
+}
 
 /**
  * VALIDAR INPUTS
@@ -34,14 +101,17 @@ function validarInputs() {
     const altura = parseInt(document.getElementById('alturaInput').value);
     const anchura = parseInt(document.getElementById('anchuraInput').value);
     
-    // Validar que sean pares y >= 30
-    if (altura >= 30 && altura % 2 === 0 && anchura >= 30 && anchura % 2 === 0) {
+    if (!isNaN(altura) && !isNaN(anchura) && 
+        altura >= 10 && altura % 2 === 0 && 
+        anchura >= 10 && anchura % 2 === 0) {
         alturaActual = altura;
         anchuraActual = anchura;
         validarBotonInicio();
-    } else {
-        document.getElementById('startBtn').disabled = true;
+        return true;
     }
+    
+    document.getElementById('startBtn').disabled = true;
+    return false;
 }
 
 /**
@@ -52,17 +122,17 @@ function validarBotonInicio() {
     
     if (opcionSeleccionada === null) {
         btnStart.disabled = true;
-        return;
+        return false;
     }
     
     if (opcionSeleccionada === 1) {
-        // Para opción 1, necesitamos número de personajes
         nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
-        btnStart.disabled = !(nPersonajesConfig >= 2 && nPersonajesConfig % 2 === 0);
+        btnStart.disabled = !(nPersonajesConfig >= 2 && nPersonajesConfig % 2 === 0 && nPersonajesConfig <= 200);
     } else {
-        // Para opciones 2 y 3, solo necesitamos altura y anchura válidas
         btnStart.disabled = false;
     }
+    
+    return !btnStart.disabled;
 }
 
 /**
@@ -71,15 +141,12 @@ function validarBotonInicio() {
 function seleccionarOpcion(opcion) {
     opcionSeleccionada = opcion;
     
-    // Quitar selección de todos los botones
     document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.classList.remove('selected');
     });
     
-    // Añadir selección al botón clickeado
-    event.target.closest('.menu-btn').classList.add('selected');
+    event.currentTarget.classList.add('selected');
     
-    // Mostrar/ocultar input de número de personajes
     const nPersonajesInput = document.getElementById('nPersonajesInput');
     if (opcion === 1) {
         nPersonajesInput.classList.remove('hidden');
@@ -91,23 +158,38 @@ function seleccionarOpcion(opcion) {
 }
 
 /**
+ * AJUSTAR VELOCIDAD
+ */
+function ajustarVelocidad(cambio) {
+    velocidadActual = Math.max(50, Math.min(500, velocidadActual + cambio));
+    document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
+    
+    if (intervaloSimulacion) {
+        detenerSimulacion();
+        iniciarSimulacion();
+    }
+}
+
+/**
  * INICIAR SIMULACIÓN
  */
 function iniciarSimulacion() {
+    if (!validarInputs()) {
+        alert('Por favor, introduce dimensiones válidas (pares, ≥10)');
+        return;
+    }
+    
     // Resetear contadores
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     
-    // Obtener valores
     const altura = alturaActual;
     const anchura = anchuraActual;
     
-    // Calcular porcentajes
     const porBuenos = Funciones.numPorcent(altura, anchura);
     const porMalos = Funciones.numPorcent(altura, anchura);
     
-    // Determinar número de personajes
     let nPersonajes;
     if (opcionSeleccionada === 1) {
         nPersonajes = nPersonajesConfig;
@@ -121,24 +203,20 @@ function iniciarSimulacion() {
         }
     }
     
-    // Crear arrays
+    nPersonajesActual = nPersonajes;
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     
-    // Generar mundo
     Funciones.generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcionSeleccionada);
     
-    // Actualizar contadores
     actualizarContadoresVisuales();
     
-    // Ocultar menú, mostrar tablero y controles
     document.getElementById('menuPanel').classList.add('hidden');
     document.getElementById('tablero').classList.remove('hidden');
     document.getElementById('simulationControls').classList.remove('hidden');
     document.getElementById('resultadoPanel').classList.add('hidden');
     
-    // Iniciar simulación
-    intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), 150);
+    intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
 
 /**
@@ -184,8 +262,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // Pintar tablero
-    document.getElementById('tablero').innerHTML = Funciones.pintarTablero(altura, anchura, arrayEntidades);
+    // PINTAR TABLERO - Actualizado para usar tableroContainer
+    document.getElementById('tableroContainer').innerHTML = Funciones.pintarTablero(altura, anchura, arrayEntidades);
     actualizarContadoresVisuales();
     
     // Verificar fin del juego
@@ -196,7 +274,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
 }
 
 /**
- * ACTUALIZAR CONTADORES
+ * ACTUALIZAR CONTADORES VISUALES
  */
 function actualizarContadoresVisuales() {
     document.getElementById('totalStats').textContent = Personajes.getnPersonajes();
@@ -271,10 +349,25 @@ function volverAlMenu() {
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     actualizarContadoresVisuales();
+    
+    // Limpiar tablero
+    if (document.getElementById('tableroContainer')) {
+        document.getElementById('tableroContainer').innerHTML = '';
+    }
 }
 
-// Las funciones deben estar globales para los botones HTML
+/**
+ * MOSTRAR MENÚ (función auxiliar)
+ */
+function mostrarMenu() {
+    // Esta función puede contener lógica adicional si es necesaria
+    console.log('Menú mostrado');
+}
+
+// Hacer funciones globales para los botones HTML
 window.iniciarSimulacion = iniciarSimulacion;
 window.detenerSimulacion = detenerSimulacion;
 window.volverAlMenu = volverAlMenu;
 window.seleccionarOpcion = seleccionarOpcion;
+window.ajustarDimensionesRecomendadas = ajustarDimensionesRecomendadas;
+window.ajustarVelocidad = ajustarVelocidad;

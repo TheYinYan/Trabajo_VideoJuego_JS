@@ -1,16 +1,10 @@
 /**
  * OBJETO FUNCIONES
- * 
- * Equivalente a la clase estática Funciones de Java.
- * Contiene todas las funciones utilitarias del juego
+ * Versión actualizada para trabajar con la nueva estructura
  */
 const Funciones = {
-    // Constante para "limpiar" pantalla (en consola)
     CLEAN_SCREEN: '\n'.repeat(50),
 
-    /**
-     * DIBUJAR TÍTULO CON FORMATO
-     */
     titulo(texto, espacios) {
         const ancho = espacios + texto.length + 2;
         const esp = ' '.repeat(texto.length + 2 * espacios);
@@ -22,46 +16,17 @@ const Funciones = {
         console.log('*'.repeat(ancho) + '\n');
     },
 
-    /**
-     * CALCULAR PORCENTAJE DE PERSONAJES
-     */
     numPorcent(altura, anchura) {
         const area = altura * anchura;
         return Math.floor(Math.random() * (area * 0.005)) + 1;
     },
 
-    /**
-     * MENÚ DE CONFIGURACIÓN
-     */
     menu(nPersonajes, altura, anchura, porBuenos, porMalos) {
-        console.log('=== Generar Personajes ===\n');
-        console.log('1. Mitad Buenos y Mitad Malos');
-        console.log('2. Numero Personaje Aleatorios');
-        console.log('3. Mitad Buenos y Mitad Malos Aleatorios');
-        
-        let opcion = parseInt(prompt('Opción: '));
-        switch(opcion) {
-            case 1:
-                nPersonajes = parseInt(prompt('Dame el numero de personajes: '));
-                nPersonajes = this.coprobaciones(nPersonajes, 'numero de personajes', 0);
-                break;
-            case 2:
-                nPersonajes = porMalos + porBuenos;
-                break;
-            case 3:
-                const areaDefault = altura * anchura;
-                nPersonajes = Math.floor(Math.random() * (areaDefault * 0.01)) + 1;
-                while (nPersonajes % 2 !== 0) {
-                    nPersonajes = Math.floor(Math.random() * (areaDefault * 0.01)) + 1;
-                }
-                break;
-        }
-        return { nPersonajes, opcion };
+        // Esta función ahora se maneja desde la interfaz gráfica
+        // La mantenemos por compatibilidad pero ya no se usa directamente
+        return { nPersonajes: 20, opcion: 1 };
     },
 
-    /**
-     * VALIDAR DATOS DE ENTRADA
-     */
     coprobaciones(atributo, nombre, min) {
         while (atributo <= 0 || atributo % 2 !== 0 || atributo < min) {
             if (atributo <= 0) console.log(`La ${nombre} no puede ser ${atributo}`);
@@ -72,9 +37,6 @@ const Funciones = {
         return atributo;
     },
 
-    /**
-     * GENERADOR PRINCIPAL
-     */
     generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcion) {
         // Generar obstáculos (1% del área)
         this.generadorEntidades(altura, anchura, arrayEntidades, 0.01);
@@ -87,9 +49,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * GENERAR OBSTÁCULOS
-     */
     generadorEntidades(altura, anchura, arrayEntidades, porcentaje) {
         const area = altura * anchura;
         const nEnt = Math.floor(Math.random() * (area * porcentaje)) + 1;
@@ -105,9 +64,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * GENERAR PERSONAJES MITAD Y MITAD
-     */
     generadorPersonajesMitad(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
             let x, y;
@@ -126,9 +82,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * GENERAR PERSONAJES POR PORCENTAJE
-     */
     generadorPersonajesPorcentaje(altura, anchura, arrayEntidades, arrayPersonajes, porcentaje, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
             let x, y;
@@ -137,7 +90,7 @@ const Funciones = {
                 y = Math.floor(Math.random() * altura);
             } while (arrayEntidades[y][x] !== null);
             
-            if (i <= porcentaje) {
+            if (i < porcentaje) {
                 arrayEntidades[y][x] = new Buenos(y, x);
                 arrayPersonajes[i] = arrayEntidades[y][x];
             } else {
@@ -147,19 +100,15 @@ const Funciones = {
         }
     },
 
-    /**
-     * PINTAR TABLERO (VERSIÓN CORREGIDA - SIN ESTADÍSTICAS)
-     * Ahora SOLO pinta el tablero, las estadísticas están en el HTML
-     */
     pintarTablero(altura, anchura, arrayEntidades) {
-        // Construir tablero línea por línea (SOLO EL TABLERO, SIN ESTADÍSTICAS)
+        // Construir tablero línea por línea
         let sb = '╔' + '═'.repeat(anchura) + '╗\n';
         for (let i = 0; i < altura; i++) {
             sb += '║';
             for (let j = 0; j < anchura; j++) {
                 const celda = arrayEntidades[i][j];
                 if (celda === null) {
-                    sb += ' ';  // Espacio vacío
+                    sb += ' ';
                 } else if (celda instanceof Buenos) {
                     sb += '<span style="color: #00ff00">B</span>';
                 } else if (celda instanceof Malos) {
@@ -172,13 +121,9 @@ const Funciones = {
         }
         sb += '╚' + '═'.repeat(anchura) + '╝';
         
-        // Devolver SOLO el tablero, sin estadísticas
-        return '<div style="font-family: monospace; white-space: pre;">' + sb + '</div>';
+        return '<div class="board-content">' + sb + '</div>';
     },
 
-    /**
-     * ASIGNAR PERSONAJES CERCANOS
-     */
     asignarPersonajesCercanos(nPersonajes, arrayPersonajes, tipoPersonaje, tipoPersonajeCerca) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === null) continue;
@@ -208,9 +153,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * ELIMINAR PERSONAJE
-     */
     eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, x, y) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === entidad) {
@@ -228,9 +170,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * MOVIMIENTO GLOBAL
-     */
     movimiento(altura, anchura, arrayEntidades) {
         for (let i = 0; i < altura; i++) {
             for (let j = 0; j < anchura; j++) {
@@ -242,9 +181,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * VERIFICAR FIN DEL JUEGO
-     */
     terminar() {
         if (Buenos.getnBuenos() <= 0) {
             console.log(this.CLEAN_SCREEN);
