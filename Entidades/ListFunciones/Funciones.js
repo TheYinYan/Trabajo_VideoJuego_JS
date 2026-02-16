@@ -110,11 +110,11 @@ const Funciones = {
                 if (celda === null) {
                     sb += ' ';
                 } else if (celda instanceof Buenos) {
-                    sb += '<span style="color: #00ff00">B</span>';
+                    sb += `<span style="color: #00ff00">${celda}</span>`;
                 } else if (celda instanceof Malos) {
-                    sb += '<span style="color: #ff0000">M</span>';
+                    sb += `<span style="color: #ff0000">${celda}</span>`;
                 } else if (celda instanceof Obstaculos) {
-                    sb += '#';
+                    sb += celda;
                 }
             }
             sb += '║\n';
