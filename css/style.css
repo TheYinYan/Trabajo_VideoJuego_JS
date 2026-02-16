@@ -1,0 +1,288 @@
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', 'Consolas', monospace;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Contenedor principal del juego */
+.game-container {
+    max-width: 1200px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2),
+                0 0 60px rgba(255, 0, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Título principal */
+h1 {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ffff,
+                 0 0 20px #ff00ff,
+                 0 0 30px #00ffff;
+    animation: neonPulse 2s infinite;
+    letter-spacing: 5px;
+}
+
+@keyframes neonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* Panel de estadísticas */
+.stats-panel {
+    background: rgba(10, 10, 20, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    border: 1px solid #00ffff33;
+    box-shadow: inset 0 0 20px #00000088;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    border: 1px solid;
+}
+
+.stat-item.total {
+    border-color: #8888ff;
+    box-shadow: 0 0 10px #8888ff;
+}
+.stat-item.buenos {
+    border-color: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+}
+.stat-item.malos {
+    border-color: #ff0000;
+    box-shadow: 0 0 10px #ff0000;
+}
+
+.stat-label {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    min-width: 40px;
+    text-align: center;
+}
+
+.stat-value.total { color: #8888ff; text-shadow: 0 0 5px #8888ff; }
+.stat-value.buenos { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+.stat-value.malos { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+
+/* Tablero de juego */
+#tablero {
+    font-family: 'Courier New', 'Consolas', monospace;
+    line-height: 1.4;
+    white-space: pre;
+    background: #0a0a0f;
+    padding: 25px;
+    border-radius: 15px;
+    display: inline-block;
+    width: 100%;
+    overflow-x: auto;
+    text-align: center;
+    font-size: 1.2em;
+    letter-spacing: 2px;
+    border: 2px solid #00ffff33;
+    box-shadow: 0 0 30px #000000,
+                inset 0 0 20px #000000;
+    transition: all 0.3s ease;
+}
+
+#tablero:hover {
+    border-color: #00ffff88;
+    box-shadow: 0 0 40px #00ffff33;
+}
+
+/* Controles */
+.controls {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+/* Botones */
+button {
+    font-family: 'Courier New', 'Consolas', monospace;
+    padding: 12px 25px;
+    margin: 5px;
+    background: linear-gradient(145deg, #2a2a3a, #1a1a2a);
+    color: white;
+    border: 1px solid;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.btn-start {
+    border-color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+.btn-start:hover {
+    background: linear-gradient(145deg, #00ff0022, #00ff0011);
+    box-shadow: 0 0 20px #00ff00;
+    transform: translateY(-2px);
+}
+
+.btn-stop {
+    border-color: #ff0000;
+    text-shadow: 0 0 5px #ff0000;
+}
+.btn-stop:hover {
+    background: linear-gradient(145deg, #ff000022, #ff000011);
+    box-shadow: 0 0 20px #ff0000;
+    transform: translateY(-2px);
+}
+
+.btn-reset {
+    border-color: #8888ff;
+    text-shadow: 0 0 5px #8888ff;
+}
+.btn-reset:hover {
+    background: linear-gradient(145deg, #8888ff22, #8888ff11);
+    box-shadow: 0 0 20px #8888ff;
+    transform: translateY(-2px);
+}
+
+/* Inputs */
+.input-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+input {
+    font-family: 'Courier New', 'Consolas', monospace;
+    padding: 12px 15px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 2px solid #00ffff33;
+    background: #0a0a0f;
+    color: #00ffff;
+    font-size: 1em;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 10px #000000;
+}
+
+input:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 20px #00ffff33, inset 0 0 10px #000000;
+}
+
+input::placeholder {
+    color: #ffffff33;
+    font-size: 0.9em;
+}
+
+/* Indicador de turno */
+.turn-indicator {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+    background-size: 200% 100%;
+    animation: gradientMove 3s linear infinite;
+    margin-top: 10px;
+    border-radius: 3px;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* Footer */
+.footer {
+    margin-top: 20px;
+    color: #ffffff44;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+/* Animación de combate */
+@keyframes combatFlash {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.5) drop-shadow(0 0 10px red); }
+}
+
+.combat-effect {
+    animation: combatFlash 0.3s ease;
+}
+
+/* Scroll personalizado */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0f;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00ffff, #ff00ff);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ff00ff, #00ffff);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .game-container { padding: 15px; }
+    h1 { font-size: 2em; }
+    #tablero { font-size: 0.8em; padding: 15px; }
+    button { padding: 8px 15px; font-size: 0.9em; }
+    input { padding: 8px; width: 120px; }
+    .stat-item { padding: 5px 10px; }
+}

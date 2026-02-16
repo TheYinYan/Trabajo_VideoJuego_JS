@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survivors - JavaScript Version</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>SURVIVORS</h1>
+
+        <div class="stats-panel" id="statsPanel">
+            <div class="stat-item total">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value total" id="totalStats">0</span>
+            </div>
+            <div class="stat-item buenos">
+                <span class="stat-label">Buenos:</span>
+                <span class="stat-value buenos" id="buenosStats">0</span>
+            </div>
+            <div class="stat-item malos">
+                <span class="stat-label">Malos:</span>
+                <span class="stat-value malos" id="malosStats">0</span>
+            </div>
+        </div>
+
+        <div id="tablero">
+            <!-- El tablero se generará aquí -->
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <input type="number" id="alturaInput" placeholder="Altura (par, ≥30)" value="30" min="30" step="2">
+                <input type="number" id="anchuraInput" placeholder="Anchura (par, ≥30)" value="30" min="30" step="2">
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <button onclick="iniciarSimulacion()" class="btn-start">▶ Iniciar</button>
+                <button onclick="detenerSimulacion()" class="btn-stop">⏹ Detener</button>
+                <button onclick="reiniciarSimulacion()" class="btn-reset">↺ Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="turn-indicator"></div>
+        <div class="footer">
+            <span>⚔️ Buenos (B) vs Malos (M) | Obstáculos (#) ⚔️</span>
+        </div>
+    </div>
+
+    <!-- Scripts en orden correcto -->
+    <script src="Entidades/Entidad.js"></script>
+    <script src="Entidades/Personajes.js"></script>
+    <script src="Entidades/Buenos.js"></script>
+    <script src="Entidades/Malos.js"></script>
+    <script src="Entidades/Obstaculos.js"></script>
+    <script src="Entidades/ListFunciones/Funciones.js"></script>
+    <script src="survivors.js"></script>
+</body>
+
+</html>
