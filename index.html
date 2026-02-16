@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Survivors - JavaScript Version</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="game-container">
         <h1>SURVIVORS</h1>
-        
+
+        <!-- Panel de estadísticas -->
         <div class="stats-panel">
             <div class="stat-item total">
                 <span class="stat-label">Total:</span>
@@ -25,29 +28,88 @@
             </div>
         </div>
 
-        <div id="tablero">
-            <!-- El tablero se generará aquí -->
-        </div>
+        <!-- Panel de menú (inicialmente visible) -->
+        <div id="menuPanel" class="menu-panel">
+            <h2>⚔️ CONFIGURACIÓN INICIAL ⚔️</h2>
 
-        <div class="controls">
             <div class="input-group">
-                <input type="number" id="alturaInput" placeholder="Altura (par, ≥30)" value="30" min="30" step="2">
-                <input type="number" id="anchuraInput" placeholder="Anchura (par, ≥30)" value="30" min="30" step="2">
+                <div class="input-row">
+                    <label for="alturaInput">Altura del tablero (par, ≥30):</label>
+                    <input type="number" id="alturaInput" value="30" min="30" step="2">
+                </div>
+                <div class="input-row">
+                    <label for="anchuraInput">Anchura del tablero (par, ≥30):</label>
+                    <input type="number" id="anchuraInput" value="30" min="30" step="2">
+                </div>
             </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                <button onclick="iniciarSimulacion()" class="btn-start">▶ Iniciar</button>
-                <button onclick="detenerSimulacion()" class="btn-stop">⏹ Detener</button>
-                <button onclick="reiniciarSimulacion()" class="btn-reset">↺ Reiniciar</button>
+
+            <div class="menu-options">
+                <h3>📊 GENERACIÓN DE PERSONAJES</h3>
+                <div class="options-grid">
+                    <button onclick="seleccionarOpcion(1)" class="menu-btn option1">
+                        <span class="btn-icon">⚖️</span>
+                        <span class="btn-text">Mitad Buenos y Mitad Malos</span>
+                    </button>
+                    <button onclick="seleccionarOpcion(2)" class="menu-btn option2">
+                        <span class="btn-icon">🎲</span>
+                        <span class="btn-text">Número Aleatorio</span>
+                    </button>
+                    <button onclick="seleccionarOpcion(3)" class="menu-btn option3">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">Mitad Aleatoria</span>
+                    </button>
+                </div>
             </div>
+
+            <!-- Input para número de personajes (solo para opción 1) -->
+            <div id="nPersonajesInput" class="input-row hidden">
+                <label for="numPersonajes">Número de personajes:</label>
+                <input type="number" id="numPersonajes" value="20" min="2" step="2">
+            </div>
+
+            <button onclick="iniciarSimulacion()" class="btn-start big-btn" id="startBtn" disabled>
+                ▶ COMENZAR BATALLA
+            </button>
         </div>
 
-        <div class="turn-indicator"></div>
+        <!-- Tablero de juego (inicialmente oculto) -->
+        <div id="tablero" class="tablero hidden"></div>
+
+        <!-- Panel de resultado final -->
+        <div id="resultadoPanel" class="resultado-panel hidden">
+            <h2 id="resultadoTitulo"></h2>
+            <div class="resultado-stats">
+                <div class="stat-item total">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value total" id="resultadoTotal">0</span>
+                </div>
+                <div class="stat-item buenos">
+                    <span class="stat-label">Buenos:</span>
+                    <span class="stat-value buenos" id="resultadoBuenos">0</span>
+                </div>
+                <div class="stat-item malos">
+                    <span class="stat-label">Malos:</span>
+                    <span class="stat-value malos" id="resultadoMalos">0</span>
+                </div>
+            </div>
+            <button onclick="volverAlMenu()" class="btn-reset big-btn">
+                ↺ VOLVER AL MENÚ
+            </button>
+        </div>
+
+        <!-- Controles de simulación (visibles durante el juego) -->
+        <div class="controls hidden" id="simulationControls">
+            <button onclick="detenerSimulacion()" class="btn-stop">⏹ DETENER</button>
+            <button onclick="volverAlMenu()" class="btn-reset">↺ REINICIAR</button>
+        </div>
+
+        <div class="turn-indicator" id="turnIndicator"></div>
         <div class="footer">
             <span>⚔️ Buenos (B) vs Malos (M) | Obstáculos (#) ⚔️</span>
         </div>
     </div>
 
-    <!-- Scripts en orden correcto -->
+    <!-- Scripts -->
     <script src="Entidades/Entidad.js"></script>
     <script src="Entidades/Personajes.js"></script>
     <script src="Entidades/Buenos.js"></script>
@@ -55,5 +117,10 @@
     <script src="Entidades/Obstaculos.js"></script>
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
+    <script>
+        console.log('CSS cargado:', document.styleSheets.length > 0);
+    </script>
+    
 </body>
+
 </html>
