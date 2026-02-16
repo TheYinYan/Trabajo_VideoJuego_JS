@@ -28,6 +28,18 @@
             </div>
         </div>
 
+        <!-- Panel de victorias globales (con botón de reinicio) -->
+        <div class="victorias-panel" id="victoriasPanel">
+            <div class="victoria-item buenos">
+                <span class="victoria-label">🏆 Buenos:</span>
+                <span class="victoria-value buenos" id="victoriasBuenos">0</span>
+            </div>
+            <div class="victoria-item malos">
+                <span class="victoria-label">🏆 Malos:</span>
+                <span class="victoria-value malos" id="victoriasMalos">0</span>
+            </div>
+            <button onclick="reiniciarVictorias()" class="btn-reset small-btn" title="Reiniciar contadores">↺</button>
+        </div>
         <!-- Panel de menú -->
         <div id="menuPanel" class="menu-panel">
             <h2>⚙️ CONFIGURACIÓN INICIAL</h2>

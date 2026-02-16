@@ -16,16 +16,17 @@ let nPersonajesActual = 0;
 let alturaRecomendada = 30;
 let anchuraRecomendada = 30;
 let simulacionPausada = false;
-
-function limpiarConsola() {
-    console.clear();
-}
+let victoriasBuenos = 0;
+let victoriasMalos = 0;
 
 /**
  * INICIALIZACIÓN
  */
 document.addEventListener('DOMContentLoaded', () => {
     calcularDimensionesRecomendadas();
+    
+    // Cargar victorias guardadas
+    cargarVictorias();
     
     // Configurar event listeners
     document.getElementById('alturaInput').addEventListener('input', validarInputs);
@@ -185,7 +186,49 @@ function actualizarContadoresVisuales() {
 }
 
 /**
- * INICIAR SIMULACIÓN (modificada)
+ * ACTUALIZAR CONTADORES DE VICTORIAS
+ */
+function actualizarVictoriasVisuales() {
+    document.getElementById('victoriasBuenos').textContent = victoriasBuenos;
+    document.getElementById('victoriasMalos').textContent = victoriasMalos;
+}
+
+/**
+ * GUARDAR VICTORIAS EN LOCALSTORAGE
+ */
+function guardarVictorias() {
+    localStorage.setItem('victoriasBuenos', victoriasBuenos);
+    localStorage.setItem('victoriasMalos', victoriasMalos);
+}
+
+/**
+ * CARGAR VICTORIAS DESDE LOCALSTORAGE
+ */
+function cargarVictorias() {
+    const guardadasBuenos = localStorage.getItem('victoriasBuenos');
+    const guardadasMalos = localStorage.getItem('victoriasMalos');
+    
+    if (guardadasBuenos !== null) victoriasBuenos = parseInt(guardadasBuenos);
+    if (guardadasMalos !== null) victoriasMalos = parseInt(guardadasMalos);
+    
+    actualizarVictoriasVisuales();
+}
+
+/**
+ * REINICIAR CONTADORES DE VICTORIAS
+ */
+function reiniciarVictorias() {
+    if (confirm('¿Seguro que quieres reiniciar el contador de victorias?')) {
+        victoriasBuenos = 0;
+        victoriasMalos = 0;
+        actualizarVictoriasVisuales();
+        guardarVictorias();
+        console.log('🏆 Contadores de victorias reiniciados');
+    }
+}
+
+/**
+ * INICIAR SIMULACIÓN
  */
 function iniciarSimulacion() {
     if (!validarInputs()) {
@@ -326,7 +369,6 @@ function continuarSimulacion() {
     }
 }
 
-
 /**
  * MOSTRAR RESULTADO FINAL
  */
@@ -338,6 +380,28 @@ function mostrarResultado() {
     const resultadoPanel = document.getElementById('resultadoPanel');
     const titulo = document.getElementById('resultadoTitulo');
     const color = buenos <= 0 ? '#ff0000' : '#00ff00';
+    
+    // Actualizar contadores de victorias
+    if (buenos <= 0) {
+        victoriasMalos++;
+        console.log(`%c🏆 VICTORIA PARA LOS MALOS (Total: ${victoriasMalos})`, 'color: #ff0000; font-size: 16px');
+    } else {
+        victoriasBuenos++;
+        console.log(`%c🏆 VICTORIA PARA LOS BUENOS (Total: ${victoriasBuenos})`, 'color: #00ff00; font-size: 16px');
+    }
+    
+    // Guardar en localStorage
+    guardarVictorias();
+    
+    // Actualizar visualización
+    actualizarVictoriasVisuales();
+    
+    // Añadir animación al contador que ganó
+    const victoriaElement = buenos <= 0 ? 
+        document.querySelector('.victoria-item.malos') : 
+        document.querySelector('.victoria-item.buenos');
+    victoriaElement.classList.add('victoria-pulse');
+    setTimeout(() => victoriaElement.classList.remove('victoria-pulse'), 500);
     
     titulo.textContent = buenos <= 0 ? '💀 VICTORIA DE LOS MALOS 💀' : '✨ VICTORIA DE LOS BUENOS ✨';
     titulo.style.color = color;
@@ -355,7 +419,7 @@ function mostrarResultado() {
 }
 
 /**
- * VOLVER AL MENÚ (modificada)
+ * VOLVER AL MENÚ
  */
 function volverAlMenu() {
     detenerSimulacion();
@@ -382,7 +446,7 @@ function volverAlMenu() {
     document.getElementById('nPersonajesInput').classList.add('hidden');
     document.getElementById('startBtn').disabled = true;
     
-    // Resetear contadores
+    // Resetear contadores de partida
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
@@ -393,15 +457,29 @@ function volverAlMenu() {
         document.getElementById('tableroContainer').innerHTML = '';
     }
 
-    // Limpar consola
-    limpiarConsola()
+    limpiarConsola('📋 MENÚ PRINCIPAL');
+}
+
+/**
+ * LIMPIAR CONSOLA
+ */
+function limpiarConsola(titulo = null) {
+    console.clear();
+    console.log('%c' + '═'.repeat(50), 'color: #00ffff');
+    if (titulo) {
+        console.log(`%c${titulo}`, 'color: #00ffff; font-size: 14px; font-weight: bold');
+        console.log('%c' + '═'.repeat(50), 'color: #00ffff');
+    }
+    console.log('');
 }
 
 // Hacer funciones globales
 window.iniciarSimulacion = iniciarSimulacion;
 window.detenerSimulacion = detenerSimulacion;
+window.continuarSimulacion = continuarSimulacion;
 window.volverAlMenu = volverAlMenu;
 window.seleccionarOpcion = seleccionarOpcion;
 window.ajustarDimensionesRecomendadas = ajustarDimensionesRecomendadas;
 window.ajustarVelocidad = ajustarVelocidad;
-window.continuarSimulacion = continuarSimulacion;
+window.reiniciarVictorias = reiniciarVictorias;
+window.limpiarConsola = limpiarConsola;
