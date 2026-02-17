@@ -155,12 +155,16 @@ function seleccionarOpcion(opcion) {
  * AJUSTAR VELOCIDAD
  */
 function ajustarVelocidad(cambio) {
+    // Limitar entre 50ms y 500ms
     velocidadActual = Math.max(50, Math.min(500, velocidadActual + cambio));
+    
+    // Actualizar display
     document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
     
+    // Si la simulación está activa, reiniciar el intervalo con nueva velocidad
     if (intervaloSimulacion) {
-        detenerSimulacion();
-        continuarSimulacion();
+        detenerSimulacion();      // Detiene el intervalo actual
+        continuarSimulacion();    // Reanuda con la nueva velocidad
     }
 }
 
@@ -362,10 +366,10 @@ function continuarSimulacion() {
     if (simulacionPausada && arrayEntidades && arrayPersonajes) {
         intervaloSimulacion = setInterval(
             () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual), 
-            velocidadActual
+            velocidadActual  // 👈 Usa la nueva velocidad
         );
         simulacionPausada = false;
-        console.log('▶️ Simulación reanudada');
+        console.log('▶️ Simulación reanudada con velocidad ' + velocidadActual + 'ms');
     }
 }
 
