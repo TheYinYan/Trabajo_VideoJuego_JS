@@ -675,5 +675,3 @@ Este proyecto está bajo licencia MIT. Puedes usarlo, modificarlo y distribuirlo
 ---
 
 **¿Preguntas o sugerencias?** Abre un issue en el repositorio o contacta al desarrollador.
-
-**Última actualización:** Febrero 2024
