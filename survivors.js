@@ -160,7 +160,7 @@ function ajustarVelocidad(cambio) {
     
     if (intervaloSimulacion) {
         detenerSimulacion();
-        iniciarSimulacion();
+        continuarSimulacion();
     }
 }
 
