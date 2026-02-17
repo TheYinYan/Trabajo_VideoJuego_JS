@@ -14,6 +14,8 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 - [✨ NOVEDADES EN VERSIÓN 2.0](#-novedades-en-versión-20)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
+  - [Desde Local](#desde-local)
+  - [Desde la WEB (Sin descargar nada)](#desde-la-web-sin-descargar-nada)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
 - [🎮 CONTROLES DEL JUEGO](#-controles-del-juego)
 - [📚 EXPLICACIÓN DEL CÓDIGO](#-explicación-del-código)
@@ -91,6 +93,8 @@ survivors-js/
 
 ## 🚀 CÓMO EJECUTAR
 
+### Desde Local
+
 1. **Descarga todos los archivos** manteniendo la estructura de carpetas
 2. **Abre el archivo `index.html`** en cualquier navegador moderno
 3. **Configura el juego**:
@@ -100,6 +104,26 @@ survivors-js/
 4. **Haz clic en "COMENZAR BATALLA"**
 5. **Observa la batalla** en tiempo real
 6. **Usa los controles** para pausar, continuar o reiniciar
+
+### Desde la WEB (Sin descargar nada)
+
+Puedes jugar directamente desde GitHub Pages sin necesidad de descargar nada:
+
+#### **Opción 1: Acceso directo**
+👉 **[JUGAR AHORA - SURVIVORS ONLINE](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)**
+
+#### **Opción 2: A través de Deployments**
+1. Ve a la sección **"Deployments"** del repositorio (donde está la imagen)
+   
+   ![Deployments](assets/images/images_README/deployments.png)
+
+2. Haz clic en el enlace de **github-pages** que aparece en rojo
+   
+   ![GitHub Pages](assets/images/images_README/github-pages.png)
+
+3. ¡A jugar! El juego se abrirá directamente en tu navegador
+
+> 💡 **Ventaja**: Siempre tendrás la última versión sin necesidad de descargar nada.
 
 ---
 
