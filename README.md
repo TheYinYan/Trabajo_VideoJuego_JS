@@ -571,17 +571,7 @@ gantt
     Nuevas Funcionalidades   :2026-06-03, 90d
     Experiencia Móvil        :2026-09-01, 60d
 ```
-## 📅 **EXPLICACIÓN DE LAS FECHAS**
 
-| Sección | Fecha inicio | Duración | Fecha fin |
-|---------|--------------|----------|-----------|
-| **Versión 2.0** | 2026-02-17 | 1 día | 2026-02-17 |
-| **Mejoras Visuales** | 2026-02-18 | 45 días | 2026-04-03 |
-| **Efectos de Sonido** | 2026-04-04 | 60 días | 2026-06-02 |
-| **Nuevas Funcionalidades** | 2026-06-03 | 90 días | 2026-09-01 |
-| **Experiencia Móvil** | 2026-09-01 | 60 días | 2026-10-31 |
-
----
 ---
 
 ## 🎨 PERSONALIZACIÓN
