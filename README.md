@@ -552,26 +552,6 @@ function playSound(soundName) {
 5. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 6. Abre un Pull Request
 
-### 📊 ESTADO DEL PROYECTO
-
-```mermaid
-gantt
-    title Timeline de Desarrollo
-    dateFormat YYYY-MM-DD
-    axisFormat %d/%m/%Y
-    
-    section Completado
-    Versión 2.0 (Actual)    :done, 2026-02-17, 1d
-    
-    section En Desarrollo
-    Mejoras Visuales         :active, 2026-02-18, 45d
-    
-    section Planeado
-    Efectos de Sonido        :2026-04-04, 60d
-    Nuevas Funcionalidades   :2026-06-03, 90d
-    Experiencia Móvil        :2026-09-01, 60d
-```
-
 ---
 
 ## 🎨 PERSONALIZACIÓN
