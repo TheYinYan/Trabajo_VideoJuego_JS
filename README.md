@@ -1,7 +1,3 @@
-Tienes razón, los enlaces del índice no funcionan porque los anchors tienen espacios y caracteres especiales. Aquí tienes el README con los enlaces del índice **corregidos**:
-
-## 📄 **README.md (ENLACES CORREGIDOS)**
-
 # ⚔️ SURVIVORS - Batalla Épica
 
 Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
