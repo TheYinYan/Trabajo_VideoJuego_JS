@@ -559,7 +559,7 @@ gantt
     title Timeline de Desarrollo
     dateFormat YYYY-MM-DD
     section Completado
-    Versión 2.0 (Actual)    :done, 2024-01-01, 30d
+    Versión 2.0 (Actual)    :done, 2026-02-14, 1d
     section En Desarrollo
     Mejoras Visuales         :active, 2024-02-01, 45d
     Efectos de Sonido        :2024-03-15, 60d
