@@ -1,3 +1,7 @@
+Tienes razón, los enlaces del índice no funcionan porque los anchors tienen espacios y caracteres especiales. Aquí tienes el README con los enlaces del índice **corregidos**:
+
+## 📄 **README.md (ENLACES CORREGIDOS)**
+
 # ⚔️ SURVIVORS - Batalla Épica
 
 Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
@@ -10,26 +14,31 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 ## 📑 ÍNDICE
 
-- [⚔️ SURVIVORS - Batalla Épica](#️-survivors---batalla-épica)
-  - [📑 ÍNDICE](#-índice)
-  - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-  - [✨ NOVEDADES EN VERSIÓN 2.0](#-novedades-en-versión-20)
-  - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
-  - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
-  - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
-  - [🎮 CONTROLES DEL JUEGO](#-controles-del-juego)
-  - [📚 EXPLICACIÓN DEL CÓDIGO](#-explicación-del-código)
-    - [1. HTML (index.html)](#1-html-indexhtml)
-    - [2. CSS (style.css)](#2-css-stylecss)
-    - [3. Clases JavaScript](#3-clases-javascript)
-    - [4. Funciones Utilitarias (Funciones.js)](#4-funciones-utilitarias-funcionesjs)
-    - [5. Control Principal (survivors.js)](#5-control-principal-survivorsjs)
-  - [🔄 FLUJO DEL JUEGO](#-flujo-del-juego)
-  - [⚙️ OPCIONES DE CONFIGURACIÓN](#️-opciones-de-configuración)
-  - [🏆 SISTEMA DE VICTORIAS](#-sistema-de-victorias)
-  - [🎨 PERSONALIZACIÓN](#-personalización)
-  - [🐛 SOLUCIÓN DE PROBLEMAS COMUNES](#-solución-de-problemas-comunes)
-  - [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
+- [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
+- [✨ NOVEDADES EN VERSIÓN 2.0](#-novedades-en-versión-20)
+- [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
+- [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
+- [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
+- [🎮 CONTROLES DEL JUEGO](#-controles-del-juego)
+- [📚 EXPLICACIÓN DEL CÓDIGO](#-explicación-del-código)
+  - [1. HTML (index.html)](#1-html-indexhtml)
+  - [2. CSS (style.css)](#2-css-stylecss)
+  - [3. Clases JavaScript](#3-clases-javascript)
+  - [4. Funciones Utilitarias (Funciones.js)](#4-funciones-utilitarias-funcionesjs)
+  - [5. Control Principal (survivors.js)](#5-control-principal-survivorsjs)
+- [🔄 FLUJO DEL JUEGO](#-flujo-del-juego)
+- [⚙️ OPCIONES DE CONFIGURACIÓN](#-opciones-de-configuración)
+- [🏆 SISTEMA DE VICTORIAS](#-sistema-de-victorias)
+- [🚀 HOJA DE RUTA - FUTURAS EXPANSIONES](#-hoja-de-ruta---futuras-expansiones)
+  - [📁 CARPETA ASSETS](#-carpeta-assets)
+  - [🎯 PRÓXIMAS MEJORAS PLANEADAS](#-próximas-mejoras-planeadas)
+  - [💡 IDEAS ADICIONALES](#-ideas-adicionales)
+  - [🛠️ CÓMO CONTRIBUIR](#-cómo-contribuir)
+  - [📊 ESTADO DEL PROYECTO](#-estado-del-proyecto)
+- [🎨 PERSONALIZACIÓN](#-personalización)
+- [🐛 SOLUCIÓN DE PROBLEMAS COMUNES](#-solución-de-problemas-comunes)
+- [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
+- [📄 LICENCIA](#-licencia)
 
 ---
 
@@ -52,6 +61,8 @@ Los personajes se mueven aleatoriamente por el tablero, pero cuando detectan un 
 - ✅ **Animaciones de Victoria** - Efectos visuales al ganar una batalla
 - ✅ **Consola Limpia** - Mensajes organizados con colores y formato
 - ✅ **Botón de Reinicio de Victorias** - Resetea los contadores cuando quieras
+- ✅ **Favicon personalizado** - Icono en la pestaña del navegador
+- ✅ **Carpeta Assets** - Estructura preparada para futuras expansiones
 
 ---
 
@@ -59,19 +70,25 @@ Los personajes se mueven aleatoriamente por el tablero, pero cuando detectan un 
 
 ```
 survivors-js/
-│
-├── 📄 index.html                    # Interfaz de usuario
+│   
+├── 📄 index.html                          # Interfaz de usuario
 ├── 📁 css/
-│   └── 📄 style.css                  # Estilos visuales
-├── 📁 Entidades/                      # Clases del juego
-│   ├── 📄 Entidad.js                  # Clase base
-│   ├── 📄 Personajes.js               # Clase para personajes
-│   ├── 📄 Buenos.js                   # Buenos (hereda de Personajes)
-│   ├── 📄 Malos.js                    # Malos (hereda de Personajes)
-│   ├── 📄 Obstaculos.js               # Obstáculos (hereda de Entidad)
+│   └── 📄 style.css                        # Estilos visuales
+├── 📁 assets/                              # Recursos adicionales
+│   ├── 📁 images/                           # Imágenes y favicons
+│   │   └── 🖼️ favicon.svg                     # Icono de la pestaña
+│   ├── 📁 icons/                            # Iconos SVG (próximamente)
+│   ├── 📁 sounds/                           # Efectos de sonido (próximamente)
+│   └── 📁 fonts/                            # Fuentes personalizadas (próximamente)
+├── 📁 Entidades/                            # Clases del juego
+│   ├── 📄 Entidad.js                          # Clase base
+│   ├── 📄 Personajes.js                       # Clase para personajes
+│   ├── 📄 Buenos.js                           # Buenos (hereda de Personajes)
+│   ├── 📄 Malos.js                            # Malos (hereda de Personajes)
+│   ├── 📄 Obstaculos.js                       # Obstáculos (hereda de Entidad)
 │   └── 📁 ListFunciones/
-│       └── 📄 Funciones.js            # Utilidades del juego
-└── 📄 survivors.js                    # Control principal
+│       └── 📄 Funciones.js                    # Utilidades del juego
+└── 📄 survivors.js                          # Control principal
 ```
 
 ---
@@ -441,6 +458,98 @@ function cargarVictorias() {
 
 ---
 
+## 🚀 HOJA DE RUTA - FUTURAS EXPANSIONES
+
+### 📁 CARPETA ASSETS
+
+La carpeta `assets/` está estructurada para facilitar futuras mejoras:
+
+```
+📁 assets/
+├── 📁 images/     # Imágenes, logos y favicons
+│   └── 🖼️ favicon.svg (actual)
+├── 📁 icons/      # Iconos SVG para la interfaz (próximamente)
+├── 📁 sounds/     # Efectos de sonido (próximamente)
+└── 📁 fonts/      # Fuentes personalizadas (próximamente)
+```
+
+### 🎯 PRÓXIMAS MEJORAS PLANEADAS
+
+#### Fase 1 - Mejoras Visuales (Corto plazo)
+- [ ] **Logo del juego** - `assets/images/logo.png`
+- [ ] **Iconos temáticos** - `assets/icons/bueno.svg`, `assets/icons/malo.svg`
+- [ ] **Fondos dinámicos** - `assets/images/backgrounds/`
+- [ ] **Efectos de partículas** para combates
+
+#### Fase 2 - Efectos de Sonido (Medio plazo)
+- [ ] `battle-start.mp3` - Sonido al comenzar la batalla
+- [ ] `victory.mp3` - Fanfarria de victoria
+- [ ] `combat.mp3` - Efecto en cada combate
+- [ ] `move.mp3` - Sonido de movimiento
+- [ ] `death.mp3` - Sonido al morir un personaje
+
+```javascript
+// Ejemplo de implementación de sonidos
+function playSound(soundName) {
+    const audio = new Audio(`assets/sounds/${soundName}.mp3`);
+    audio.volume = 0.5;
+    audio.play().catch(e => console.log('Error al reproducir sonido:', e));
+}
+```
+
+#### Fase 3 - Nuevas Funcionalidades (Largo plazo)
+- [ ] **Modo nocturno** - Tema oscuro/claro
+- [ ] **Guardar partidas** - Exportar/importar configuraciones
+- [ ] **Múltiples tableros** - Diferentes formas de tablero
+- [ ] **Personajes especiales** - Nuevos tipos con habilidades únicas
+- [ ] **Modo torneo** - Serie de batallas consecutivas
+- [ ] **Replays** - Guardar y ver batallas anteriores
+
+#### Fase 4 - Experiencia Móvil
+- [ ] **Splash screens** - Pantallas de carga
+- [ ] **Iconos para home screen** - Instalable como app
+- [ ] **Controles táctiles** - Optimizado para móviles
+- [ ] **Modo offline** - Funciona sin internet
+
+### 💡 IDEAS ADICIONALES
+
+| Idea | Descripción | Dificultad |
+|------|-------------|------------|
+| **Estadísticas avanzadas** | Gráficas de victorias/derrotas | ⭐⭐ |
+| **Modo multijugador** | Dos jugadores en el mismo ordenador | ⭐⭐⭐ |
+| **Power-ups** | Objetos especiales que aparecen | ⭐⭐ |
+| **Clasificación global** | Ranking de victorias | ⭐⭐⭐ |
+| **Editor de niveles** | Crear tus propios mapas | ⭐⭐⭐ |
+
+### 🛠️ CÓMO CONTRIBUIR
+
+¿Quieres ayudar a implementar alguna de estas ideas?
+
+1. Haz un fork del proyecto
+2. Crea una rama (`git checkout -b feature/nueva-funcionalidad`)
+3. Implementa los cambios usando la carpeta `assets/` cuando sea necesario
+4. Haz commit (`git commit -m 'Añade nueva funcionalidad'`)
+5. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+6. Abre un Pull Request
+
+### 📊 ESTADO DEL PROYECTO
+
+```mermaid
+gantt
+    title Timeline de Desarrollo
+    dateFormat YYYY-MM-DD
+    section Completado
+    Versión 2.0 (Actual)    :done, 2024-01-01, 30d
+    section En Desarrollo
+    Mejoras Visuales         :active, 2024-02-01, 45d
+    Efectos de Sonido        :2024-03-15, 60d
+    section Planeado
+    Nuevas Funcionalidades   :2024-05-01, 90d
+    Experiencia Móvil        :2024-08-01, 60d
+```
+
+---
+
 ## 🎨 PERSONALIZACIÓN
 
 ### Cambiar colores
@@ -474,6 +583,30 @@ maxRows = Math.min(Math.max(maxRows, 10), 40);       // Mín 10, máx 40
 4. Actualiza `Funciones.pintarTablero()` para mostrar el nuevo tipo
 5. Añade un contador estático similar a `nBuenos`
 
+### Usar la carpeta assets
+
+#### Para imágenes:
+```html
+<img src="assets/images/logo.png" alt="Survivors Logo" class="game-logo">
+```
+
+#### Para iconos:
+```javascript
+function obtenerIcono(tipo) {
+    if (tipo === 'bueno') return '<img src="assets/icons/bueno.svg" class="icono-bueno">';
+    if (tipo === 'malo') return '<img src="assets/icons/malo.svg" class="icono-malo">';
+    return '#';
+}
+```
+
+#### Para fuentes:
+```css
+@font-face {
+    font-family: 'PixelFont';
+    src: url('../assets/fonts/pixel-font.ttf') format('truetype');
+}
+```
+
 ---
 
 ## 🐛 SOLUCIÓN DE PROBLEMAS COMUNES
@@ -488,25 +621,23 @@ maxRows = Math.min(Math.max(maxRows, 10), 40);       // Mín 10, máx 40
 | El CSS no se aplica | Limpia caché del navegador (Ctrl+F5) |
 | No funciona PAUSAR/CONTINUAR | Verifica que `simulacionPausada` se actualiza correctamente |
 | Las victorias no se guardan | Comprueba que `localStorage` está habilitado |
+| El favicon no se ve | Verifica la ruta en `assets/images/favicon.svg` |
 
 ---
 
 ## 📝 NOTAS PARA DESARROLLADORES
 
-### Conceptos importantes a recordar:
+### Conceptos importantes:
 
-1. **`static`** - Variables/métodos pertenecen a la clase, no a las instancias
+1. **`static`** - Variables/métodos pertenecen a la clase
 2. **`super()`** - Llama al constructor de la clase padre
 3. **`instanceof`** - Verifica si un objeto es instancia de una clase
-4. **`setInterval`** - Ejecuta una función cada X milisegundos
-5. **`clearInterval`** - Detiene un intervalo
-6. **`classList`** - Añade/elimina clases CSS (`add()`, `remove()`, `toggle()`)
-7. **`addEventListener`** - Escucha eventos del usuario
-8. **`localStorage`** - Almacena datos en el navegador
-9. **`Math.random()`** - Genera número aleatorio entre 0 y 0.999...
+4. **`setInterval`** / **`clearInterval`** - Control de tiempos
+5. **`classList`** - Manipulación de clases CSS
+6. **`localStorage`** - Almacenamiento persistente
+7. **`Math.random()`** - Generación aleatoria
 
-### Para modificar el comportamiento del combate:
-Busca en `actualizarJuego()` la sección donde se calcula `resultado`:
+### Modificar combate:
 ```javascript
 const resultado = Math.floor(Math.random() * (entidad.getVida() + defensor.getVida()));
 if (resultado < entidad.getVida()) {
@@ -516,17 +647,20 @@ if (resultado < entidad.getVida()) {
 }
 ```
 
-### Para cambiar la distancia de detección:
-Modifica el segundo parámetro en `estaCercaDe()` (actualmente 10):
+### Cambiar distancia de detección:
 ```javascript
 this.estaCercaDe(enemigo, 10) // Cambia 10 por el valor deseado
 ```
 
-### Para modificar la vida de los personajes:
-En `Personajes.js`:
+### Modificar vida:
 ```javascript
 this.vida = Math.floor(Math.random() * 91) + 10; // Valores entre 10-100
 ```
+
+### Trabajando con assets:
+- Todos los recursos van en `assets/` organizados por tipo
+- Usar rutas relativas: `assets/images/...`
+- Optimizar imágenes antes de añadirlas
 
 ---
 
@@ -537,6 +671,9 @@ Este proyecto está bajo licencia MIT. Puedes usarlo, modificarlo y distribuirlo
 ---
 
 ¡Gracias por usar Survivors! ⚔️✨
-```
 
-¡README actualizado con todas las nuevas funcionalidades! 🚀
+---
+
+**¿Preguntas o sugerencias?** Abre un issue en el repositorio o contacta al desarrollador.
+
+**Última actualización:** Febrero 2024
