@@ -2,179 +2,160 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survivors - Batalla Épica RETRO</title>
-    <link rel="icon"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='75' font-size='70' text-anchor='middle' dominant-baseline='middle'%3E🎮%3C/text%3E%3C/svg%3E"
-        type="image/svg+xml">
-    <link rel="stylesheet" href="css/style-retro.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SURVIVORS · ARCADE COIN</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='75' font-size='70' text-anchor='middle' dominant-baseline='middle'%3E🪙%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="arcade-cabinet">
-        <!-- MARQUESINA -->
-        <div class="marquee">
-            <h1>⚔️ SURVIVORS ⚔️</h1>
-        </div>
-
-        <!-- PANTALLA CON EFECTO CRT -->
-        <div class="screen-bezel">
-            <div class="crt-effect">
-                <div class="screen">
-                    <!-- Panel de estadísticas (oculto inicialmente) -->
-                    <div class="stats-panel hidden" id="statsPanel" aria-label="Estadísticas de la batalla">
-                        <div class="stat-item total" role="status" aria-live="polite">
-                            <span class="stat-label">Total:</span>
-                            <span class="stat-value total" id="totalStats">0</span>
-                        </div>
-                        <div class="stat-item buenos" role="status" aria-live="polite">
-                            <span class="stat-label">Buenos:</span>
-                            <span class="stat-value buenos" id="buenosStats">0</span>
-                        </div>
-                        <div class="stat-item malos" role="status" aria-live="polite">
-                            <span class="stat-label">Malos:</span>
-                            <span class="stat-value malos" id="malosStats">0</span>
-                        </div>
-                    </div>
-
-                    <!-- Panel de victorias globales (con botón de reinicio) -->
-                    <div class="victorias-panel" id="victoriasPanel">
-                        <div class="victoria-item buenos">
-                            <span class="victoria-label">🏆 Buenos:</span>
-                            <span class="victoria-value buenos" id="victoriasBuenos">0</span>
-                        </div>
-                        <div class="victoria-item malos">
-                            <span class="victoria-label">🏆 Malos:</span>
-                            <span class="victoria-value malos" id="victoriasMalos">0</span>
-                        </div>
-                        <button onclick="reiniciarVictorias()" class="reset-score" title="Reiniciar contadores">↺</button>
-                    </div>
-
-                    <!-- Panel de menú -->
-                    <div id="menuPanel" class="menu-panel">
-                        <div class="insert-coin">INSERT COIN</div>
-                        <h2>⚙️ CONFIGURACIÓN INICIAL</h2>
-
-                        <div class="info-display">
-                            <div class="screen-info">
-                                <span class="info-label">Tu pantalla:</span>
-                                <span class="info-value" id="screenDimensions">1920x1080</span>
-                            </div>
-                            <div class="screen-info">
-                                <span class="info-label">Tamaño recomendado:</span>
-                                <span class="info-value" id="recommendedDimensions">40x20</span>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <div class="input-row">
-                                <label for="alturaInput">Altura del tablero:</label>
-                                <input type="number" id="alturaInput" min="10" max="100" step="2" value="30">
-                            </div>
-                            <div class="input-row">
-                                <label for="anchuraInput">Anchura del tablero:</label>
-                                <input type="number" id="anchuraInput" min="10" max="100" step="2" value="30">
-                            </div>
-                            <button onclick="ajustarDimensionesRecomendadas()" class="retro-btn small">
-                                🔄 Usar recomendado
-                            </button>
-                        </div>
-
-                        <div class="menu-options">
-                            <h3>📊 GENERACIÓN DE PERSONAJES</h3>
-                            <div class="options-grid">
-                                <button onclick="seleccionarOpcion(1)" class="menu-btn option1" id="opcion1Btn">
-                                    <span class="btn-icon">⚖️</span>
-                                    <span class="btn-text">Mitad Buenos y Malos</span>
-                                    <span class="btn-desc">Tú eliges el número</span>
-                                </button>
-                                <button onclick="seleccionarOpcion(2)" class="menu-btn option2" id="opcion2Btn">
-                                    <span class="btn-icon">🎲</span>
-                                    <span class="btn-text">Totalmente Aleatorio</span>
-                                    <span class="btn-desc">Número y distribución</span>
-                                </button>
-                                <button onclick="seleccionarOpcion(3)" class="menu-btn option3" id="opcion3Btn">
-                                    <span class="btn-icon">🔄</span>
-                                    <span class="btn-text">Mitad Aleatoria</span>
-                                    <span class="btn-desc">Número aleatorio par</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Input para número de personajes (solo para opción 1) -->
-                        <div id="nPersonajesInput" class="input-row hidden">
-                            <label for="numPersonajes">Número de personajes:</label>
-                            <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2">
-                            <span class="input-hint">máx. 200</span>
-                        </div>
-
-                        <button onclick="iniciarSimulacion()" class="start-btn" id="startBtn" disabled>
-                            ▶ COMENZAR BATALLA ◀
-                        </button>
-                    </div>
-
-                    <!-- Tablero de juego -->
-                    <div id="tablero" class="tablero hidden">
-                        <div class="board-container" id="tableroContainer"></div>
-                    </div>
-
-                    <!-- Panel de resultado final -->
-                    <div id="resultadoPanel" class="resultado-panel hidden">
-                        <div class="gameover-title">GAME OVER</div>
-                        <h2 id="resultadoTitulo"></h2>
-                        <div class="resultado-stats">
-                            <div class="stat-item total">
-                                <span class="stat-label">Total:</span>
-                                <span class="stat-value total" id="resultadoTotal">0</span>
-                            </div>
-                            <div class="stat-item buenos">
-                                <span class="stat-label">Buenos:</span>
-                                <span class="stat-value buenos" id="resultadoBuenos">0</span>
-                            </div>
-                            <div class="stat-item malos">
-                                <span class="stat-label">Malos:</span>
-                                <span class="stat-value malos" id="resultadoMalos">0</span>
-                            </div>
-                        </div>
-                        <button onclick="volverAlMenu()" class="retro-btn big">
-                            ↺ VOLVER AL MENÚ
-                        </button>
-                    </div>
+    <!-- PANTALLA DE MENÚ INICIAL -->
+    <div class="menu-screen" id="menuScreen">
+        <div class="menu-container">
+            <h1 class="menu-title">⚔️ SURVIVORS ⚔️</h1>
+            
+            <div class="coin-slot" onclick="insertCoin()">
+                <div class="coin-insert">🪙 INSERT COIN 🪙</div>
+                <div class="coin-count" id="coinCount">0</div>
+            </div>
+            
+            <div class="menu-card" id="menuCard" style="opacity: 0.5; pointer-events: none;">
+                <h2>CONFIGURACIÓN</h2>
+                
+                <div class="menu-row">
+                    <span class="menu-label">Altura del tablero:</span>
+                    <input type="number" id="alturaInput" value="30" min="10" max="100" step="2" disabled>
                 </div>
-            </div>
-        </div>
-
-        <!-- Panel de controles -->
-        <div class="control-panel">
-            <div class="speed-section">
-                <span class="control-label">VELOCIDAD</span>
-                <div class="speed-controls">
-                    <button onclick="ajustarVelocidad(-50)" class="ctrl-btn">-</button>
-                    <span id="velocidadDisplay" class="speed-display">150ms</span>
-                    <button onclick="ajustarVelocidad(50)" class="ctrl-btn">+</button>
+                
+                <div class="menu-row">
+                    <span class="menu-label">Anchura del tablero:</span>
+                    <input type="number" id="anchuraInput" value="30" min="10" max="100" step="2" disabled>
                 </div>
+                
+                <div class="menu-divider"></div>
+                
+                <div class="menu-row">
+                    <span class="menu-label">Modo de juego:</span>
+                </div>
+                
+                <div class="menu-buttons">
+                    <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ Mitad y mitad</button>
+                    <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 Totalmente aleatorio</button>
+                    <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 Mitad aleatoria</button>
+                </div>
+                
+                <div class="menu-row hidden" id="nPersonajesRow">
+                    <span class="menu-label">Número de personajes:</span>
+                    <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2" disabled>
+                </div>
+                
+                <button class="start-btn" id="startBtn" onclick="iniciarJuego()" disabled>▶ COMENZAR</button>
             </div>
-
-            <div class="action-buttons hidden" id="simulationControls">
-                <button onclick="detenerSimulacion()" class="action-btn pause" id="btnPausa">⏹ PAUSAR</button>
-                <button onclick="continuarSimulacion()" class="action-btn resume" id="btnContinuar">▶ CONTINUAR</button>
-                <button onclick="volverAlMenu()" class="action-btn reset">↺ REINICIAR</button>
+            
+            <div class="menu-footer">
+                <span>🎮 1 COIN = 1 PLAY 🎮</span>
             </div>
-        </div>
-
-        <!-- Indicador de turno y footer -->
-        <div class="turn-indicator" id="turnIndicator"></div>
-        <div class="footer">
-            <span>⚔️ Buenos (B) vs Malos (M) | Obstáculos (#) ⚔️</span>
         </div>
     </div>
 
-    <!-- Scripts en orden -->
+    <!-- MÁQUINA RECREATIVA -->
+    <div class="arcade-machine hidden" id="arcadeMachine">
+        <!-- MARQUESINA CON CONTADOR DE MONEDAS -->
+        <div class="marquee">
+            <h1>SURVIVORS</h1>
+            <div class="coin-display">
+                <span>🪙</span>
+                <span id="gameCoinCount">0</span>
+            </div>
+        </div>
+        
+        <!-- PANTALLA DE LA MÁQUINA CON BORDES PARA EL TABLERO -->
+        <div class="arcade-screen">
+            <div class="crt-effect">
+                <div class="screen-content">
+                    <!-- PANEL DE ESTADÍSTICAS -->
+                    <div class="stats-panel" id="statsPanel">
+                        <div class="stat-row total-row">
+                            <span class="stat-label">TOTAL:</span>
+                            <span class="stat-value" id="totalStats">0</span>
+                        </div>
+                        
+                        <div class="stat-row buenos-row">
+                            <span class="up-indicator">1UP</span>
+                            <span class="stat-label">BUENOS:</span>
+                            <span class="stat-value good" id="buenosStats">0</span>
+                            <span class="victoria-count" id="victoriasBuenos">0</span>
+                        </div>
+                        
+                        <div class="stat-row malos-row">
+                            <span class="up-indicator">2UP</span>
+                            <span class="stat-label">MALOS:</span>
+                            <span class="stat-value bad" id="malosStats">0</span>
+                            <span class="victoria-count" id="victoriasMalos">0</span>
+                        </div>
+                        
+                        <button onclick="reiniciarVictorias()" class="reset-btn" title="Reiniciar victorias">↺</button>
+                    </div>
+                    
+                    <!-- TABLERO DE JUEGO CON MARGEN INTERNO -->
+                    <div class="game-board" id="gameBoard">
+                        <div class="board-border">
+                            <div class="board-container" id="tableroContainer"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- GAME OVER -->
+                    <div class="game-over hidden" id="gameOverPanel">
+                        <div class="game-over-title">GAME OVER</div>
+                        <div class="game-over-winner" id="resultadoTitulo"></div>
+                        <div class="game-over-stats">
+                            <div>TOTAL: <span id="resultadoTotal">0</span></div>
+                            <div>BUENOS: <span id="resultadoBuenos">0</span></div>
+                            <div>MALOS: <span id="resultadoMalos">0</span></div>
+                        </div>
+                        <div class="coin-insert-small" onclick="insertCoinFromGame()">
+                            🪙 INSERT COIN TO CONTINUE 🪙
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PANEL DE CONTROL CON MONEDAS -->
+        <div class="control-panel">
+            <div class="speed-control">
+                <button class="ctrl-btn" onclick="ajustarVelocidad(-50)">-</button>
+                <span class="speed-display" id="velocidadDisplay">150ms</span>
+                <button class="ctrl-btn" onclick="ajustarVelocidad(50)">+</button>
+            </div>
+            
+            <div class="coin-controls">
+                <div class="coin-button" onclick="insertCoin()">
+                    <span class="coin-icon">🪙</span>
+                    <span class="coin-text">INSERT</span>
+                </div>
+                <div class="coin-button" onclick="useCoin()">
+                    <span class="coin-icon">🎮</span>
+                    <span class="coin-text">PLAY</span>
+                </div>
+            </div>
+            
+            <div class="action-controls hidden" id="simulationControls">
+                <button class="action-btn pause" id="btnPausa" onclick="detenerSimulacion()">PAUSA</button>
+                <button class="action-btn resume" id="btnContinuar" onclick="continuarSimulacion()">CONTINUAR</button>
+                <button class="action-btn reset" onclick="volverAlMenu()">SALIR</button>
+            </div>
+        </div>
+        
+        <!-- ALTAVOZ -->
+        <div class="speaker"></div>
+    </div>
+
     <script src="Entidades/Entidad.js"></script>
     <script src="Entidades/Personajes.js"></script>
     <script src="Entidades/Buenos.js"></script>
     <script src="Entidades/Malos.js"></script>
     <script src="Entidades/Obstaculos.js"></script>
     <script src="Entidades/ListFunciones/Funciones.js"></script>
-    <script src="survivors-retro.js"></script>
+    <script src="survivors.js"></script>
 </body>
 </html>
