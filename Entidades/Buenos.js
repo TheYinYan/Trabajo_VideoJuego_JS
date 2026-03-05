@@ -1,13 +1,9 @@
-/**
- * CLASE BUENOS
- * Representa a los personajes buenos (B en el tablero)
- */
 class Buenos extends Personajes {
     static nBuenos = 0;
 
     constructor(y, x) {
         super(y, x, 1, 1);
-        this.malos = null;  // Referencia al malo más cercano
+        this.malos = null;
         Buenos.nBuenos++;
     }
 
@@ -17,16 +13,11 @@ class Buenos extends Personajes {
     static getnBuenos() { return Buenos.nBuenos; }
     static setnBuenos(n) { Buenos.nBuenos = n; }
 
-    /**
-     * Movimiento especializado de Buenos
-     * Si hay malos cerca, se mueve HACIA ellos
-     */
     mover(ancho, alto, arrayEntidades) {
         if (this.malos === null) {
             super.mover(ancho, alto, arrayEntidades);
             return;
         } else if (this.estaCercaDe(this.malos, 10)) {
-            // Calcular dirección hacia el malo
             if (this.x < this.malos.x) {
                 this.setVx(-1);
             } else if (this.x > this.malos.x) {

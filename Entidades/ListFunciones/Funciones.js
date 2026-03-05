@@ -1,26 +1,14 @@
-/**
- * OBJETO FUNCIONES
- * Contiene métodos estáticos para el juego
- */
 const Funciones = {
     CLEAN_SCREEN: '\n'.repeat(50),
 
-    /**
-     * Calcula número aleatorio basado en el área
-     */
     numPorcent(altura, anchura) {
         const area = altura * anchura;
         return Math.floor(Math.random() * (area * 0.005)) + 1;
     },
 
-    /**
-     * Generador principal del mundo
-     */
     generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcion) {
-        // Generar obstáculos (1% del área)
         this.generadorEntidades(altura, anchura, arrayEntidades, 0.01);
         
-        // Generar personajes según opción
         if (opcion === 1 || opcion === 3) {
             this.generadorPersonajesMitad(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes);
         } else if (opcion === 2) {
@@ -28,9 +16,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Generar obstáculos aleatoriamente
-     */
     generadorEntidades(altura, anchura, arrayEntidades, porcentaje) {
         const nEnt = Math.floor(Math.random() * (altura * anchura * porcentaje)) + 1;
         
@@ -45,9 +30,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Generar personajes mitad y mitad
-     */
     generadorPersonajesMitad(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
             let x, y;
@@ -66,9 +48,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Generar personajes por porcentaje
-     */
     generadorPersonajesPorcentaje(altura, anchura, arrayEntidades, arrayPersonajes, porcentaje, nPersonajes) {
         for (let i = 0; i < nPersonajes; i++) {
             let x, y;
@@ -87,9 +66,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Pinta el tablero usando toString() de cada entidad
-     */
     pintarTablero(altura, anchura, arrayEntidades) {
         let sb = '╔' + '═'.repeat(anchura) + '╗\n';
         for (let i = 0; i < altura; i++) {
@@ -113,9 +89,6 @@ const Funciones = {
         return '<div class="board-content">' + sb + '</div>';
     },
 
-    /**
-     * Asigna a cada personaje su enemigo más cercano
-     */
     asignarPersonajesCercanos(nPersonajes, arrayPersonajes, tipoPersonaje, tipoPersonajeCerca) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === null) continue;
@@ -145,9 +118,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Elimina un personaje del juego
-     */
     eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, x, y) {
         for (let i = 0; i < nPersonajes; i++) {
             if (arrayPersonajes[i] === entidad) {
@@ -165,9 +135,6 @@ const Funciones = {
         }
     },
 
-    /**
-     * Mueve todos los personajes
-     */
     movimiento(altura, anchura, arrayEntidades) {
         for (let i = 0; i < altura; i++) {
             for (let j = 0; j < anchura; j++) {
@@ -179,15 +146,12 @@ const Funciones = {
         }
     },
 
-    /**
-     * Verifica si el juego ha terminado
-     */
     terminar() {
         if (Buenos.getnBuenos() <= 0) {
-            console.log('%cLos Malos han Eliminado a los Buenos', 'color: #ff0000');
+            console.log('%cLOS MALOS HAN GANADO', 'color: #ff0000');
             return true;
         } else if (Malos.getnMalos() <= 0) {
-            console.log('%cLos Buenos han Sobrevivido', 'color: #00ff00');
+            console.log('%cLOS BUENOS HAN GANADO', 'color: #00ff00');
             return true;
         }
         return false;

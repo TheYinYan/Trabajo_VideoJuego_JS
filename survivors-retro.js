@@ -1,9 +1,9 @@
 /**
- * ARCHIVO PRINCIPAL
- * Controla el flujo del juego
+ * SURVIVORS - RETRO EDITION
+ * Control principal con estilo Pac-Man
  */
 
-// Variables globales
+// Variables globales (MISMAS QUE ANTES)
 let intervaloSimulacion = null;
 let opcionSeleccionada = null;
 let nPersonajesConfig = null;
@@ -19,16 +19,10 @@ let simulacionPausada = false;
 let victoriasBuenos = 0;
 let victoriasMalos = 0;
 
-/**
- * INICIALIZACIÓN
- */
 document.addEventListener('DOMContentLoaded', () => {
     calcularDimensionesRecomendadas();
-    
-    // Cargar victorias guardadas
     cargarVictorias();
     
-    // Configurar event listeners
     document.getElementById('alturaInput').addEventListener('input', validarInputs);
     document.getElementById('anchuraInput').addEventListener('input', validarInputs);
     document.getElementById('numPersonajes').addEventListener('input', () => {
@@ -39,14 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', calcularDimensionesRecomendadas);
 });
 
-/**
- * CALCULAR DIMENSIONES RECOMENDADAS
- */
+// ===== FUNCIONES DE DIMENSIONES (IGUALES) =====
 function calcularDimensionesRecomendadas() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
-    
-    document.getElementById('screenDimensions').textContent = `${screenWidth}x${screenHeight}`;
     
     const charWidth = 20;
     const charHeight = 24;
@@ -65,21 +55,8 @@ function calcularDimensionesRecomendadas() {
     
     alturaRecomendada = maxRows;
     anchuraRecomendada = maxColumns;
-    
-    document.getElementById('recommendedDimensions').textContent = `${anchuraRecomendada}x${alturaRecomendada}`;
-    
-    document.getElementById('alturaInput').value = alturaRecomendada;
-    document.getElementById('anchuraInput').value = anchuraRecomendada;
-    document.getElementById('alturaInput').max = maxRows + 20;
-    document.getElementById('anchuraInput').max = maxColumns + 20;
-    
-    alturaActual = alturaRecomendada;
-    anchuraActual = anchuraRecomendada;
 }
 
-/**
- * AJUSTAR A DIMENSIONES RECOMENDADAS
- */
 function ajustarDimensionesRecomendadas() {
     document.getElementById('alturaInput').value = alturaRecomendada;
     document.getElementById('anchuraInput').value = anchuraRecomendada;
@@ -88,9 +65,6 @@ function ajustarDimensionesRecomendadas() {
     validarInputs();
 }
 
-/**
- * VALIDAR INPUTS
- */
 function validarInputs() {
     const altura = parseInt(document.getElementById('alturaInput').value);
     const anchura = parseInt(document.getElementById('anchuraInput').value);
@@ -108,9 +82,6 @@ function validarInputs() {
     return false;
 }
 
-/**
- * VALIDAR BOTÓN DE INICIO
- */
 function validarBotonInicio() {
     const btnStart = document.getElementById('startBtn');
     
@@ -129,13 +100,10 @@ function validarBotonInicio() {
     return !btnStart.disabled;
 }
 
-/**
- * SELECCIONAR OPCIÓN DEL MENÚ
- */
 function seleccionarOpcion(opcion) {
     opcionSeleccionada = opcion;
     
-    document.querySelectorAll('.menu-btn').forEach(btn => {
+    document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.classList.remove('selected');
     });
     
@@ -151,63 +119,28 @@ function seleccionarOpcion(opcion) {
     validarBotonInicio();
 }
 
-/**
- * AJUSTAR VELOCIDAD
- */
+// ===== VELOCIDAD (CORREGIDA) =====
 function ajustarVelocidad(cambio) {
-    // Limitar entre 50ms y 500ms
     velocidadActual = Math.max(50, Math.min(500, velocidadActual + cambio));
-    
-    // Actualizar display
     document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
     
-    // Si la simulación está activa, reiniciar el intervalo con nueva velocidad
     if (intervaloSimulacion) {
-        detenerSimulacion();      // Detiene el intervalo actual
-        continuarSimulacion();    // Reanuda con la nueva velocidad
+        detenerSimulacion();
+        continuarSimulacion();
     }
 }
 
-/**
- * ACTUALIZAR CONTADORES VISUALES
- */
-function actualizarContadoresVisuales() {
-    const total = Personajes.getnPersonajes();
-    const buenos = Buenos.getnBuenos();
-    const malos = Malos.getnMalos();
-    
-    document.getElementById('totalStats').textContent = total;
-    document.getElementById('buenosStats').textContent = buenos;
-    document.getElementById('malosStats').textContent = malos;
-    
-    // Mostrar u ocultar estadísticas según haya personajes
-    const statsPanel = document.getElementById('statsPanel');
-    if (total > 0) {
-        statsPanel.classList.remove('hidden');
-    } else {
-        statsPanel.classList.add('hidden');
-    }
-}
-
-/**
- * ACTUALIZAR CONTADORES DE VICTORIAS
- */
+// ===== VICTORIAS =====
 function actualizarVictoriasVisuales() {
     document.getElementById('victoriasBuenos').textContent = victoriasBuenos;
     document.getElementById('victoriasMalos').textContent = victoriasMalos;
 }
 
-/**
- * GUARDAR VICTORIAS EN LOCALSTORAGE
- */
 function guardarVictorias() {
     localStorage.setItem('victoriasBuenos', victoriasBuenos);
     localStorage.setItem('victoriasMalos', victoriasMalos);
 }
 
-/**
- * CARGAR VICTORIAS DESDE LOCALSTORAGE
- */
 function cargarVictorias() {
     const guardadasBuenos = localStorage.getItem('victoriasBuenos');
     const guardadasMalos = localStorage.getItem('victoriasMalos');
@@ -218,32 +151,62 @@ function cargarVictorias() {
     actualizarVictoriasVisuales();
 }
 
-/**
- * REINICIAR CONTADORES DE VICTORIAS
- */
 function reiniciarVictorias() {
-    if (confirm('¿Seguro que quieres reiniciar el contador de victorias?')) {
+    if (confirm('RESET HIGH SCORES?')) {
         victoriasBuenos = 0;
         victoriasMalos = 0;
         actualizarVictoriasVisuales();
         guardarVictorias();
-        console.log('🏆 Contadores de victorias reiniciados');
     }
 }
 
-/**
- * INICIAR SIMULACIÓN
- */
+// ===== CONTADORES =====
+// ===== ACTUALIZAR CONTADORES VISUALES =====
+function actualizarContadoresVisuales() {
+    const total = Personajes.getnPersonajes();
+    const buenos = Buenos.getnBuenos();
+    const malos = Malos.getnMalos();
+    
+    // Actualizar estadísticas principales
+    const totalStats = document.getElementById('totalStats');
+    const buenosStats = document.getElementById('buenosStats');
+    const malosStats = document.getElementById('malosStats');
+    
+    if (totalStats) totalStats.textContent = total;
+    if (buenosStats) buenosStats.textContent = buenos;
+    if (malosStats) malosStats.textContent = malos;
+    
+    // Mostrar/ocultar panel de estadísticas
+    const statsPanel = document.getElementById('statsPanel');
+    if (statsPanel) {
+        if (total > 0) {
+            statsPanel.classList.remove('hidden');
+        } else {
+            statsPanel.classList.add('hidden');
+        }
+    }
+    
+    // Mostrar/ocultar contadores de personajes (si existen)
+    const charCounters = document.getElementById('charCounters');
+    if (charCounters) {
+        if (total > 0) {
+            charCounters.classList.remove('hidden');
+        } else {
+            charCounters.classList.add('hidden');
+        }
+    }
+}
+
+// ===== INICIAR =====
 function iniciarSimulacion() {
     if (!validarInputs()) {
-        alert('❌ Por favor, introduce dimensiones válidas (pares y ≥10)');
+        alert('INVALID DIMENSIONS');
         return;
     }
     
     detenerSimulacion();
-    simulacionPausada = false; // Reiniciar estado de pausa
+    simulacionPausada = false;
     
-    // Resetear contadores
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
@@ -254,7 +217,6 @@ function iniciarSimulacion() {
     const porBuenos = Funciones.numPorcent(altura, anchura);
     const porMalos = Funciones.numPorcent(altura, anchura);
     
-    // Determinar número de personajes
     let nPersonajes;
     if (opcionSeleccionada === 1) {
         nPersonajes = nPersonajesConfig;
@@ -268,39 +230,29 @@ function iniciarSimulacion() {
         }
     }
     
-    // Guardar para continuar después
     nPersonajesActual = nPersonajes;
     alturaActual = altura;
     anchuraActual = anchura;
     
-    // Crear arrays y generar mundo
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     Funciones.generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcionSeleccionada);
     
-    // Actualizar interfaz
     actualizarContadoresVisuales();
     document.getElementById('menuPanel').classList.add('hidden');
     document.getElementById('tablero').classList.remove('hidden');
-    document.getElementById('simulationControls').classList.remove('hidden');
     document.getElementById('resultadoPanel').classList.add('hidden');
     
-    // Iniciar bucle
     intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
 
-/**
- * ACTUALIZAR JUEGO
- */
+// ===== ACTUALIZAR JUEGO =====
 function actualizarJuego(altura, anchura, nPersonajes) {
-    // Actualizar referencias de enemigos
     Funciones.asignarPersonajesCercanos(nPersonajes, arrayPersonajes, "Buenos", "Malos");
     Funciones.asignarPersonajesCercanos(nPersonajes, arrayPersonajes, "Malos", "Buenos");
     
-    // Mover personajes
     Funciones.movimiento(altura, anchura, arrayEntidades);
     
-    // Procesar combates
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] !== null) {
@@ -321,12 +273,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                         
                         if (resultado < entidad.getVida()) {
                             Funciones.eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, defensor, auxX, auxY);
-                            const tipoGanador = entidad instanceof Buenos ? 'BUENO' : 'MALO';
-                            console.log(`⚔️ ¡VICTORIA del ${tipoGanador}! 💪`);
                         } else {
                             Funciones.eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, j, i);
-                            const tipoGanador = defensor instanceof Buenos ? 'BUENO' : 'MALO';
-                            console.log(`⚔️ ¡VICTORIA del ${tipoGanador}! 💪`);
                         }
                         
                         actualizarContadoresVisuales();
@@ -336,46 +284,35 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // Actualizar visualización
     document.getElementById('tableroContainer').innerHTML = Funciones.pintarTablero(altura, anchura, arrayEntidades);
     actualizarContadoresVisuales();
     
-    // Verificar fin del juego
     if (Buenos.getnBuenos() <= 0 || Malos.getnMalos() <= 0) {
         detenerSimulacion();
         mostrarResultado();
     }
 }
 
-/**
- * DETENER SIMULACIÓN (PAUSAR)
- */
+// ===== CONTROL =====
 function detenerSimulacion() {
     if (intervaloSimulacion) {
         clearInterval(intervaloSimulacion);
         intervaloSimulacion = null;
         simulacionPausada = true;
-        console.log('⏸️ Simulación pausada');
     }
 }
 
-/**
- * CONTINUAR SIMULACIÓN
- */
 function continuarSimulacion() {
     if (simulacionPausada && arrayEntidades && arrayPersonajes) {
         intervaloSimulacion = setInterval(
             () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual), 
-            velocidadActual  // 👈 Usa la nueva velocidad
+            velocidadActual
         );
         simulacionPausada = false;
-        console.log('▶️ Simulación reanudada con velocidad ' + velocidadActual + 'ms');
     }
 }
 
-/**
- * MOSTRAR RESULTADO FINAL
- */
+// ===== RESULTADO =====
 function mostrarResultado() {
     const total = Personajes.getnPersonajes();
     const buenos = Buenos.getnBuenos();
@@ -383,101 +320,59 @@ function mostrarResultado() {
     
     const resultadoPanel = document.getElementById('resultadoPanel');
     const titulo = document.getElementById('resultadoTitulo');
-    const color = buenos <= 0 ? '#ff0000' : '#00ff00';
+    const color = buenos <= 0 ? '#f00' : '#0f0';
     
-    // Actualizar contadores de victorias
     if (buenos <= 0) {
         victoriasMalos++;
-        console.log(`%c🏆 VICTORIA PARA LOS MALOS (Total: ${victoriasMalos})`, 'color: #ff0000; font-size: 16px');
     } else {
         victoriasBuenos++;
-        console.log(`%c🏆 VICTORIA PARA LOS BUENOS (Total: ${victoriasBuenos})`, 'color: #00ff00; font-size: 16px');
     }
     
-    // Guardar en localStorage
     guardarVictorias();
-    
-    // Actualizar visualización
     actualizarVictoriasVisuales();
     
-    // Añadir animación al contador que ganó
-    const victoriaElement = buenos <= 0 ? 
-        document.querySelector('.victoria-item.malos') : 
-        document.querySelector('.victoria-item.buenos');
-    victoriaElement.classList.add('victoria-pulse');
-    setTimeout(() => victoriaElement.classList.remove('victoria-pulse'), 500);
-    
-    titulo.textContent = buenos <= 0 ? '💀 VICTORIA DE LOS MALOS 💀' : '✨ VICTORIA DE LOS BUENOS ✨';
+    titulo.textContent = buenos <= 0 ? 'BAD WIN!' : 'GOOD WIN!';
     titulo.style.color = color;
-    titulo.style.textShadow = `0 0 20px ${color}`;
-    
-    resultadoPanel.style.borderColor = color;
     
     document.getElementById('resultadoTotal').textContent = total;
     document.getElementById('resultadoBuenos').textContent = buenos;
     document.getElementById('resultadoMalos').textContent = malos;
     
     document.getElementById('tablero').classList.add('hidden');
-    document.getElementById('simulationControls').classList.add('hidden');
     resultadoPanel.classList.remove('hidden');
 }
 
-/**
- * VOLVER AL MENÚ
- */
+// ===== VOLVER AL MENÚ =====
 function volverAlMenu() {
     detenerSimulacion();
-    simulacionPausada = false; // Resetear estado de pausa
+    simulacionPausada = false;
     
-    // Resetear variables
     opcionSeleccionada = null;
     nPersonajesConfig = null;
     arrayEntidades = null;
     arrayPersonajes = null;
     
-    // Ocultar paneles
     document.getElementById('tablero').classList.add('hidden');
-    document.getElementById('simulationControls').classList.add('hidden');
     document.getElementById('resultadoPanel').classList.add('hidden');
-    
-    // Mostrar menú
     document.getElementById('menuPanel').classList.remove('hidden');
     
-    // Resetear selecciones
-    document.querySelectorAll('.menu-btn').forEach(btn => {
+    document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.classList.remove('selected');
     });
     document.getElementById('nPersonajesInput').classList.add('hidden');
     document.getElementById('startBtn').disabled = true;
     
-    // Resetear contadores de partida
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     actualizarContadoresVisuales();
     
-    // Limpiar tablero
     if (document.getElementById('tableroContainer')) {
         document.getElementById('tableroContainer').innerHTML = '';
     }
-
-    limpiarConsola('📋 MENÚ PRINCIPAL');
 }
 
-/**
- * LIMPIAR CONSOLA
- */
-function limpiarConsola(titulo = null) {
-    console.clear();
-    console.log('%c' + '═'.repeat(50), 'color: #00ffff');
-    if (titulo) {
-        console.log(`%c${titulo}`, 'color: #00ffff; font-size: 14px; font-weight: bold');
-        console.log('%c' + '═'.repeat(50), 'color: #00ffff');
-    }
-    console.log('');
-}
-
-// Hacer funciones globales
+// ===== GLOBALES =====
 window.iniciarSimulacion = iniciarSimulacion;
 window.detenerSimulacion = detenerSimulacion;
 window.continuarSimulacion = continuarSimulacion;
@@ -486,4 +381,60 @@ window.seleccionarOpcion = seleccionarOpcion;
 window.ajustarDimensionesRecomendadas = ajustarDimensionesRecomendadas;
 window.ajustarVelocidad = ajustarVelocidad;
 window.reiniciarVictorias = reiniciarVictorias;
-window.limpiarConsola = limpiarConsola;
+
+// ===== VALIDAR BOTÓN DE INICIO =====
+function validarBotonInicio() {
+    const btnStart = document.getElementById('startBtn');
+    
+    if (opcionSeleccionada === null) {
+        btnStart.disabled = true;
+        return false;
+    }
+    
+    if (opcionSeleccionada === 1) {
+        nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
+        btnStart.disabled = !(nPersonajesConfig >= 2 && nPersonajesConfig % 2 === 0 && nPersonajesConfig <= 200);
+    } else {
+        btnStart.disabled = false;
+    }
+    
+    return !btnStart.disabled;
+}
+
+// ===== SELECCIONAR OPCIÓN =====
+function seleccionarOpcion(opcion) {
+    opcionSeleccionada = opcion;
+    
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    event.currentTarget.classList.add('selected');
+    
+    const nPersonajesInput = document.getElementById('nPersonajesInput');
+    if (opcion === 1) {
+        nPersonajesInput.classList.remove('hidden');
+    } else {
+        nPersonajesInput.classList.add('hidden');
+    }
+    
+    validarBotonInicio();
+}
+
+// ===== VALIDAR INPUTS =====
+function validarInputs() {
+    const altura = parseInt(document.getElementById('alturaInput').value);
+    const anchura = parseInt(document.getElementById('anchuraInput').value);
+    
+    if (!isNaN(altura) && !isNaN(anchura) && 
+        altura >= 10 && altura % 2 === 0 && 
+        anchura >= 10 && anchura % 2 === 0) {
+        alturaActual = altura;
+        anchuraActual = anchura;
+        validarBotonInicio();
+        return true;
+    }
+    
+    document.getElementById('startBtn').disabled = true;
+    return false;
+}
