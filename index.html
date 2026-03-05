@@ -1,69 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SURVIVORS · ARCADE COIN</title>
-    <link rel="icon"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='75' font-size='70' text-anchor='middle' dominant-baseline='middle'%3E🪙%3C/text%3E%3C/svg%3E">
+    
+    <!-- FAVICON DE MONEDA 🪙 -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffd700' stroke='%23b8860b' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='35' fill='%23ffd700' stroke='%23daa520' stroke-width='2'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%23b8860b' font-weight='bold'%3E🪙%3C/text%3E%3C/svg%3E">
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
     <!-- PANTALLA DE MENÚ INICIAL -->
     <div class="menu-screen" id="menuScreen">
         <div class="menu-container">
             <h1 class="menu-title">⚔️ SURVIVORS ⚔️</h1>
-
+            
+            <!-- RANURA DE MONEDAS -->
             <div class="coin-slot" onclick="insertCoin()">
                 <div class="coin-insert">🪙 INSERT COIN 🪙</div>
                 <div class="coin-count" id="coinCount">0</div>
             </div>
-
+            
+            <!-- TARJETA DE CONFIGURACIÓN (desbloqueada con monedas) -->
             <div class="menu-card" id="menuCard" style="opacity: 0.5; pointer-events: none;">
                 <h2>CONFIGURACIÓN</h2>
-
+                
+                <!-- DIMENSIONES -->
                 <div class="menu-row">
                     <span class="menu-label">Altura del tablero:</span>
                     <input type="number" id="alturaInput" value="30" min="10" max="100" step="2" disabled>
                 </div>
-
+                
                 <div class="menu-row">
                     <span class="menu-label">Anchura del tablero:</span>
                     <input type="number" id="anchuraInput" value="30" min="10" max="100" step="2" disabled>
                 </div>
-
+                
                 <div class="menu-divider"></div>
-
+                
+                <!-- MODOS DE JUEGO -->
                 <div class="menu-row">
                     <span class="menu-label">Modo de juego:</span>
                 </div>
-
+                
                 <div class="menu-buttons">
-                    <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ Mitad y
-                        mitad</button>
-                    <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 Totalmente
-                        aleatorio</button>
-                    <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 Mitad
-                        aleatoria</button>
+                    <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ Mitad y mitad</button>
+                    <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 Totalmente aleatorio</button>
+                    <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 Mitad aleatoria</button>
                 </div>
-
+                
+                <!-- INPUT PARA NÚMERO DE PERSONAJES (solo opción 1) -->
                 <div class="menu-row hidden" id="nPersonajesRow">
                     <span class="menu-label">Número de personajes:</span>
                     <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2" disabled>
                 </div>
-
+                
+                <!-- BOTÓN START -->
                 <button class="start-btn" id="startBtn" onclick="iniciarJuego()" disabled>▶ COMENZAR</button>
             </div>
-
+            
+            <!-- PIE DEL MENÚ -->
             <div class="menu-footer">
                 <span>🎮 1 COIN = 1 PLAY 🎮</span>
             </div>
         </div>
     </div>
 
-    <!-- MÁQUINA RECREATIVA -->
+    <!-- MÁQUINA RECREATIVA (visible al iniciar el juego) -->
     <div class="arcade-machine hidden" id="arcadeMachine">
         <!-- MARQUESINA CON CONTADOR DE MONEDAS -->
         <div class="marquee">
@@ -73,41 +77,45 @@
                 <span id="gameCoinCount">0</span>
             </div>
         </div>
-
-        <!-- PANTALLA DE LA MÁQUINA CON BORDES PARA EL TABLERO -->
+        
+        <!-- PANTALLA DE LA MÁQUINA -->
         <div class="arcade-screen">
             <div class="crt-effect">
                 <div class="screen-content">
-                    <!-- PANEL DE ESTADÍSTICAS -->
+                    <!-- PANEL DE ESTADÍSTICAS CON 1UP/2UP -->
                     <div class="stats-panel" id="statsPanel">
+                        <!-- Total -->
                         <div class="stat-row total-row">
                             <span class="stat-label">TOTAL:</span>
                             <span class="stat-value" id="totalStats">0</span>
                         </div>
-
+                        
+                        <!-- Buenos con 1UP -->
                         <div class="stat-row buenos-row">
                             <span class="up-indicator">1UP</span>
                             <span class="stat-label">BUENOS:</span>
                             <span class="stat-value good" id="buenosStats">0</span>
                             <span class="victoria-count" id="victoriasBuenos">0</span>
                         </div>
-
+                        
+                        <!-- Malos con 2UP -->
                         <div class="stat-row malos-row">
                             <span class="up-indicator">2UP</span>
                             <span class="stat-label">MALOS:</span>
                             <span class="stat-value bad" id="malosStats">0</span>
                             <span class="victoria-count" id="victoriasMalos">0</span>
                         </div>
-
-                        <button onclick="reiniciarVictorias()" class="reset-btn" title="Reiniciar victorias">↺</button>
+                        
+                        <!-- Botón de reinicio de victorias -->
+                        <button onclick="reiniciarVictorias()" class="reset-btn" title="Reiniciar contadores">↺</button>
                     </div>
-
+                    
                     <!-- TABLERO DE JUEGO -->
                     <div class="game-board" id="gameBoard">
                         <div class="board-container" id="tableroContainer"></div>
                     </div>
-
-                    <!-- GAME OVER -->
+                    
+                    <!-- GAME OVER (oculto inicialmente) -->
                     <div class="game-over hidden" id="gameOverPanel">
                         <div class="game-over-title">GAME OVER</div>
                         <div class="game-over-winner" id="resultadoTitulo"></div>
@@ -116,28 +124,28 @@
                             <div>BUENOS: <span id="resultadoBuenos">0</span></div>
                             <div>MALOS: <span id="resultadoMalos">0</span></div>
                         </div>
-
-                        <!-- CONTROLES DE GAME OVER (MENÚ / REINTENTAR) -->
+                        
+                        <!-- CONTROLES DE GAME OVER -->
                         <div class="game-over-controls">
-                            <!-- Botón MENÚ - Siempre visible, no gasta moneda -->
+                            <!-- Botón MENÚ -->
                             <div class="menu-button" onclick="volverAlMenu()">
                                 <span class="menu-icon">🏠</span>
                                 <span class="menu-text">MENÚ</span>
                             </div>
-
-                            <!-- Botón REINTENTAR - Gasta moneda si hay -->
+                            
+                            <!-- Botón REINTENTAR -->
                             <div class="retry-button" id="gameOverRetry" onclick="reintentarPartida()">
                                 <span class="retry-icon">▶</span>
                                 <span class="retry-text">REINTENTAR</span>
                             </div>
                         </div>
-
-                        <!-- ESTADO DE MONEDAS (informativo) -->
+                        
+                        <!-- ESTADO DE MONEDAS -->
                         <div class="coin-status" id="gameOverCoins">
                             🪙 <span id="gameOverCoinCount">0</span>
                         </div>
-
-                        <!-- Mensaje si no hay monedas (opcional) -->
+                        
+                        <!-- Mensaje sin monedas -->
                         <div class="no-coins-message hidden" id="noCoinsMessage">
                             ¡Inserta una moneda en el panel!
                         </div>
@@ -145,38 +153,41 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- PANEL DE CONTROL CON MONEDAS -->
-    <div class="control-panel">
-        <div class="speed-control">
-            <button class="ctrl-btn" onclick="ajustarVelocidad(-50)">-</button>
-            <span class="speed-display" id="velocidadDisplay">150ms</span>
-            <button class="ctrl-btn" onclick="ajustarVelocidad(50)">+</button>
-        </div>
-
-        <div class="coin-controls">
-            <div class="coin-button" onclick="insertCoin()">
-                <span class="coin-icon">🪙</span>
-                <span class="coin-text">INSERT</span>
+        
+        <!-- PANEL DE CONTROL CON MONEDAS -->
+        <div class="control-panel">
+            <div class="speed-control">
+                <button class="ctrl-btn" onclick="ajustarVelocidad(-50)">-</button>
+                <span class="speed-display" id="velocidadDisplay">150ms</span>
+                <button class="ctrl-btn" onclick="ajustarVelocidad(50)">+</button>
             </div>
-            <div class="coin-button" onclick="useCoin()">
-                <span class="coin-icon">🎮</span>
-                <span class="coin-text">PLAY</span>
+            
+            <div class="coin-controls">
+                <!-- Botón INSERT COIN -->
+                <div class="coin-button" onclick="insertCoin()">
+                    <span class="coin-icon">🪙</span>
+                    <span class="coin-text">INSERT</span>
+                </div>
+                <!-- Botón PLAY (gasta moneda) -->
+                <div class="coin-button" onclick="useCoin()">
+                    <span class="coin-icon">▶</span>
+                    <span class="coin-text">PLAY</span>
+                </div>
+            </div>
+            
+            <!-- CONTROLES DE SIMULACIÓN (ocultos hasta que empiece el juego) -->
+            <div class="action-controls hidden" id="simulationControls">
+                <button class="action-btn pause" id="btnPausa" onclick="detenerSimulacion()">PAUSA</button>
+                <button class="action-btn resume" id="btnContinuar" onclick="continuarSimulacion()">CONTINUAR</button>
+                <button class="action-btn reset" onclick="volverAlMenu()">SALIR</button>
             </div>
         </div>
-
-        <div class="action-controls hidden" id="simulationControls">
-            <button class="action-btn pause" id="btnPausa" onclick="detenerSimulacion()">PAUSA</button>
-            <button class="action-btn resume" id="btnContinuar" onclick="continuarSimulacion()">CONTINUAR</button>
-            <button class="action-btn reset" onclick="volverAlMenu()">SALIR</button>
-        </div>
+        
+        <!-- ALTAVOZ -->
+        <div class="speaker"></div>
     </div>
 
-    <!-- ALTAVOZ -->
-    <div class="speaker"></div>
-    </div>
-
+    <!-- SCRIPTS -->
     <script src="Entidades/Entidad.js"></script>
     <script src="Entidades/Personajes.js"></script>
     <script src="Entidades/Buenos.js"></script>
@@ -185,5 +196,4 @@
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
 </body>
-
 </html>

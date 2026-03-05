@@ -446,9 +446,9 @@ html, body {
 .game-board {
     flex: 1;
     min-height: 0;
-    background: var(--black);
-    border: 2px solid var(--green);
-    border-radius: min(10px, 2vw);
+    background: #000;
+    border: 2px solid #33ff33;
+    border-radius: 10px;
     padding: 10px;
     margin-top: 10px;
     overflow: auto;
@@ -463,75 +463,14 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
 }
 
-/* ===== TABLERO CON GRID ===== */
+/* Grid del tablero - estilos mínimos */
 .board-grid {
     display: grid;
-    gap: 2px;
-    background: transparent;
-    margin: auto;
-}
-
-/* ===== CELDAS DEL TABLERO ===== */
-.board-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-}
-
-/* Celda vacía */
-.board-cell.empty {
-    background: #0a0a0a;
-    border: 1px solid #222;
-    box-shadow: inset 0 0 5px #000;
-}
-
-/* Buenos - Verde */
-.board-cell.good {
-    background: #003300;
-    color: #00ff00;
-    text-shadow: 0 0 10px #00ff00;
-    border: 1px solid #00ff00;
-    box-shadow: 0 0 15px #00ff00;
-    animation: cellPulse 2s infinite;
-}
-
-/* Malos - Rojo */
-.board-cell.bad {
-    background: #330000;
-    color: #ff0000;
-    text-shadow: 0 0 10px #ff0000;
-    border: 1px solid #ff0000;
-    box-shadow: 0 0 15px #ff0000;
-    animation: cellPulse 2s infinite;
-}
-
-/* Obstáculos - Amarillo */
-.board-cell.obstacle {
-    background: #333300;
-    color: #ffff00;
-    text-shadow: 0 0 5px #ffff00;
-    border: 1px solid #ffff00;
-}
-
-/* Efecto hover */
-.board-cell:hover {
-    transform: scale(1.1);
-    z-index: 100;
-    filter: brightness(1.3);
-}
-
-/* Animación de pulso */
-@keyframes cellPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
 }
 
 /* ===== GAME OVER ===== */
@@ -654,6 +593,7 @@ html, body {
 .retry-button.disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
     animation: none;
 }
 
@@ -703,6 +643,7 @@ html, body {
     font-size: 1rem;
     margin-top: 10px;
     animation: blink 1s infinite;
+    text-align: center;
 }
 
 /* ===== PANEL DE CONTROL ===== */

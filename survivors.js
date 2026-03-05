@@ -355,49 +355,61 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // ===== TABLERO DINÁMICO =====
+    // ===== TABLERO 100% DINÁMICO =====
     const container = document.getElementById('tableroContainer');
     
-    // Obtener dimensiones reales del contenedor
+    // Obtener dimensiones exactas del contenedor
     const containerRect = container.getBoundingClientRect();
     const containerWidth = containerRect.width;
     const containerHeight = containerRect.height;
     
-    // Calcular tamaño máximo de celda
-    const maxCellWidth = Math.floor(containerWidth / anchura) - 2;
-    const maxCellHeight = Math.floor(containerHeight / altura) - 2;
+    // Calcular tamaño de celda basado en el ANCHO (queremos que ocupe todo el ancho)
+    const cellSizeByWidth = Math.floor(containerWidth / anchura);
     
-    // Usar el tamaño más pequeño para mantener celdas cuadradas
-    let cellSize = Math.min(maxCellWidth, maxCellHeight);
+    // Calcular tamaño de celda basado en la ALTURA (para mantener proporción)
+    const cellSizeByHeight = Math.floor(containerHeight / altura);
     
-    // Asegurar un tamaño mínimo
+    // Usar el tamaño que permita ocupar todo el ancho, pero sin exceder la altura
+    let cellSize = cellSizeByWidth;
+    
+    // Si las celdas son demasiado altas para el contenedor, ajustar
+    if (cellSizeByHeight < cellSize) {
+        cellSize = cellSizeByHeight;
+    }
+    
+    // Asegurar un tamaño mínimo visible
     cellSize = Math.max(cellSize, 12);
     
-    // Calcular el ancho total del tablero
-    const totalWidth = (cellSize * anchura) + (2 * (anchura - 1));
-    const totalHeight = (cellSize * altura) + (2 * (altura - 1));
+    // Calcular el ancho y alto totales (ahora sí, 100% del ancho)
+    const totalWidth = cellSize * anchura;
+    const totalHeight = cellSize * altura;
     
-    // Crear el tablero con grid CSS
-    let tableroHTML = `<div class="board-grid" style="grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 2px; width: ${totalWidth}px; height: ${totalHeight}px; margin: auto;">`;
+    // Crear el tablero con estilos inline
+    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 1px; background-color: #222; padding: 2px; border-radius: 5px; margin: 0 auto;">`;
     
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const celda = arrayEntidades[i][j];
-            let cellClass = 'board-cell empty';
-            let content = '';
+            let color = '#666';
+            let text = '·';
+            let shadow = 'none';
+            let bgColor = '#000';
             
             if (celda instanceof Buenos) {
-                cellClass = 'board-cell good';
-                content = 'B';
+                color = '#00ff00';
+                text = 'B';
+                shadow = '0 0 10px #00ff00';
             } else if (celda instanceof Malos) {
-                cellClass = 'board-cell bad';
-                content = 'M';
+                color = '#ff0000';
+                text = 'M';
+                shadow = '0 0 10px #ff0000';
             } else if (celda instanceof Obstaculos) {
-                cellClass = 'board-cell obstacle';
-                content = '#';
+                color = '#ffff00';
+                text = '#';
+                shadow = '0 0 5px #ffff00';
             }
             
-            tableroHTML += `<div class="${cellClass}" style="width: ${cellSize}px; height: ${cellSize}px; line-height: ${cellSize}px; font-size: ${cellSize * 0.7}px;">${content}</div>`;
+            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: ${bgColor}; color: ${color}; text-shadow: ${shadow}; font-size: ${cellSize * 0.6}px; font-weight: bold; border: none;">${text}</div>`;
         }
     }
     
