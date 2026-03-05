@@ -15,6 +15,14 @@
     --red: #ff3333;
     --blue: #33ccff;
     --gold: #ffd700;
+    
+    /* Variables responsive */
+    --scale-factor: min(1vw, 1vh);
+    --border-width: calc(4px + 0.2 * var(--scale-factor));
+    --padding-md: calc(15px + 0.5 * var(--scale-factor));
+    --font-size-lg: clamp(1.2rem, 5vw, 2.5rem);
+    --font-size-md: clamp(0.9rem, 3vw, 1.2rem);
+    --font-size-sm: clamp(0.7rem, 2vw, 0.9rem);
 }
 
 html, body {
@@ -36,22 +44,22 @@ html, body {
 }
 
 .menu-container {
-    width: 90%;
+    width: min(90%, 500px);
     max-width: 500px;
     background: var(--dark);
-    border: 4px solid var(--gold);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 0 50px var(--gold);
+    border: var(--border-width) solid var(--gold);
+    border-radius: calc(20px + 0.5vw);
+    padding: clamp(15px, 4vw, 30px);
+    box-shadow: 0 0 calc(30px + 2vw) var(--gold);
     position: relative;
 }
 
 .coin-slot {
     background: linear-gradient(145deg, #8b4513, #5a2e0e);
-    border: 4px solid var(--gold);
-    border-radius: 30px;
-    padding: 20px;
-    margin-bottom: 20px;
+    border: var(--border-width) solid var(--gold);
+    border-radius: calc(30px + 1vw);
+    padding: clamp(12px, 3vw, 20px);
+    margin-bottom: clamp(10px, 2vh, 20px);
     cursor: pointer;
     text-align: center;
     position: relative;
@@ -60,41 +68,41 @@ html, body {
 }
 
 @keyframes coinGlow {
-    0%, 100% { box-shadow: 0 0 20px var(--gold); }
-    50% { box-shadow: 0 0 40px var(--gold); }
+    0%, 100% { box-shadow: 0 0 calc(10px + 1vw) var(--gold); }
+    50% { box-shadow: 0 0 calc(20px + 2vw) var(--gold); }
 }
 
 .coin-insert {
     color: var(--gold);
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 5vw, 1.5rem);
     font-weight: bold;
-    text-shadow: 0 0 10px var(--gold);
+    text-shadow: 0 0 calc(5px + 0.5vw) var(--gold);
     animation: blink 1s infinite;
 }
 
 .coin-count {
     position: absolute;
     top: 5px;
-    right: 15px;
+    right: clamp(5px, 2vw, 15px);
     background: var(--black);
     border: 2px solid var(--gold);
     color: var(--gold);
-    width: 40px;
-    height: 40px;
+    width: clamp(30px, 8vw, 40px);
+    height: clamp(30px, 8vw, 40px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 4vw, 1.2rem);
     font-weight: bold;
 }
 
 .menu-title {
     text-align: center;
     color: var(--yellow);
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    margin-bottom: 30px;
-    text-shadow: 0 0 20px var(--yellow);
+    font-size: clamp(1.3rem, 6vw, 2.5rem);
+    margin-bottom: clamp(15px, 4vh, 30px);
+    text-shadow: 0 0 calc(10px + 1vw) var(--yellow);
     animation: glow 2s infinite;
 }
 
@@ -106,8 +114,8 @@ html, body {
 .menu-card {
     background: var(--black);
     border: 2px solid var(--green);
-    border-radius: 15px;
-    padding: 25px;
+    border-radius: calc(15px + 0.5vw);
+    padding: clamp(15px, 4vw, 25px);
     transition: all 0.3s;
 }
 
@@ -115,22 +123,23 @@ html, body {
     opacity: 1 !important;
     pointer-events: all !important;
     border-color: var(--gold);
-    box-shadow: 0 0 30px var(--gold);
+    box-shadow: 0 0 calc(15px + 1.5vw) var(--gold);
 }
 
 .menu-card h2 {
     color: var(--green);
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
+    margin-bottom: clamp(10px, 3vh, 20px);
+    font-size: clamp(1rem, 4vw, 1.2rem);
 }
 
 .menu-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 15px 0;
+    margin: clamp(8px, 2vh, 15px) 0;
     color: var(--green);
+    font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
 .menu-row input {
@@ -138,9 +147,9 @@ html, body {
     border: 2px solid var(--green);
     color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 1rem;
-    padding: 8px;
-    width: 100px;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    padding: clamp(4px, 1.5vw, 8px);
+    width: clamp(70px, 20vw, 100px);
     text-align: center;
 }
 
@@ -157,15 +166,15 @@ html, body {
 .menu-divider {
     height: 2px;
     background: var(--green);
-    margin: 20px 0;
+    margin: clamp(10px, 3vh, 20px) 0;
     opacity: 0.3;
 }
 
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 15px 0;
+    gap: clamp(5px, 1.5vh, 10px);
+    margin: clamp(10px, 3vh, 15px) 0;
 }
 
 .mode-btn {
@@ -173,10 +182,11 @@ html, body {
     border: 2px solid var(--green);
     color: var(--green);
     font-family: 'Courier New', monospace;
-    font-size: 1rem;
-    padding: 12px;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    padding: clamp(8px, 2vh, 12px);
     cursor: pointer;
     transition: all 0.3s;
+    width: 100%;
 }
 
 .mode-btn:hover:not(:disabled) {
@@ -198,12 +208,12 @@ html, body {
 .start-btn {
     width: 100%;
     background: var(--black);
-    border: 4px solid var(--yellow);
+    border: calc(3px + 0.2vw) solid var(--yellow);
     color: var(--yellow);
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 5vw, 1.5rem);
     font-weight: bold;
-    padding: 15px;
-    margin-top: 20px;
+    padding: clamp(10px, 3vh, 15px);
+    margin-top: clamp(10px, 3vh, 20px);
     cursor: pointer;
     font-family: 'Courier New', monospace;
     animation: startPulse 1.5s infinite;
@@ -216,15 +226,15 @@ html, body {
 }
 
 @keyframes startPulse {
-    0%, 100% { box-shadow: 0 0 20px var(--yellow); }
-    50% { box-shadow: 0 0 40px var(--yellow); }
+    0%, 100% { box-shadow: 0 0 calc(10px + 1vw) var(--yellow); }
+    50% { box-shadow: 0 0 calc(20px + 2vw) var(--yellow); }
 }
 
 .menu-footer {
     text-align: center;
-    margin-top: 20px;
+    margin-top: clamp(10px, 3vh, 20px);
     color: var(--gold);
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
 /* ===== MÁQUINA RECREATIVA ===== */
@@ -232,21 +242,21 @@ html, body {
     width: 100vw;
     height: 100vh;
     background: var(--dark);
-    border: 8px solid var(--gray);
-    border-radius: 30px;
-    padding: 15px;
+    border: calc(6px + 0.3vw) solid var(--gray);
+    border-radius: min(30px, 5vw);
+    padding: clamp(10px, 2vh, 20px);
     display: flex;
     flex-direction: column;
-    box-shadow: inset 0 0 50px var(--black);
+    box-shadow: inset 0 0 calc(30px + 2vw) var(--black);
 }
 
 /* MARQUESINA CON MONEDAS */
 .marquee {
     background: var(--black);
-    border: 3px solid var(--yellow);
-    border-radius: 15px;
-    padding: 10px 20px;
-    margin-bottom: 15px;
+    border: 2px solid var(--yellow);
+    border-radius: min(15px, 3vw);
+    padding: clamp(8px, 2vh, 12px) clamp(10px, 3vw, 20px);
+    margin-bottom: clamp(8px, 2vh, 15px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -254,21 +264,21 @@ html, body {
 
 .marquee h1 {
     color: var(--yellow);
-    font-size: clamp(1.2rem, 4vw, 2rem);
-    text-shadow: 0 0 10px var(--yellow);
-    letter-spacing: 3px;
+    font-size: clamp(1rem, 5vw, 2rem);
+    text-shadow: 0 0 calc(5px + 0.5vw) var(--yellow);
+    letter-spacing: 0.2em;
 }
 
 .coin-display {
     background: var(--dark);
     border: 2px solid var(--gold);
-    border-radius: 30px;
-    padding: 5px 15px;
+    border-radius: min(30px, 5vw);
+    padding: clamp(3px, 1vh, 5px) clamp(8px, 2vw, 15px);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: clamp(5px, 1vw, 10px);
     color: var(--gold);
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 4vw, 1.3rem);
     font-weight: bold;
 }
 
@@ -276,10 +286,10 @@ html, body {
 .arcade-screen {
     flex: 1;
     background: var(--gray);
-    border: 4px solid var(--light-gray);
-    border-radius: 20px;
-    padding: 15px;
-    margin-bottom: 15px;
+    border: calc(3px + 0.2vw) solid var(--light-gray);
+    border-radius: min(20px, 4vw);
+    padding: clamp(8px, 2vh, 15px);
+    margin-bottom: clamp(8px, 2vh, 15px);
     min-height: 0;
 }
 
@@ -288,8 +298,8 @@ html, body {
     height: 100%;
     background: var(--black);
     border: 2px solid var(--green);
-    border-radius: 10px;
-    padding: 15px;
+    border-radius: min(10px, 2vw);
+    padding: clamp(8px, 2vh, 15px);
     position: relative;
     overflow: hidden;
 }
@@ -330,19 +340,20 @@ html, body {
 /* ===== PANEL DE ESTADÍSTICAS ===== */
 .stats-panel {
     background: var(--black);
-    border: 3px solid var(--yellow);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
+    border: 2px solid var(--yellow);
+    border-radius: min(10px, 2vw);
+    padding: clamp(8px, 2vh, 15px);
+    margin-bottom: clamp(8px, 2vh, 15px);
     position: relative;
 }
 
 .stat-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
+    gap: clamp(5px, 2vw, 10px);
+    padding: clamp(4px, 1vh, 8px) 0;
     border-bottom: 1px solid #333;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
 }
 
 .stat-row:last-child {
@@ -351,7 +362,6 @@ html, body {
 
 .total-row {
     color: var(--blue);
-    font-size: 1.1rem;
     justify-content: space-between;
 }
 
@@ -366,8 +376,8 @@ html, body {
 .up-indicator {
     color: var(--yellow);
     font-weight: bold;
-    min-width: 40px;
-    text-shadow: 0 0 5px var(--yellow);
+    min-width: clamp(30px, 8vw, 40px);
+    text-shadow: 0 0 calc(3px + 0.2vw) var(--yellow);
     animation: upPulse 2s infinite;
 }
 
@@ -377,50 +387,49 @@ html, body {
 }
 
 .stat-label {
-    min-width: 70px;
-    font-size: 0.9rem;
+    min-width: clamp(50px, 12vw, 70px);
 }
 
 .stat-value {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 4vw, 1.3rem);
     font-weight: bold;
-    min-width: 40px;
+    min-width: clamp(30px, 8vw, 40px);
     text-align: right;
 }
 
 .stat-value.good {
     color: var(--green);
-    text-shadow: 0 0 10px var(--green);
+    text-shadow: 0 0 calc(5px + 0.5vw) var(--green);
 }
 
 .stat-value.bad {
     color: var(--red);
-    text-shadow: 0 0 10px var(--red);
+    text-shadow: 0 0 calc(5px + 0.5vw) var(--red);
 }
 
 .victoria-count {
     background: var(--dark);
-    border: 2px solid var(--yellow);
-    border-radius: 15px;
-    padding: 2px 10px;
+    border: 1px solid var(--yellow);
+    border-radius: min(15px, 3vw);
+    padding: 2px clamp(5px, 2vw, 10px);
     margin-left: auto;
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 3vw, 1rem);
     font-weight: bold;
     color: var(--yellow);
 }
 
 .reset-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: clamp(5px, 1vh, 10px);
+    right: clamp(5px, 2vw, 10px);
     background: var(--black);
     border: 2px solid var(--yellow);
     color: var(--yellow);
-    width: 30px;
-    height: 30px;
+    width: clamp(24px, 6vw, 30px);
+    height: clamp(24px, 6vw, 30px);
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 4vw, 1.2rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -433,47 +442,99 @@ html, body {
     transform: rotate(180deg);
 }
 
-/* ===== TABLERO CON BORDES ===== */
+/* ===== TABLERO DE JUEGO ===== */
 .game-board {
     flex: 1;
-    overflow: auto;
     min-height: 0;
-    padding: 5px;
+    background: var(--black);
+    border: 2px solid var(--green);
+    border-radius: min(10px, 2vw);
+    padding: 10px;
+    margin-top: 10px;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.board-border {
-    border: 4px solid var(--yellow);
-    border-radius: 15px;
-    padding: 15px;
-    background: var(--black);
+.board-container {
+    width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 30px var(--yellow);
+    overflow: visible;
 }
 
-.board-container {
+/* ===== TABLERO CON GRID ===== */
+.board-grid {
+    display: grid;
+    gap: 2px;
+    background: transparent;
+    margin: auto;
+}
+
+/* ===== CELDAS DEL TABLERO ===== */
+.board-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Courier New', monospace;
-    line-height: 1.3;
-    white-space: pre;
-    display: inline-block;
-    font-size: clamp(0.7rem, 2vw, 1rem);
-    color: var(--green);
-    max-width: 100%;
-    overflow-x: auto;
-    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-.board-container span[style*="color: #00ff00"] {
-    text-shadow: 0 0 5px var(--green);
+/* Celda vacía */
+.board-cell.empty {
+    background: #0a0a0a;
+    border: 1px solid #222;
+    box-shadow: inset 0 0 5px #000;
 }
 
-.board-container span[style*="color: #ff0000"] {
-    text-shadow: 0 0 5px var(--red);
+/* Buenos - Verde */
+.board-cell.good {
+    background: #003300;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 15px #00ff00;
+    animation: cellPulse 2s infinite;
 }
 
-/* GAME OVER */
+/* Malos - Rojo */
+.board-cell.bad {
+    background: #330000;
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+    border: 1px solid #ff0000;
+    box-shadow: 0 0 15px #ff0000;
+    animation: cellPulse 2s infinite;
+}
+
+/* Obstáculos - Amarillo */
+.board-cell.obstacle {
+    background: #333300;
+    color: #ffff00;
+    text-shadow: 0 0 5px #ffff00;
+    border: 1px solid #ffff00;
+}
+
+/* Efecto hover */
+.board-cell:hover {
+    transform: scale(1.1);
+    z-index: 100;
+    filter: brightness(1.3);
+}
+
+/* Animación de pulso */
+@keyframes cellPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* ===== GAME OVER ===== */
 .game-over {
     position: absolute;
     top: 0;
@@ -486,118 +547,247 @@ html, body {
     align-items: center;
     justify-content: center;
     z-index: 10;
+    padding: clamp(10px, 3vh, 20px);
 }
 
 .game-over-title {
     color: var(--red);
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    margin-bottom: 20px;
+    font-size: clamp(1.3rem, 8vw, 2.5rem);
+    margin-bottom: clamp(10px, 3vh, 20px);
     animation: gameoverPulse 1s infinite;
+    text-align: center;
 }
 
 @keyframes gameoverPulse {
-    0%, 100% { text-shadow: 0 0 20px var(--red); }
-    50% { text-shadow: 0 0 40px var(--red); }
+    0%, 100% { text-shadow: 0 0 calc(10px + 1vw) var(--red); }
+    50% { text-shadow: 0 0 calc(20px + 2vw) var(--red); }
+}
+
+.game-over-winner {
+    font-size: clamp(1rem, 5vw, 1.5rem);
+    margin-bottom: clamp(10px, 3vh, 20px);
+    text-align: center;
 }
 
 .game-over-stats {
     background: var(--black);
     border: 2px solid var(--yellow);
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px;
+    border-radius: min(10px, 2vw);
+    padding: clamp(10px, 3vh, 20px);
+    margin: clamp(10px, 3vh, 20px) 0;
     color: white;
+    width: min(90%, 300px);
 }
 
-.coin-insert-small {
-    background: linear-gradient(145deg, #8b4513, #5a2e0e);
-    border: 3px solid var(--gold);
-    border-radius: 30px;
-    padding: 15px 30px;
-    margin-top: 20px;
-    color: var(--gold);
-    font-size: 1.2rem;
-    font-weight: bold;
+.game-over-stats div {
+    margin: clamp(5px, 1.5vh, 10px) 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+}
+
+/* ===== GAME OVER CONTROLES ===== */
+.game-over-controls {
+    display: flex;
+    gap: 30px;
+    margin: 30px 0 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Botón MENÚ */
+.menu-button {
+    background: linear-gradient(145deg, #333333, #222222);
+    border: 4px solid var(--blue);
+    border-radius: 50px;
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
     cursor: pointer;
-    animation: coinGlow 2s infinite;
+    transition: all 0.3s ease;
+    animation: menuPulse 2s infinite;
 }
 
-/* PANEL DE CONTROL CON MONEDAS */
+.menu-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px var(--blue);
+}
+
+@keyframes menuPulse {
+    0%, 100% { box-shadow: 0 0 15px var(--blue); }
+    50% { box-shadow: 0 0 30px var(--blue); }
+}
+
+.menu-icon {
+    font-size: 2rem;
+    color: var(--blue);
+}
+
+.menu-text {
+    color: var(--blue);
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Botón REINTENTAR */
+.retry-button {
+    background: linear-gradient(145deg, #006600, #003300);
+    border: 4px solid var(--green);
+    border-radius: 50px;
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: retryPulse 1.5s infinite;
+}
+
+.retry-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px var(--green);
+}
+
+.retry-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    animation: none;
+}
+
+.retry-button.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+@keyframes retryPulse {
+    0%, 100% { box-shadow: 0 0 20px var(--green); }
+    50% { box-shadow: 0 0 40px var(--green); }
+}
+
+.retry-icon {
+    font-size: 2rem;
+    color: var(--green);
+}
+
+.retry-text {
+    color: var(--green);
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Estado de monedas */
+.coin-status {
+    background: var(--black);
+    border: 2px solid var(--gold);
+    border-radius: 30px;
+    padding: 10px 25px;
+    display: inline-block;
+    color: var(--gold);
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.coin-status span {
+    font-size: 1.5rem;
+    margin-left: 8px;
+}
+
+/* Mensaje sin monedas */
+.no-coins-message {
+    color: var(--red);
+    font-size: 1rem;
+    margin-top: 10px;
+    animation: blink 1s infinite;
+}
+
+/* ===== PANEL DE CONTROL ===== */
 .control-panel {
     background: var(--light-gray);
-    border: 4px solid var(--gray);
-    border-radius: 15px;
-    padding: 12px;
+    border: calc(3px + 0.2vw) solid var(--gray);
+    border-radius: min(15px, 3vw);
+    padding: clamp(8px, 2vh, 12px);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    gap: clamp(8px, 2vw, 15px);
+    flex-wrap: wrap;
 }
 
 .speed-control {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
 }
 
 .ctrl-btn {
     background: var(--black);
     border: 2px solid var(--blue);
     color: var(--blue);
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
+    width: clamp(32px, 8vw, 40px);
+    height: clamp(32px, 8vw, 40px);
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
     cursor: pointer;
     font-family: 'Courier New', monospace;
-    border-radius: 5px;
+    border-radius: min(5px, 1vw);
+    transition: all 0.2s;
+}
+
+.ctrl-btn:hover {
+    background: var(--blue);
+    color: var(--black);
 }
 
 .speed-display {
     background: var(--black);
     border: 2px solid var(--yellow);
     color: var(--yellow);
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: clamp(0.7rem, 2vw, 0.9rem);
-    min-width: 70px;
+    padding: clamp(4px, 1.5vh, 8px) clamp(6px, 2vw, 12px);
+    border-radius: min(5px, 1vw);
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    min-width: clamp(60px, 15vw, 70px);
     text-align: center;
 }
 
 .coin-controls {
     display: flex;
-    gap: 10px;
+    gap: clamp(5px, 1.5vw, 10px);
 }
 
 .coin-button {
     background: linear-gradient(145deg, #8b4513, #5a2e0e);
-    border: 3px solid var(--gold);
-    border-radius: 30px;
-    padding: 8px 15px;
+    border: 2px solid var(--gold);
+    border-radius: min(30px, 5vw);
+    padding: clamp(4px, 1.5vh, 8px) clamp(8px, 2vw, 15px);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .coin-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 20px var(--gold);
+    box-shadow: 0 0 calc(10px + 1vw) var(--gold);
 }
 
 .coin-icon {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
 }
 
 .coin-text {
     color: var(--gold);
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
 }
 
 .action-controls {
     display: flex;
-    gap: 8px;
+    gap: clamp(4px, 1vw, 8px);
     flex-wrap: wrap;
     justify-content: flex-end;
 }
@@ -606,27 +796,33 @@ html, body {
     background: var(--black);
     border: 2px solid;
     color: white;
-    padding: 8px 15px;
+    padding: clamp(4px, 1.5vh, 8px) clamp(8px, 2vw, 15px);
     cursor: pointer;
     font-family: 'Courier New', monospace;
-    font-size: clamp(0.7rem, 2vw, 0.9rem);
-    border-radius: 5px;
-    min-width: 70px;
+    font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    border-radius: min(5px, 1vw);
+    min-width: clamp(50px, 12vw, 70px);
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
 }
 
 .action-btn.pause { border-color: var(--yellow); color: var(--yellow); }
 .action-btn.resume { border-color: var(--blue); color: var(--blue); }
 .action-btn.reset { border-color: var(--red); color: var(--red); }
 
-/* ALTAVOZ */
+/* ===== ALTAVOZ ===== */
 .speaker {
-    height: 20px;
-    margin-top: 10px;
+    height: clamp(15px, 3vh, 20px);
+    margin-top: clamp(5px, 1.5vh, 10px);
     background: repeating-linear-gradient(90deg, var(--gray) 0px, var(--gray) 5px, var(--light-gray) 5px, var(--light-gray) 10px);
-    border-radius: 5px;
+    border-radius: min(5px, 1vw);
 }
 
-/* UTILIDADES */
+/* ===== UTILIDADES ===== */
 .hidden {
     display: none !important;
 }
@@ -634,4 +830,24 @@ html, body {
 @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+}
+
+/* ===== SCROLL PERSONALIZADO ===== */
+::-webkit-scrollbar {
+    width: clamp(4px, 1vw, 8px);
+    height: clamp(4px, 1vw, 8px);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--black);
+    border-radius: min(4px, 1vw);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--green);
+    border-radius: min(4px, 1vw);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--yellow);
 }

@@ -12,6 +12,7 @@ let simulacionPausada = false;
 let victoriasBuenos = 0;
 let victoriasMalos = 0;
 let coins = 0;
+let gameOverCoins = 0;
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,11 +43,11 @@ function insertCoin() {
             el.disabled = false;
         });
     }
-}
-
-function insertCoinFromGame() {
-    insertCoin();
-    volverAlMenu();
+    
+    // Si game over está visible, actualizar botón REINTENTAR
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        document.getElementById('gameOverRetry').classList.remove('disabled');
+    }
 }
 
 function useCoin() {
@@ -62,6 +63,24 @@ function useCoin() {
 function actualizarCoinDisplay() {
     document.getElementById('coinCount').textContent = coins;
     document.getElementById('gameCoinCount').textContent = coins;
+    actualizarGameOverCoins();
+    
+    // Actualizar estado del botón REINTENTAR si game over está visible
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        const retryBtn = document.getElementById('gameOverRetry');
+        if (coins <= 0) {
+            retryBtn.classList.add('disabled');
+        } else {
+            retryBtn.classList.remove('disabled');
+        }
+    }
+}
+
+function actualizarGameOverCoins() {
+    const gameOverCoinSpan = document.getElementById('gameOverCoinCount');
+    if (gameOverCoinSpan) {
+        gameOverCoinSpan.textContent = coins;
+    }
 }
 
 // ===== FUNCIONES DEL MENÚ =====
@@ -168,6 +187,10 @@ function iniciarJuego() {
         alert('Selecciona un modo de juego');
         return;
     }
+    
+    // Gastar una moneda
+    coins--;
+    actualizarCoinDisplay();
     
     // Ocultar menú, mostrar máquina
     document.getElementById('menuScreen').classList.add('hidden');
@@ -332,22 +355,55 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // Pintar tablero
-    let tablero = '╔' + '═'.repeat(anchura) + '╗\n';
+    // ===== TABLERO DINÁMICO =====
+    const container = document.getElementById('tableroContainer');
+    
+    // Obtener dimensiones reales del contenedor
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
+    
+    // Calcular tamaño máximo de celda
+    const maxCellWidth = Math.floor(containerWidth / anchura) - 2;
+    const maxCellHeight = Math.floor(containerHeight / altura) - 2;
+    
+    // Usar el tamaño más pequeño para mantener celdas cuadradas
+    let cellSize = Math.min(maxCellWidth, maxCellHeight);
+    
+    // Asegurar un tamaño mínimo
+    cellSize = Math.max(cellSize, 12);
+    
+    // Calcular el ancho total del tablero
+    const totalWidth = (cellSize * anchura) + (2 * (anchura - 1));
+    const totalHeight = (cellSize * altura) + (2 * (altura - 1));
+    
+    // Crear el tablero con grid CSS
+    let tableroHTML = `<div class="board-grid" style="grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 2px; width: ${totalWidth}px; height: ${totalHeight}px; margin: auto;">`;
+    
     for (let i = 0; i < altura; i++) {
-        tablero += '║';
         for (let j = 0; j < anchura; j++) {
             const celda = arrayEntidades[i][j];
-            if (!celda) tablero += ' ';
-            else if (celda instanceof Buenos) tablero += `<span style="color: #00ff00">B</span>`;
-            else if (celda instanceof Malos) tablero += `<span style="color: #ff0000">M</span>`;
-            else if (celda instanceof Obstaculos) tablero += '#';
+            let cellClass = 'board-cell empty';
+            let content = '';
+            
+            if (celda instanceof Buenos) {
+                cellClass = 'board-cell good';
+                content = 'B';
+            } else if (celda instanceof Malos) {
+                cellClass = 'board-cell bad';
+                content = 'M';
+            } else if (celda instanceof Obstaculos) {
+                cellClass = 'board-cell obstacle';
+                content = '#';
+            }
+            
+            tableroHTML += `<div class="${cellClass}" style="width: ${cellSize}px; height: ${cellSize}px; line-height: ${cellSize}px; font-size: ${cellSize * 0.7}px;">${content}</div>`;
         }
-        tablero += '║\n';
     }
-    tablero += '╚' + '═'.repeat(anchura) + '╝';
     
-    document.getElementById('tableroContainer').innerHTML = tablero;
+    tableroHTML += '</div>';
+    
+    document.getElementById('tableroContainer').innerHTML = tableroHTML;
     actualizarContadoresVisuales();
     
     // Verificar fin
@@ -386,6 +442,35 @@ function ajustarVelocidad(cambio) {
     }
 }
 
+// ===== FUNCIÓN PARA REINTENTAR PARTIDA =====
+function reintentarPartida() {
+    if (coins > 0) {
+        // Gastar una moneda
+        coins--;
+        actualizarCoinDisplay();
+        
+        // Cerrar game over
+        document.getElementById('gameOverPanel').classList.add('hidden');
+        
+        // Resetear contadores de partida
+        Personajes.setnPersonajes(0);
+        Buenos.setnBuenos(0);
+        Malos.setnMalos(0);
+        actualizarContadoresVisuales();
+        
+        // Iniciar nueva simulación
+        iniciarSimulacion();
+    } else {
+        // Mostrar mensaje de que no hay monedas
+        const msg = document.getElementById('noCoinsMessage');
+        if (msg) {
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2000);
+        }
+    }
+}
+
+// ===== MOSTRAR RESULTADO =====
 function mostrarResultado() {
     const buenos = Buenos.getnBuenos() || 0;
     const malos = Malos.getnMalos() || 0;
@@ -403,10 +488,24 @@ function mostrarResultado() {
     document.getElementById('resultadoBuenos').textContent = buenos;
     document.getElementById('resultadoMalos').textContent = malos;
     
+    // Actualizar monedas en game over
+    actualizarGameOverCoins();
+    
+    // Deshabilitar REINTENTAR si no hay monedas
+    const retryBtn = document.getElementById('gameOverRetry');
+    if (retryBtn) {
+        if (coins <= 0) {
+            retryBtn.classList.add('disabled');
+        } else {
+            retryBtn.classList.remove('disabled');
+        }
+    }
+    
     document.getElementById('gameOverPanel').classList.remove('hidden');
     document.getElementById('simulationControls').classList.add('hidden');
 }
 
+// ===== VOLVER AL MENÚ =====
 function volverAlMenu() {
     detenerSimulacion();
     
@@ -432,11 +531,12 @@ function volverAlMenu() {
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     actualizarContadoresVisuales();
+    actualizarCoinDisplay();
     
     document.getElementById('tableroContainer').innerHTML = '';
 }
 
-// Hacer funciones globales
+// ===== HACER FUNCIONES GLOBALES =====
 window.iniciarJuego = iniciarJuego;
 window.seleccionarOpcion = seleccionarOpcion;
 window.detenerSimulacion = detenerSimulacion;
@@ -445,5 +545,5 @@ window.ajustarVelocidad = ajustarVelocidad;
 window.reiniciarVictorias = reiniciarVictorias;
 window.volverAlMenu = volverAlMenu;
 window.insertCoin = insertCoin;
-window.insertCoinFromGame = insertCoinFromGame;
 window.useCoin = useCoin;
+window.reintentarPartida = reintentarPartida;
