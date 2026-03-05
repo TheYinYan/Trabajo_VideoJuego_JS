@@ -355,37 +355,26 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // ===== TABLERO 100% DINÁMICO =====
+    // ===== TABLERO SIMPLE - USA EL TAMAÑO QUE EL DIV PERMITE =====
     const container = document.getElementById('tableroContainer');
     
-    // Obtener dimensiones exactas del contenedor
-    const containerRect = container.getBoundingClientRect();
-    const containerWidth = containerRect.width;
-    const containerHeight = containerRect.height;
+    // Obtener dimensiones del contenedor
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
     
-    // Calcular tamaño de celda basado en el ANCHO (queremos que ocupe todo el ancho)
+    // Calcular tamaño de celda basado en EL MÍNIMO entre ancho y alto
+    // para que quepa todo el tablero en el espacio disponible
     const cellSizeByWidth = Math.floor(containerWidth / anchura);
-    
-    // Calcular tamaño de celda basado en la ALTURA (para mantener proporción)
     const cellSizeByHeight = Math.floor(containerHeight / altura);
     
-    // Usar el tamaño que permita ocupar todo el ancho, pero sin exceder la altura
-    let cellSize = cellSizeByWidth;
+    // Usar el tamaño más pequeño para asegurar que quepa
+    let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
     
-    // Si las celdas son demasiado altas para el contenedor, ajustar
-    if (cellSizeByHeight < cellSize) {
-        cellSize = cellSizeByHeight;
-    }
+    // Tamaño mínimo para legibilidad
+    cellSize = Math.max(cellSize, 10);
     
-    // Asegurar un tamaño mínimo visible
-    cellSize = Math.max(cellSize, 12);
-    
-    // Calcular el ancho y alto totales (ahora sí, 100% del ancho)
-    const totalWidth = cellSize * anchura;
-    const totalHeight = cellSize * altura;
-    
-    // Crear el tablero con estilos inline
-    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 1px; background-color: #222; padding: 2px; border-radius: 5px; margin: 0 auto;">`;
+    // Crear el tablero con grid
+    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 1px; background-color: #222; padding: 2px; border-radius: 5px;">`;
     
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
@@ -393,7 +382,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
             let color = '#666';
             let text = '·';
             let shadow = 'none';
-            let bgColor = '#000';
             
             if (celda instanceof Buenos) {
                 color = '#00ff00';
@@ -409,7 +397,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                 shadow = '0 0 5px #ffff00';
             }
             
-            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: ${bgColor}; color: ${color}; text-shadow: ${shadow}; font-size: ${cellSize * 0.6}px; font-weight: bold; border: none;">${text}</div>`;
+            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: #000; color: ${color}; text-shadow: ${shadow}; font-size: ${cellSize * 0.6}px; font-weight: bold;">${text}</div>`;
         }
     }
     
