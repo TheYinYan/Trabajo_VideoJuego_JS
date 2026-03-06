@@ -765,3 +765,26 @@ html, body {
         padding: 3px 12px;
     }
 }
+/* ===== FORZAR COLORES DE CELDAS ===== */
+.game-board > div {
+    transition: transform 0.15s ease-out !important;
+    backface-visibility: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* Resetear cualquier posible herencia */
+.game-board > div * {
+    all: unset;
+}
+
+/* Asegurar que los hover no cambien colores */
+.game-board > div:hover {
+    transform: scale(1.1) !important;
+    z-index: 10 !important;
+    filter: brightness(1.2) !important;
+    box-shadow: 0 0 10px currentColor !important;
+    /* Mantener los colores originales */
+    background-color: inherit !important;
+    color: inherit !important;
+    text-shadow: inherit !important;
+}

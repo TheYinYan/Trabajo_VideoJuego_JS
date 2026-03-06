@@ -61,7 +61,7 @@ function redimensionarTablero() {
     let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
     
     // Tamaños mínimos y máximos para legibilidad
-    cellSize = Math.max(cellSize, 12);
+    cellSize = Math.max(cellSize, 14);
     cellSize = Math.min(cellSize, 40);
     
     const fontSize = Math.floor(cellSize * 0.6);
@@ -70,40 +70,76 @@ function redimensionarTablero() {
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     
-    // Actualizar todas las celdas
+    // Actualizar todas las celdas y mantener sus colores
     for (let i = 0; i < cells.length; i++) {
-        cells[i].style.width = `${cellSize}px`;
-        cells[i].style.height = `${cellSize}px`;
-        cells[i].style.fontSize = `${fontSize}px`;
+        const cell = cells[i];
+        const oldWidth = cell.style.width;
+        const oldHeight = cell.style.height;
+        
+        cell.style.width = `${cellSize}px`;
+        cell.style.height = `${cellSize}px`;
+        cell.style.fontSize = `${fontSize}px`;
+        
+        // Si la celda tiene contenido, actualizar su estilo manteniendo el color
+        if (cell.textContent) {
+            const index = i;
+            const row = Math.floor(index / anchura);
+            const col = index % anchura;
+            if (row < altura && col < anchura) {
+                const celda = arrayEntidades[row][col];
+                aplicarColorCelda(cell, celda);
+            }
+        }
     }
 }
 
-// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
+// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA (VERSIÓN FORZADA) =====
 function aplicarColorCelda(cellDiv, celda) {
+    // FORZAR estilos inline con !important
     if (!celda) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ffff00';
+        cellDiv.setAttribute('style', 
+            'background-color: #24408e !important; ' +
+            'color: #ffff00 !important; ' +
+            'text-shadow: 0 0 5px #ffff00 !important; ' +
+            'border-radius: 50% !important; ' +
+            'display: flex; align-items: center; justify-content: center; ' +
+            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
+            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
+        );
         cellDiv.textContent = '·';
-        cellDiv.style.textShadow = '0 0 5px #ffff00';
-        cellDiv.style.borderRadius = '50%';
     } else if (celda instanceof Buenos) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ffff00';
+        cellDiv.setAttribute('style',
+            'background-color: #24408e !important; ' +
+            'color: #ffff00 !important; ' +
+            'text-shadow: 0 0 8px #ffff00 !important; ' +
+            'border-radius: 0 !important; ' +
+            'display: flex; align-items: center; justify-content: center; ' +
+            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
+            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
+        );
         cellDiv.textContent = 'B';
-        cellDiv.style.textShadow = '0 0 8px #ffff00';
-        cellDiv.style.borderRadius = '0';
     } else if (celda instanceof Malos) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ff0000';
+        cellDiv.setAttribute('style',
+            'background-color: #24408e !important; ' +
+            'color: #ff0000 !important; ' +
+            'text-shadow: 0 0 8px #ff0000 !important; ' +
+            'border-radius: 0 !important; ' +
+            'display: flex; align-items: center; justify-content: center; ' +
+            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
+            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
+        );
         cellDiv.textContent = 'M';
-        cellDiv.style.textShadow = '0 0 8px #ff0000';
-        cellDiv.style.borderRadius = '0';
     } else if (celda instanceof Obstaculos) {
-        cellDiv.style.backgroundColor = '#0a1a4a';
-        cellDiv.style.color = '#4a6c8f';
+        cellDiv.setAttribute('style',
+            'background-color: #0a1a4a !important; ' +
+            'color: #4a6c8f !important; ' +
+            'text-shadow: none !important; ' +
+            'border-radius: 0 !important; ' +
+            'display: flex; align-items: center; justify-content: center; ' +
+            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
+            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
+        );
         cellDiv.textContent = '█';
-        cellDiv.style.textShadow = 'none';
-        cellDiv.style.borderRadius = '0';
     }
 }
 
@@ -125,11 +161,18 @@ function crearTablero(altura, anchura) {
     gameBoard.style.borderRadius = '10px';
     gameBoard.style.margin = 'auto';
     
+    // Tamaño temporal para crear las celdas
+    const tempSize = 20;
+    const tempFont = 14;
+    
     // Crear celdas con tamaño temporal
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const cellDiv = document.createElement('div');
             
+            cellDiv.style.width = `${tempSize}px`;
+            cellDiv.style.height = `${tempSize}px`;
+            cellDiv.style.fontSize = `${tempFont}px`;
             cellDiv.style.display = 'flex';
             cellDiv.style.alignItems = 'center';
             cellDiv.style.justifyContent = 'center';
@@ -373,9 +416,6 @@ function ajustarVelocidad(cambio) {
     }
 }
 
-// ===== RESTO DE FUNCIONES (insertCoin, useCoin, etc.) =====
-// ... (se mantienen igual que en la versión anterior)
-
 // ===== FUNCIONES DE MONEDAS =====
 function insertCoin() {
     coins++;
@@ -610,7 +650,6 @@ function volverAlMenu() {
         cells = [];
     }
 }
-
 
 // ===== HACER FUNCIONES GLOBALES =====
 window.iniciarJuego = iniciarJuego;
