@@ -10,9 +10,11 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 # Pedir a la IA 🤖
 
-- Dame el index y el css
-- Que mede los estilos de pacman para todo el css para que pege con el tablero pero para un aopcion llamada Pacman y otra con el tablero con el color que pege con la el css usado normal si los colores de Pacman
+- Dame el index, el css y el js con los cambios que te he pedido
+- stats-panel saga en una sola fila: TOTAL: 0 1UP BUENOS: 0 0 2UP MALOS: 0 0 (Acepto sugerencias para mejorar el diseño de esta parte)
 - Que el board-grid ocupe todo board-container
+- Que mede los estilos de pacman para todo el css para que pege con el tablero pero para un aopcion llamada Pacman y otra con el tablero con el color que pege con la el css usado normal si los colores de Pacman
+- Que el tablero se adapte a la pantalla y se vea bien en movil y en pc
 
 ---
 
