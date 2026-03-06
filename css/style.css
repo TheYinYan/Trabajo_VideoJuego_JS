@@ -17,11 +17,12 @@
     --gold: #ffd700;
     --pacman-blue: #24408e;
     --pacman-dark-blue: #0a1a4a;
-    
+
     --sidebar-width: 220px;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -63,8 +64,15 @@ html, body {
 }
 
 @keyframes coinGlow {
-    0%, 100% { box-shadow: 0 0 20px var(--gold); }
-    50% { box-shadow: 0 0 40px var(--gold); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px var(--gold);
+    }
+
+    50% {
+        box-shadow: 0 0 40px var(--gold);
+    }
 }
 
 .coin-insert {
@@ -102,8 +110,15 @@ html, body {
 }
 
 @keyframes glow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
 }
 
 .menu-card {
@@ -200,8 +215,15 @@ html, body {
 }
 
 @keyframes startPulse {
-    0%, 100% { box-shadow: 0 0 20px var(--yellow); }
-    50% { box-shadow: 0 0 40px var(--yellow); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px var(--yellow);
+    }
+
+    50% {
+        box-shadow: 0 0 40px var(--yellow);
+    }
 }
 
 .menu-footer {
@@ -231,17 +253,19 @@ html, body {
 }
 
 /* BARRAS LATERALES (estilo arcade) */
-.left-bar, .right-bar {
+.left-bar,
+.right-bar {
     width: var(--sidebar-width);
     background: linear-gradient(145deg, #2a1a0a, #1a0a00);
     border: 3px solid var(--gold);
     border-radius: 20px;
-    box-shadow: inset 0 0 20px rgba(255,215,0,0.3), 0 0 15px var(--gold);
+    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3), 0 0 15px var(--gold);
     position: relative;
     overflow: hidden;
 }
 
-.left-bar::before, .right-bar::before {
+.left-bar::before,
+.right-bar::before {
     content: '';
     position: absolute;
     top: 0;
@@ -284,13 +308,29 @@ html, body {
 }
 
 @keyframes textPulse {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
+
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
 }
 
 @keyframes glowPulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
 
 /* CONTENIDO CENTRAL */
@@ -313,7 +353,7 @@ html, body {
     align-items: center;
     height: 70px;
     flex-shrink: 0;
-    box-shadow: inset 0 0 20px rgba(255,215,0,0.3);
+    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .marquee h1 {
@@ -337,7 +377,7 @@ html, body {
     box-shadow: 0 0 15px var(--gold);
 }
 
-/* CONTENEDOR DEL TABLERO (para centrado perfecto) */
+/* ===== TABLERO DE JUEGO - TOTALMENTE RESPONSIVO ===== */
 .game-board-container {
     flex: 1;
     min-height: 0;
@@ -349,6 +389,8 @@ html, body {
     border-radius: 20px;
     padding: 15px;
     box-shadow: inset 0 0 30px var(--pacman-dark-blue);
+    overflow: hidden;
+    width: 100%;
 }
 
 .game-board {
@@ -357,7 +399,9 @@ html, body {
     background-color: var(--pacman-blue);
     border-radius: 10px;
     padding: 5px;
-    margin: auto;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 }
 
 .game-board > div {
@@ -367,6 +411,7 @@ html, body {
     font-weight: bold;
     transition: all 0.15s ease-out;
     backface-visibility: hidden;
+    box-sizing: border-box;
 }
 
 .game-board > div:hover {
@@ -388,7 +433,7 @@ html, body {
     border: 4px solid var(--gold);
     border-radius: 20px;
     padding: 15px 12px;
-    box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 30px var(--gold);
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 30px var(--gold);
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -401,18 +446,21 @@ html, body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(255, 215, 0, 0.1) 50%,
-        transparent 70%
-    );
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 215, 0, 0.1) 50%,
+            transparent 70%);
     animation: shine 3s infinite;
 }
 
 @keyframes shine {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
 }
 
 .stats-header {
@@ -481,7 +529,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
 }
 
 .stat-card.player[data-type="good"] {
@@ -546,13 +594,13 @@ html, body {
     text-align: center;
 }
 
-.player-count.good { 
-    color: #ffff00; 
+.player-count.good {
+    color: #ffff00;
     text-shadow: 0 0 15px #ffff00, 0 0 25px #ffaa00;
 }
 
-.player-count.bad { 
-    color: #ff6666; 
+.player-count.bad {
+    color: #ff6666;
     text-shadow: 0 0 15px #ff0000, 0 0 25px #ff6666;
 }
 
@@ -625,7 +673,8 @@ html, body {
     text-shadow: 0 0 12px #ff0000, 0 0 20px #ff6666;
 }
 
-#victoriasBuenos, #victoriasMalos {
+#victoriasBuenos,
+#victoriasMalos {
     color: var(--gold);
     text-shadow: 0 0 8px var(--gold), 0 0 15px #ffaa00;
     font-size: 1.1rem;
@@ -644,7 +693,7 @@ html, body {
     gap: 15px;
     height: 70px;
     flex-shrink: 0;
-    box-shadow: inset 0 0 20px rgba(255,215,0,0.3);
+    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .speed-control {
@@ -725,9 +774,20 @@ html, body {
     filter: brightness(1.2);
 }
 
-.action-btn.pause { border-color: var(--yellow); color: var(--yellow); }
-.action-btn.resume { border-color: var(--blue); color: var(--blue); }
-.action-btn.reset { border-color: var(--red); color: var(--red); }
+.action-btn.pause {
+    border-color: var(--yellow);
+    color: var(--yellow);
+}
+
+.action-btn.resume {
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+.action-btn.reset {
+    border-color: var(--red);
+    color: var(--red);
+}
 
 /* ===== GAME OVER ===== */
 .game-over {
@@ -754,8 +814,15 @@ html, body {
 }
 
 @keyframes gameoverPulse {
-    0%, 100% { text-shadow: 0 0 20px var(--red); }
-    50% { text-shadow: 0 0 40px var(--red); }
+
+    0%,
+    100% {
+        text-shadow: 0 0 20px var(--red);
+    }
+
+    50% {
+        text-shadow: 0 0 40px var(--red);
+    }
 }
 
 .game-over-winner {
@@ -924,13 +991,26 @@ html, body {
 }
 
 @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
 }
 
 @keyframes scan {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* ===== MEDIA QUERIES ===== */
@@ -938,21 +1018,21 @@ html, body {
     :root {
         --sidebar-width: 180px;
     }
-    
+
     .stats-header {
         font-size: 1rem;
     }
-    
+
     .player-icon {
         width: 28px;
         height: 28px;
         font-size: 1.1rem;
     }
-    
+
     .player-count {
         font-size: 1.3rem;
     }
-    
+
     .control-panel {
         flex-direction: column;
         height: auto;
@@ -964,30 +1044,31 @@ html, body {
     :root {
         --sidebar-width: 150px;
     }
-    
+
     .marquee h1 {
         font-size: 1.5rem;
     }
-    
+
     .coin-display {
         font-size: 1.2rem;
         padding: 3px 12px;
     }
 }
+
 /* ===== FORZAR COLORES DE CELDAS ===== */
-.game-board > div {
+.game-board>div {
     transition: transform 0.15s ease-out !important;
     backface-visibility: hidden !important;
     box-sizing: border-box !important;
 }
 
 /* Resetear cualquier posible herencia */
-.game-board > div * {
+.game-board>div * {
     all: unset;
 }
 
 /* Asegurar que los hover no cambien colores */
-.game-board > div:hover {
+.game-board>div:hover {
     transform: scale(1.1) !important;
     z-index: 10 !important;
     filter: brightness(1.2) !important;

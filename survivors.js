@@ -12,13 +12,12 @@ let victoriasMalos = 0;
 let coins = 0;
 let gameOverCoins = 0;
 
-// Dimensiones FIJAS - 30x30 SIEMPRE
-const ALTURA_FIJA = 30;
-const ANCHURA_FIJA = 30;
+// Dimensiones variables - se calcularán automáticamente
+let alturaActual = 0;
+let anchuraActual = 0;
 
 // Referencias DOM
 let gameBoard = null;
-let cells = [];
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,35 +33,72 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Escuchar cambios de tamaño de ventana
     window.addEventListener('resize', () => {
-        if (arrayEntidades && cells.length > 0) {
+        if (arrayEntidades) {
+            recalcularDimensiones();
             redimensionarTablero();
         }
     });
 });
 
+// ===== FUNCIÓN PARA CALCULAR DIMENSIONES ÓPTIMAS =====
+function recalcularDimensiones() {
+    if (!gameBoard) return;
+    
+    // Obtener dimensiones del game-board
+    const boardWidth = gameBoard.clientWidth;
+    const boardHeight = gameBoard.clientHeight;
+    
+    if (boardWidth === 0 || boardHeight === 0) return;
+    
+    // TAMAÑO MÍNIMO DE CELDA - AUMENTADO a 16px (antes 10px)
+    const MIN_CELL_SIZE = 16;
+    
+    // Calcular cuántas celdas caben en el espacio disponible
+    // Usamos un factor de escala para que las celdas sean más grandes
+    const maxCellsWidth = Math.floor(boardWidth / MIN_CELL_SIZE);
+    const maxCellsHeight = Math.floor(boardHeight / MIN_CELL_SIZE);
+    
+    // REDUCCIÓN DEL 20% para que las celdas sean más grandes
+    // (menos celdas, pero más grandes)
+    alturaActual = Math.floor(maxCellsHeight * 0.8);
+    anchuraActual = Math.floor(maxCellsWidth * 0.8);
+    
+    // Asegurar que sean pares para el equilibrio del juego
+    if (alturaActual % 2 !== 0) alturaActual--;
+    if (anchuraActual % 2 !== 0) anchuraActual--;
+    
+    // Límites mínimos
+    alturaActual = Math.max(alturaActual, 8);
+    anchuraActual = Math.max(anchuraActual, 8);
+    
+    console.log(`📏 Dimensiones calculadas: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
+}
+
 // ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
 function redimensionarTablero() {
-    if (!gameBoard || cells.length === 0 || !arrayEntidades) return;
+    if (!gameBoard || !arrayEntidades) return;
     
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
     
-    // Obtener dimensiones del contenedor padre
-    const containerWidth = gameBoard.clientWidth;
-    const containerHeight = gameBoard.clientHeight;
+    // Obtener dimensiones del game-board
+    const boardWidth = gameBoard.clientWidth;
+    const boardHeight = gameBoard.clientHeight;
     
-    if (containerWidth === 0 || containerHeight === 0) return;
+    if (boardWidth === 0 || boardHeight === 0) return;
     
-    // Calcular tamaño de celda basado en el espacio disponible
-    const cellSizeByWidth = Math.floor(containerWidth / anchura);
-    const cellSizeByHeight = Math.floor(containerHeight / altura);
+    // Calcular tamaño de celda para que OCUPE TODO el espacio
+    const cellSizeByWidth = Math.floor(boardWidth / anchura);
+    const cellSizeByHeight = Math.floor(boardHeight / altura);
     
     // Usar el tamaño más pequeño para mantener celdas cuadradas
     let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
     
-    // Tamaños mínimos y máximos para legibilidad
+    // TAMAÑO MÍNIMO AUMENTADO a 14px (antes 8px)
     cellSize = Math.max(cellSize, 14);
-    cellSize = Math.min(cellSize, 40);
+    
+    // TAMAÑO MÁXIMO para no ser demasiado grandes
+    cellSize = Math.min(cellSize, 45);
     
     const fontSize = Math.floor(cellSize * 0.6);
     
@@ -70,88 +106,53 @@ function redimensionarTablero() {
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     
-    // Actualizar todas las celdas y mantener sus colores
+    // Actualizar todas las celdas
+    const cells = gameBoard.children;
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
-        const oldWidth = cell.style.width;
-        const oldHeight = cell.style.height;
-        
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
         cell.style.fontSize = `${fontSize}px`;
-        
-        // Si la celda tiene contenido, actualizar su estilo manteniendo el color
-        if (cell.textContent) {
-            const index = i;
-            const row = Math.floor(index / anchura);
-            const col = index % anchura;
-            if (row < altura && col < anchura) {
-                const celda = arrayEntidades[row][col];
-                aplicarColorCelda(cell, celda);
-            }
-        }
     }
 }
 
-// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA (VERSIÓN FORZADA) =====
+// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
 function aplicarColorCelda(cellDiv, celda) {
-    // FORZAR estilos inline con !important
     if (!celda) {
-        cellDiv.setAttribute('style', 
-            'background-color: #24408e !important; ' +
-            'color: #ffff00 !important; ' +
-            'text-shadow: 0 0 5px #ffff00 !important; ' +
-            'border-radius: 50% !important; ' +
-            'display: flex; align-items: center; justify-content: center; ' +
-            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
-            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
-        );
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ffff00';
         cellDiv.textContent = '·';
+        cellDiv.style.textShadow = '0 0 5px #ffff00';
+        cellDiv.style.borderRadius = '50%';
     } else if (celda instanceof Buenos) {
-        cellDiv.setAttribute('style',
-            'background-color: #24408e !important; ' +
-            'color: #ffff00 !important; ' +
-            'text-shadow: 0 0 8px #ffff00 !important; ' +
-            'border-radius: 0 !important; ' +
-            'display: flex; align-items: center; justify-content: center; ' +
-            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
-            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
-        );
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ffff00';
         cellDiv.textContent = 'B';
+        cellDiv.style.textShadow = '0 0 8px #ffff00';
+        cellDiv.style.borderRadius = '0';
     } else if (celda instanceof Malos) {
-        cellDiv.setAttribute('style',
-            'background-color: #24408e !important; ' +
-            'color: #ff0000 !important; ' +
-            'text-shadow: 0 0 8px #ff0000 !important; ' +
-            'border-radius: 0 !important; ' +
-            'display: flex; align-items: center; justify-content: center; ' +
-            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
-            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
-        );
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ff0000';
         cellDiv.textContent = 'M';
+        cellDiv.style.textShadow = '0 0 8px #ff0000';
+        cellDiv.style.borderRadius = '0';
     } else if (celda instanceof Obstaculos) {
-        cellDiv.setAttribute('style',
-            'background-color: #0a1a4a !important; ' +
-            'color: #4a6c8f !important; ' +
-            'text-shadow: none !important; ' +
-            'border-radius: 0 !important; ' +
-            'display: flex; align-items: center; justify-content: center; ' +
-            'font-weight: bold; width: ' + cellDiv.style.width + '; ' +
-            'height: ' + cellDiv.style.height + '; font-size: ' + cellDiv.style.fontSize + ';'
-        );
+        cellDiv.style.backgroundColor = '#0a1a4a';
+        cellDiv.style.color = '#4a6c8f';
         cellDiv.textContent = '█';
+        cellDiv.style.textShadow = 'none';
+        cellDiv.style.borderRadius = '0';
     }
 }
 
 // ===== FUNCIÓN PARA CREAR EL TABLERO =====
-function crearTablero(altura, anchura) {
+function crearTablero() {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
         if (!gameBoard) return;
     }
     
     gameBoard.innerHTML = '';
-    cells = [];
     
     // Configuración base del grid
     gameBoard.style.display = 'grid';
@@ -159,40 +160,42 @@ function crearTablero(altura, anchura) {
     gameBoard.style.backgroundColor = '#24408e';
     gameBoard.style.padding = '5px';
     gameBoard.style.borderRadius = '10px';
-    gameBoard.style.margin = 'auto';
+    gameBoard.style.margin = '0';
+    gameBoard.style.width = '100%';
+    gameBoard.style.height = '100%';
     
-    // Tamaño temporal para crear las celdas
-    const tempSize = 20;
-    const tempFont = 14;
+    // Calcular dimensiones si no existen
+    if (alturaActual === 0 || anchuraActual === 0) {
+        recalcularDimensiones();
+    }
     
     // Crear celdas con tamaño temporal
-    for (let i = 0; i < altura; i++) {
-        for (let j = 0; j < anchura; j++) {
+    for (let i = 0; i < alturaActual; i++) {
+        for (let j = 0; j < anchuraActual; j++) {
             const cellDiv = document.createElement('div');
             
-            cellDiv.style.width = `${tempSize}px`;
-            cellDiv.style.height = `${tempSize}px`;
-            cellDiv.style.fontSize = `${tempFont}px`;
             cellDiv.style.display = 'flex';
             cellDiv.style.alignItems = 'center';
             cellDiv.style.justifyContent = 'center';
             cellDiv.style.fontWeight = 'bold';
             
             gameBoard.appendChild(cellDiv);
-            cells.push(cellDiv);
         }
     }
     
     // Redimensionar al tamaño correcto
     setTimeout(() => redimensionarTablero(), 10);
+    
+    console.log(`✅ Tablero creado: ${alturaActual * anchuraActual} celdas (${anchuraActual}x${alturaActual})`);
 }
 
 // ===== FUNCIÓN PARA ACTUALIZAR TODO EL TABLERO =====
 function actualizarTodoElTablero() {
-    if (!arrayEntidades || cells.length === 0) return;
+    if (!arrayEntidades || !gameBoard) return;
     
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
+    const cells = gameBoard.children;
     
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
@@ -206,7 +209,11 @@ function actualizarTodoElTablero() {
 }
 
 // ===== FUNCIÓN PARA ACTUALIZAR UNA CELDA =====
-function actualizarCelda(index, celda) {
+function actualizarCelda(row, col, celda) {
+    if (!gameBoard) return;
+    const anchura = arrayEntidades[0].length;
+    const index = row * anchura + col;
+    const cells = gameBoard.children;
     if (index >= cells.length) return;
     aplicarColorCelda(cells[index], celda);
 }
@@ -266,8 +273,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                         arrayEntidades[newY][newX] = entidad;
                         arrayEntidades[i][j] = null;
                         
-                        actualizarCelda(i * anchura + j, null);
-                        actualizarCelda(newY * anchura + newX, entidad);
+                        actualizarCelda(i, j, null);
+                        actualizarCelda(newY, newX, entidad);
                     } else if (
                         (arrayEntidades[newY][newX] instanceof Malos && entidad instanceof Buenos) ||
                         (arrayEntidades[newY][newX] instanceof Buenos && entidad instanceof Malos)
@@ -287,7 +294,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                             if (defensor instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
                             else Malos.setnMalos(Malos.getnMalos() - 1);
                             
-                            actualizarCelda(newY * anchura + newX, null);
+                            actualizarCelda(newY, newX, null);
                         } else {
                             for (let k = 0; k < nPersonajes; k++) {
                                 if (arrayPersonajes[k] === entidad) {
@@ -300,7 +307,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                             if (entidad instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
                             else Malos.setnMalos(Malos.getnMalos() - 1);
                             
-                            actualizarCelda(i * anchura + j, null);
+                            actualizarCelda(i, j, null);
                         }
                         
                         actualizarContadoresVisuales();
@@ -328,8 +335,11 @@ function iniciarSimulacion() {
     Malos.setnMalos(0);
     actualizarContadoresVisuales();
     
-    const altura = ALTURA_FIJA;
-    const anchura = ANCHURA_FIJA;
+    // Recalcular dimensiones basadas en el tamaño actual de la pantalla
+    recalcularDimensiones();
+    
+    const altura = alturaActual;
+    const anchura = anchuraActual;
     const totalCeldas = altura * anchura;
     
     let nPersonajes;
@@ -377,7 +387,7 @@ function iniciarSimulacion() {
         }
     }
     
-    crearTablero(altura, anchura);
+    crearTablero();
     actualizarTodoElTablero();
     
     actualizarContadoresVisuales();
@@ -386,6 +396,14 @@ function iniciarSimulacion() {
     
     intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
+
+// ===== RESTO DE FUNCIONES (sin cambios) =====
+// ... (detenerSimulacion, continuarSimulacion, ajustarVelocidad, insertCoin, useCoin, 
+//      actualizarCoinDisplay, actualizarGameOverCoins, actualizarBotonReintentar,
+//      seleccionarOpcion, validarBotonInicio, actualizarVictoriasVisuales,
+//      guardarVictorias, cargarVictorias, reiniciarVictorias,
+//      actualizarContadoresVisuales, iniciarJuego, reintentarPartida,
+//      mostrarResultado, volverAlMenu)
 
 // ===== FUNCIONES DE CONTROL =====
 function detenerSimulacion() {
@@ -614,7 +632,7 @@ function mostrarResultado() {
     actualizarVictoriasVisuales();
     
     document.getElementById('resultadoTitulo').textContent = 
-        buenos <= 0 ? '💀 MALOS GANAN 💀' : '✨ BUENOS GANAN ✨';
+    buenos <= 0 ? '💀 MALOS GANAN 💀' : '✨ BUENOS GANAN ✨';
     document.getElementById('resultadoTitulo').style.color = buenos <= 0 ? '#ff0000' : '#00ff00';
     document.getElementById('resultadoTotal').textContent = Personajes.getnPersonajes() || 0;
     document.getElementById('resultadoBuenos').textContent = buenos;
