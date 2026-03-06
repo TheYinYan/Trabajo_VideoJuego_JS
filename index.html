@@ -62,6 +62,30 @@
                 <div class="bar-content">
                     <div class="bar-decoration top"></div>
 
+                    <!-- SELECTOR DE TEMAS -->
+                    <!-- <div class="theme-selector">
+                        <div class="theme-title">TEMA</div>
+                        <div class="theme-options">
+                            <div class="theme-option" id="themePacman" onclick="cambiarTema('pacman')">
+                                <span class="theme-icon">👻</span>
+                                <span class="theme-name">PAC-MAN</span>
+                                <div class="theme-colors">
+                                    <span class="color-dot" style="background: #ffff00;"></span>
+                                    <span class="color-dot" style="background: #24408e;"></span>
+                                </div>
+                            </div>
+                            <div class="theme-option" id="themeClassic" onclick="cambiarTema('classic')">
+                                <span class="theme-icon">🕹️</span>
+                                <span class="theme-name">CLÁSICO</span>
+                                <div class="theme-colors">
+                                    <span class="color-dot" style="background: #33ff33;"></span>
+                                    <span class="color-dot" style="background: #0a2a0a;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="theme-indicator" id="themeIndicator">PAC-MAN</div>
+                    </div> -->
+
                     <!-- PANEL DE AYUDA CON CONTROLES -->
                     <div class="help-panel">
                         <div class="help-header">🎮 CONTROLES</div>
@@ -163,9 +187,8 @@
                     <div class="game-board" id="gameBoard"></div>
                 </div>
 
-                <!-- PANEL DE CONTROL REDISEÑADO -->
+                <!-- PANEL DE CONTROL -->
                 <div class="control-panel">
-                    <!-- SECCIÓN DE VELOCIDAD -->
                     <div class="speed-section">
                         <span class="speed-label">⚡ VEL</span>
                         <div class="speed-control">
@@ -175,10 +198,8 @@
                         </div>
                     </div>
 
-                    <!-- SEPARADOR DECORATIVO -->
                     <div class="control-divider"></div>
 
-                    <!-- SECCIÓN DE MONEDAS -->
                     <div class="coin-section">
                         <div class="coin-btn" onclick="insertCoin()">
                             <span class="coin-icon">🪙</span>
@@ -188,17 +209,14 @@
                             <span class="coin-icon">▶</span>
                             <span class="coin-text">PLAY</span>
                         </div>
-                        <!-- Indicador de monedas con ID ÚNICO -->
                         <div class="coin-indicator">
                             <span>🪙</span>
                             <span id="panelCoinCount">0</span>
                         </div>
                     </div>
 
-                    <!-- SEPARADOR DECORATIVO -->
                     <div class="control-divider"></div>
 
-                    <!-- SECCIÓN DE ACCIONES -->
                     <div class="action-section hidden" id="simulationControls">
                         <button class="action-btn-modern pause" id="btnPausa"
                             onclick="detenerSimulacion()">PAUSA</button>
@@ -209,51 +227,125 @@
                 </div>
             </div>
 
-            <!-- BARRA LATERAL DERECHA (con estadísticas) -->
+            <!-- BARRA LATERAL DERECHA REDISEÑADA -->
             <div class="right-bar">
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
-                    <div class="stats-panel" id="statsPanel">
+
+                    <!-- HIGH SCORE COMPACTO -->
+                    <div class="stats-panel">
                         <div class="stats-header">HIGH SCORE</div>
-
-                        <div class="stats-section">
-                            <!-- TOTAL -->
-                            <div class="stat-card total">
-                                <span class="stat-label">TOTAL</span>
-                                <span class="stat-value" id="totalStats">0</span>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <span class="stat-label-small">TOTAL</span>
+                                <span class="stat-value-large" id="totalStats">4</span>
                             </div>
-
-                            <!-- TARJETA DE BUENOS -->
-                            <div class="stat-card player" data-type="good">
-                                <div class="player-badge">1UP</div>
-                                <div class="player-info">
-                                    <span class="player-icon good">B</span>
-                                    <span class="player-count good" id="buenosStats">0</span>
-                                </div>
-                                <div class="player-wins-container">
-                                    <span class="wins-label">🏆</span>
-                                    <span class="player-wins" id="victoriasBuenos">0</span>
-                                </div>
+                            <div class="stat-item">
+                                <span class="stat-label-small">⚔️</span>
+                                <span class="stat-value-large good" id="buenosStats">2</span>
                             </div>
-
-                            <!-- TARJETA DE MALOS -->
-                            <div class="stat-card player" data-type="bad">
-                                <div class="player-badge">2UP</div>
-                                <div class="player-info">
-                                    <span class="player-icon bad">M</span>
-                                    <span class="player-count bad" id="malosStats">0</span>
-                                </div>
-                                <div class="player-wins-container">
-                                    <span class="wins-label">🏆</span>
-                                    <span class="player-wins" id="victoriasMalos">0</span>
-                                </div>
+                            <div class="stat-item">
+                                <span class="stat-label-small">💀</span>
+                                <span class="stat-value-large bad" id="malosStats">2</span>
                             </div>
-
-                            <!-- BOTÓN REINICIO -->
-                            <button onclick="reiniciarVictorias()" class="reset-btn"
-                                title="Reiniciar victorias">↺</button>
+                            <div class="reset-btn-small" onclick="reiniciarVictorias()" title="Reiniciar victorias">↺
+                            </div>
                         </div>
                     </div>
+
+                    <!-- TARJETAS DE JUGADORES COMPACTAS -->
+                    <div class="players-row">
+                        <div class="player-card good">
+                            <div class="player-icon-small good">B</div>
+                            <div class="player-info-compact">
+                                <span class="player-label">1UP</span>
+                                <span class="player-number good" id="buenosStatsCard">2</span>
+                            </div>
+                            <div class="player-wins-compact">
+                                <span>🏆</span>
+                                <span id="victoriasBuenos">0</span>
+                            </div>
+                        </div>
+
+                        <div class="player-card bad">
+                            <div class="player-icon-small bad">M</div>
+                            <div class="player-info-compact">
+                                <span class="player-label">2UP</span>
+                                <span class="player-number bad" id="malosStatsCard">2</span>
+                            </div>
+                            <div class="player-wins-compact">
+                                <span>🏆</span>
+                                <span id="victoriasMalos">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CLASES VIVAS - CUADRÍCULA -->
+                    <div class="class-stats-panel">
+                        <div class="class-stats-header">📊 CLASES</div>
+                        <div class="class-stats-grid">
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">C</span>
+                                <span class="class-name-mini">Curandero</span>
+                                <span class="class-count-mini" id="curanderoCount">0</span>
+                            </div>
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">P</span>
+                                <span class="class-name-mini">Paladín</span>
+                                <span class="class-count-mini" id="paladinCount">2</span>
+                            </div>
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">W</span>
+                                <span class="class-name-mini">Mago</span>
+                                <span class="class-count-mini" id="magoCount">0</span>
+                            </div>
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">A</span>
+                                <span class="class-name-mini">Asesino</span>
+                                <span class="class-count-mini" id="asesinoCount">1</span>
+                            </div>
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">T</span>
+                                <span class="class-name-mini">Tanque</span>
+                                <span class="class-count-mini" id="tanqueCount">1</span>
+                            </div>
+                            <div class="class-stat-compact">
+                                <span class="class-icon-mini">U</span>
+                                <span class="class-name-mini">Brujo</span>
+                                <span class="class-count-mini" id="brujoCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMBATES - CUADRÍCULA -->
+                    <div class="combat-stats-panel">
+                        <div class="combat-stats-header">⚔️ COMBATES</div>
+                        <div class="combat-stats-grid">
+                            <div class="combat-stat-compact">
+                                <span class="combat-stat-label">Total</span>
+                                <span class="combat-stat-value" id="totalCombates">332</span>
+                            </div>
+                            <div class="combat-stat-compact">
+                                <span class="combat-stat-label">Daño</span>
+                                <span class="combat-stat-value" id="dañoTotal">1404</span>
+                            </div>
+                            <div class="combat-stat-compact">
+                                <span class="combat-stat-label">Muertes</span>
+                                <span class="combat-stat-value" id="totalMuertes">8</span>
+                            </div>
+                            <div class="combat-stat-compact">
+                                <span class="combat-stat-label">Vivos</span>
+                                <span class="combat-stat-value" id="supervivientes">4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TIEMPO COMPACTO -->
+                    <div class="time-panel">
+                        <span class="time-header">⏱️ TIEMPO: </span>
+                        <span class="time-display" id="tiempoPartida">00:00</span>
+                    </div>
+
                     <div class="bar-decoration bottom"></div>
                 </div>
             </div>

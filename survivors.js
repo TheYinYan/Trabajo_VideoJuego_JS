@@ -20,7 +20,13 @@ let anchuraActual = 0;
 let gameBoard = null;
 let logs = [];
 let filtroActivo = 'todos';
-let primerInicio = true; // Para controlar la primera vez
+
+// ===== NUEVAS VARIABLES PARA ESTADÍSTICAS =====
+let totalCombates = 0;
+let dañoTotal = 0;
+let totalMuertes = 0;
+let tiempoInicio = null;
+let intervaloReloj = null;
 
 // ===== CONSTANTES DE VELOCIDAD =====
 const VELOCIDADES = {
@@ -83,17 +89,27 @@ function validarBotonInicio() {
 
 // ===== FUNCIÓN PARA CALCULAR DIMENSIONES =====
 function recalcularDimensiones() {
-    if (!gameBoard) return;
+    if (!gameBoard) {
+        gameBoard = document.getElementById('gameBoard');
+        if (!gameBoard) return;
+    }
     
-    const boardWidth = gameBoard.clientWidth;
-    const boardHeight = gameBoard.clientHeight;
+    const container = document.querySelector('.game-board-container');
+    if (!container) return;
     
-    if (boardWidth === 0 || boardHeight === 0) return;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    if (containerWidth === 0 || containerHeight === 0) {
+        console.warn('⚠️ Contenedor sin dimensiones, reintentando...');
+        setTimeout(recalcularDimensiones, 50);
+        return;
+    }
     
     const MIN_CELL_SIZE = 16;
     
-    const maxCellsWidth = Math.floor(boardWidth / MIN_CELL_SIZE);
-    const maxCellsHeight = Math.floor(boardHeight / MIN_CELL_SIZE);
+    const maxCellsWidth = Math.floor(containerWidth / MIN_CELL_SIZE);
+    const maxCellsHeight = Math.floor(containerHeight / MIN_CELL_SIZE);
     
     alturaActual = Math.floor(maxCellsHeight * 0.8);
     anchuraActual = Math.floor(maxCellsWidth * 0.8);
@@ -103,6 +119,8 @@ function recalcularDimensiones() {
     
     alturaActual = Math.max(alturaActual, 8);
     anchuraActual = Math.max(anchuraActual, 8);
+    
+    console.log(`📏 Dimensiones calculadas: ${anchuraActual}x${alturaActual}`);
 }
 
 // ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
@@ -155,7 +173,7 @@ function generarPersonajeConClase(tipo, y, x) {
     }
 }
 
-// ===== FUNCIÓN DE COMBATE =====
+// ===== FUNCIÓN DE COMBATE CON ESTADÍSTICAS =====
 function combatirConClases(atacante, defensor) {
     let dañoPorcentaje;
     
@@ -176,8 +194,16 @@ function combatirConClases(atacante, defensor) {
         daño = defensor.recibirDaño(daño);
     }
     
+    // Registrar estadísticas
+    totalCombates++;
+    dañoTotal += daño;
+    
     const vidaAnterior = defensor.vida;
     defensor.vida = Math.max(defensor.vida - daño, 0);
+    
+    if (defensor.vida <= 0) {
+        totalMuertes++;
+    }
     
     const resultado = defensor.vida <= 0 ? '💀 ELIMINADO' : `❤️ ${defensor.vida} restante`;
     añadirLog(`⚔️ ${atacante.clase} ataca a ${defensor.clase}: ${daño} daño (${dañoPorcentaje}%) - ${resultado}`, 'combat');
@@ -187,6 +213,9 @@ function combatirConClases(atacante, defensor) {
         atacante.vida = Math.min(atacante.vida + vidaRobada, atacante.vidaMax);
         añadirLog(`🧙 Brujo roba ${vidaRobada} vida`, 'combat');
     }
+    
+    actualizarEstadisticasCombate();
+    actualizarEstadisticasClases();
     
     return defensor.vida <= 0;
 }
@@ -240,17 +269,17 @@ function aplicarColorCelda(cellDiv, celda) {
     }
 }
 
-// ===== FUNCIÓN PARA CREAR EL TABLERO =====
-function crearTablero() {
+// ===== FUNCIÓN PARA CREAR EL TABLERO CON DIMENSIONES =====
+function crearTableroConDimensiones(altura, anchura) {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
         if (!gameBoard) return;
     }
     
-    // Limpiar el tablero completamente
+    console.log(`📋 Creando tablero con dimensiones fijas: ${anchura}x${altura}`);
+    
     gameBoard.innerHTML = '';
     
-    // Configurar estilos del grid
     gameBoard.style.display = 'grid';
     gameBoard.style.gap = '1px';
     gameBoard.style.backgroundColor = '#24408e';
@@ -260,23 +289,33 @@ function crearTablero() {
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
     
-    // Asegurar que tenemos dimensiones
-    if (alturaActual === 0 || anchuraActual === 0) {
-        recalcularDimensiones();
+    const containerWidth = gameBoard.clientWidth;
+    const containerHeight = gameBoard.clientHeight;
+    
+    if (containerWidth === 0 || containerHeight === 0) {
+        console.warn('⚠️ Contenedor sin dimensiones, usando valores por defecto');
+        const cellSize = 24;
+        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
+        gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
+    } else {
+        const cellSizeByWidth = Math.floor(containerWidth / anchura);
+        const cellSizeByHeight = Math.floor(containerHeight / altura);
+        let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
+        cellSize = Math.max(cellSize, 14);
+        cellSize = Math.min(cellSize, 45);
+        
+        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
+        gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     }
     
-    console.log(`📋 Creando tablero ${alturaActual}x${anchuraActual}...`);
-    
-    // Crear todas las celdas
-    for (let i = 0; i < alturaActual; i++) {
-        for (let j = 0; j < anchuraActual; j++) {
+    for (let i = 0; i < altura; i++) {
+        for (let j = 0; j < anchura; j++) {
             const cellDiv = document.createElement('div');
             cellDiv.style.display = 'flex';
             cellDiv.style.alignItems = 'center';
             cellDiv.style.justifyContent = 'center';
             cellDiv.style.fontWeight = 'bold';
             
-            // Establecer contenido temporal
             cellDiv.textContent = '·';
             cellDiv.style.color = '#ffff00';
             cellDiv.style.backgroundColor = '#24408e';
@@ -285,10 +324,7 @@ function crearTablero() {
         }
     }
     
-    // Redimensionar al tamaño correcto
-    setTimeout(() => redimensionarTablero(), 10);
-    
-    console.log(`✅ Tablero creado con ${alturaActual * anchuraActual} celdas`);
+    console.log(`✅ Tablero creado con ${altura * anchura} celdas`);
 }
 
 // ===== FUNCIÓN PARA ACTUALIZAR TODO EL TABLERO =====
@@ -307,8 +343,6 @@ function actualizarTodoElTablero() {
         return;
     }
     
-    console.log(`🔄 Actualizando ${cells.length} celdas...`);
-    
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const index = i * anchura + j;
@@ -322,7 +356,6 @@ function actualizarTodoElTablero() {
     }
     
     actualizarContadoresVisuales();
-    console.log('✅ Tablero actualizado correctamente');
 }
 
 // ===== FUNCIÓN PARA ACTUALIZAR UNA CELDA =====
@@ -452,6 +485,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
     }
     
     actualizarContadoresVisuales();
+    actualizarEstadisticasClases();
+    actualizarEstadisticasCombate();
     
     if (Buenos.getnBuenos() <= 0 || Malos.getnMalos() <= 0) {
         detenerSimulacion();
@@ -459,11 +494,18 @@ function actualizarJuego(altura, anchura, nPersonajes) {
     }
 }
 
-// ===== FUNCIÓN INICIAR SIMULACIÓN (CORREGIDA) =====
+// ===== FUNCIÓN INICIAR SIMULACIÓN =====
 function iniciarSimulacion() {
     console.log('🎮 INICIANDO SIMULACIÓN...');
     detenerSimulacion();
     simulacionPausada = false;
+    
+    // Resetear estadísticas
+    totalCombates = 0;
+    dañoTotal = 0;
+    totalMuertes = 0;
+    detenerReloj();
+    iniciarReloj();
     
     // Resetear contadores
     Personajes.setnPersonajes(0);
@@ -476,7 +518,6 @@ function iniciarSimulacion() {
     const anchura = anchuraActual;
     const totalCeldas = altura * anchura;
     
-    // Determinar número de personajes según opción
     let nPersonajes;
     if (opcionSeleccionada === 1) {
         nPersonajes = nPersonajesConfig;
@@ -494,11 +535,9 @@ function iniciarSimulacion() {
     
     nPersonajesActual = nPersonajes;
     
-    // Crear arrays del juego
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     
-    // Generar obstáculos (1%)
     const numObstaculos = Math.floor(totalCeldas * 0.01);
     for (let i = 0; i < numObstaculos; i++) {
         let x, y;
@@ -510,7 +549,6 @@ function iniciarSimulacion() {
     }
     añadirLog(`🧱 Obstáculos: ${numObstaculos}`, 'system');
     
-    // Generar personajes con clases
     for (let i = 0; i < nPersonajes; i++) {
         let x, y;
         do {
@@ -529,37 +567,25 @@ function iniciarSimulacion() {
     
     añadirLog(`👥 Buenos: ${Buenos.getnBuenos()} | Malos: ${Malos.getnMalos()}`, 'system');
     
-    // Crear el tablero
-    crearTablero();
+    crearTableroConDimensiones(altura, anchura);
     
-    // FORZAR MÚLTIPLES ACTUALIZACIONES para asegurar que se ve
     setTimeout(() => {
-        console.log('🔄 Primera actualización del tablero...');
         actualizarTodoElTablero();
+        redimensionarTablero();
+        actualizarEstadisticasClases();
+        actualizarEstadisticasCombate();
     }, 50);
     
     setTimeout(() => {
-        console.log('🔄 Segunda actualización del tablero (por si acaso)...');
         actualizarTodoElTablero();
+        redimensionarTablero();
     }, 150);
     
-    setTimeout(() => {
-        console.log('🔄 Tercera actualización del tablero (aseguramiento)...');
-        actualizarTodoElTablero();
-        // También forzar redimensionamiento
-        redimensionarTablero();
-    }, 300);
-    
-    // Ocultar game over y mostrar controles
     document.getElementById('gameOverPanel').classList.add('hidden');
     document.getElementById('simulationControls').classList.remove('hidden');
     
-    // Iniciar el intervalo del juego
     intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
     añadirLog('▶️ Batalla comenzada', 'system');
-    
-    // Marcar que ya no es el primer inicio
-    primerInicio = false;
 }
 
 // ===== FUNCIONES DE CONTROL =====
@@ -614,6 +640,66 @@ function actualizarIndicadorVelocidad() {
     }
 }
 
+// ===== FUNCIONES DE RELOJ =====
+function iniciarReloj() {
+    tiempoInicio = Date.now();
+    if (intervaloReloj) clearInterval(intervaloReloj);
+    
+    intervaloReloj = setInterval(() => {
+        if (!arrayEntidades || simulacionPausada) return;
+        
+        const tiempoTranscurrido = Math.floor((Date.now() - tiempoInicio) / 1000);
+        const minutos = Math.floor(tiempoTranscurrido / 60).toString().padStart(2, '0');
+        const segundos = (tiempoTranscurrido % 60).toString().padStart(2, '0');
+        
+        const relojDisplay = document.getElementById('tiempoPartida');
+        if (relojDisplay) {
+            relojDisplay.textContent = `${minutos}:${segundos}`;
+        }
+    }, 1000);
+}
+
+function detenerReloj() {
+    if (intervaloReloj) {
+        clearInterval(intervaloReloj);
+        intervaloReloj = null;
+    }
+}
+
+// ===== FUNCIONES DE ESTADÍSTICAS =====
+function actualizarEstadisticasClases() {
+    if (!arrayEntidades) return;
+    
+    let curanderos = 0, paladines = 0, magos = 0;
+    let asesinos = 0, tanques = 0, brujos = 0;
+    
+    for (let i = 0; i < arrayPersonajes.length; i++) {
+        const p = arrayPersonajes[i];
+        if (!p) continue;
+        
+        if (p instanceof Curandero) curanderos++;
+        else if (p instanceof Paladin) paladines++;
+        else if (p instanceof Mago) magos++;
+        else if (p instanceof Asesino) asesinos++;
+        else if (p instanceof Tanque) tanques++;
+        else if (p instanceof Brujo) brujos++;
+    }
+    
+    document.getElementById('curanderoCount').textContent = curanderos;
+    document.getElementById('paladinCount').textContent = paladines;
+    document.getElementById('magoCount').textContent = magos;
+    document.getElementById('asesinoCount').textContent = asesinos;
+    document.getElementById('tanqueCount').textContent = tanques;
+    document.getElementById('brujoCount').textContent = brujos;
+}
+
+function actualizarEstadisticasCombate() {
+    document.getElementById('totalCombates').textContent = totalCombates;
+    document.getElementById('dañoTotal').textContent = dañoTotal;
+    document.getElementById('totalMuertes').textContent = totalMuertes;
+    document.getElementById('supervivientes').textContent = Personajes.getnPersonajes() || 0;
+}
+
 // ===== FUNCIONES DE MONEDAS =====
 function insertCoin() {
     coins++;
@@ -652,19 +738,15 @@ function useCoin() {
 }
 
 function actualizarCoinDisplay() {
-    // Actualizar contador de la marquesina
     const gameCoinEl = document.getElementById('gameCoinCount');
     if (gameCoinEl) gameCoinEl.textContent = coins;
     
-    // Actualizar contador del panel de control
     const panelCoinEl = document.getElementById('panelCoinCount');
     if (panelCoinEl) panelCoinEl.textContent = coins;
     
-    // Actualizar contador del menú principal
     const menuCoinEl = document.getElementById('coinCount');
     if (menuCoinEl) menuCoinEl.textContent = coins;
     
-    // Actualizar contador de game over
     actualizarGameOverCoins();
     actualizarBotonReintentar();
 }
@@ -736,7 +818,6 @@ function cargarVictorias() {
     
     actualizarVictoriasVisuales();
     
-    // Asegurar que los contadores de monedas se inicializan
     coins = 0;
     actualizarCoinDisplay();
 }
@@ -778,7 +859,9 @@ function iniciarJuego() {
     document.getElementById('menuScreen').classList.add('hidden');
     document.getElementById('arcadeMachine').classList.remove('hidden');
     
-    iniciarSimulacion();
+    setTimeout(() => {
+        iniciarSimulacion();
+    }, 50);
 }
 
 function reintentarPartida() {
@@ -818,6 +901,8 @@ function mostrarResultado() {
         añadirLog(`✨ BUENOS GANAN - Victoria #${victoriasBuenos}`, 'victory');
     }
     
+    actualizarEstadisticasCombate();
+    
     guardarVictorias();
     actualizarVictoriasVisuales();
     
@@ -834,10 +919,12 @@ function mostrarResultado() {
     document.getElementById('simulationControls').classList.add('hidden');
     
     actualizarBotonReintentar();
+    detenerReloj();
 }
 
 function volverAlMenu() {
     detenerSimulacion();
+    detenerReloj();
     
     opcionSeleccionada = null;
     nPersonajesConfig = null;
@@ -853,12 +940,10 @@ function volverAlMenu() {
     document.getElementById('nPersonajesRow').classList.add('hidden');
     document.getElementById('startBtn').disabled = true;
     
-    // Resetear contadores de personajes
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     
-    // Actualizar contadores visuales
     actualizarContadoresVisuales();
     actualizarCoinDisplay();
     
