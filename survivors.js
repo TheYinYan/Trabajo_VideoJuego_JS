@@ -28,6 +28,60 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarCoinDisplay();
 });
 
+// ===== MODO AUTOMÁTICO - CALCULAR DIMENSIONES ÓPTIMAS =====
+function calcularDimensionesOptimas() {
+    // Usamos el contenedor del tablero para las medidas
+    const container = document.getElementById('tableroContainer');
+    
+    // Si no existe el contenedor, usamos dimensiones por defecto
+    if (!container) {
+        return { anchura: 40, altura: 20 };
+    }
+    
+    // Obtener dimensiones del contenedor
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    // Tamaño mínimo de celda para legibilidad
+    const MIN_CELL_SIZE = 16;
+    
+    // Calcular el máximo ancho posible
+    const maxAnchura = Math.floor(containerWidth / MIN_CELL_SIZE);
+    
+    // Calcular la altura adecuada
+    const alturaOptima = Math.floor(containerHeight / MIN_CELL_SIZE);
+    
+    // Limitar a rangos razonables (pares)
+    let anchuraFinal = Math.min(Math.max(maxAnchura, 20), 60);
+    let alturaFinal = Math.min(Math.max(alturaOptima, 10), 35);
+    
+    // Asegurar que sean pares
+    if (anchuraFinal % 2 !== 0) anchuraFinal--;
+    if (alturaFinal % 2 !== 0) alturaFinal--;
+    
+    return {
+        anchura: anchuraFinal,
+        altura: alturaFinal
+    };
+}
+
+// ===== APLICAR DIMENSIONES AUTOMÁTICAS =====
+function aplicarDimensionesAutomaticas() {
+    const dimensiones = calcularDimensionesOptimas();
+    
+    document.getElementById('alturaInput').value = dimensiones.altura;
+    document.getElementById('anchuraInput').value = dimensiones.anchura;
+    
+    alturaActual = dimensiones.altura;
+    anchuraActual = dimensiones.anchura;
+    
+    // Mostrar mensaje en consola
+    console.log(`📐 Modo automático: ${dimensiones.anchura} x ${dimensiones.altura}`);
+    
+    // Validar inputs después de cambiar
+    validarInputs();
+}
+
 // ===== SISTEMA DE MONEDAS =====
 function insertCoin() {
     coins++;
@@ -54,7 +108,13 @@ function useCoin() {
     if (coins > 0) {
         coins--;
         actualizarCoinDisplay();
-        iniciarJuego();
+        
+        // Si estamos en game over, reintentar directamente
+        if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+            reintentarPartida();
+        } else {
+            iniciarJuego();
+        }
     } else {
         alert('¡INSERTA UNA MONEDA PRIMERO! 🪙');
     }
@@ -65,21 +125,32 @@ function actualizarCoinDisplay() {
     document.getElementById('gameCoinCount').textContent = coins;
     actualizarGameOverCoins();
     
-    // Actualizar estado del botón REINTENTAR si game over está visible
-    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-        const retryBtn = document.getElementById('gameOverRetry');
-        if (coins <= 0) {
-            retryBtn.classList.add('disabled');
-        } else {
-            retryBtn.classList.remove('disabled');
-        }
-    }
+    // Actualizar botón REINTENTAR
+    actualizarBotonReintentar();
 }
 
 function actualizarGameOverCoins() {
     const gameOverCoinSpan = document.getElementById('gameOverCoinCount');
     if (gameOverCoinSpan) {
         gameOverCoinSpan.textContent = coins;
+    }
+}
+
+// Actualizar estado del botón REINTENTAR
+function actualizarBotonReintentar() {
+    const retryBtn = document.getElementById('gameOverRetry');
+    if (!retryBtn) return;
+    
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        if (coins <= 0) {
+            retryBtn.classList.add('disabled');
+            retryBtn.style.pointerEvents = 'none';
+            retryBtn.style.opacity = '0.5';
+        } else {
+            retryBtn.classList.remove('disabled');
+            retryBtn.style.pointerEvents = 'auto';
+            retryBtn.style.opacity = '1';
+        }
     }
 }
 
@@ -230,7 +301,7 @@ function iniciarSimulacion() {
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     
-    // Generar obstáculos
+    // Generar obstáculos (1% del área)
     for (let i = 0; i < Math.floor(altura * anchura * 0.01); i++) {
         let x, y;
         do {
@@ -264,6 +335,7 @@ function iniciarSimulacion() {
     intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
 
+// ===== FUNCIÓN PRINCIPAL DEL JUEGO =====
 function actualizarJuego(altura, anchura, nPersonajes) {
     // Asignar enemigos cercanos
     for (let i = 0; i < nPersonajes; i++) {
@@ -355,49 +427,64 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // ===== TABLERO SIMPLE - USA EL TAMAÑO QUE EL DIV PERMITE =====
+    // ===== TABLERO CON CÁLCULO INTELIGENTE =====
     const container = document.getElementById('tableroContainer');
     
-    // Obtener dimensiones del contenedor
+    // Obtener dimensiones exactas del contenedor
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     
-    // Calcular tamaño de celda basado en EL MÍNIMO entre ancho y alto
-    // para que quepa todo el tablero en el espacio disponible
-    const cellSizeByWidth = Math.floor(containerWidth / anchura);
-    const cellSizeByHeight = Math.floor(containerHeight / altura);
+    // Tamaño mínimo y máximo de celda
+    const MIN_CELL_SIZE = 14;
+    const MAX_CELL_SIZE = 40;
     
-    // Usar el tamaño más pequeño para asegurar que quepa
+    // Calcular tamaño basado en ANCHO
+    let cellSizeByWidth = Math.floor(containerWidth / anchura);
+    
+    // Calcular tamaño basado en ALTURA
+    let cellSizeByHeight = Math.floor(containerHeight / altura);
+    
+    // Usar el tamaño más pequeño para que quepa todo
     let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
     
-    // Tamaño mínimo para legibilidad
-    cellSize = Math.max(cellSize, 10);
+    // Limitar a rangos
+    cellSize = Math.max(cellSize, MIN_CELL_SIZE);
+    cellSize = Math.min(cellSize, MAX_CELL_SIZE);
     
-    // Crear el tablero con grid
-    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 1px; background-color: #222; padding: 2px; border-radius: 5px;">`;
+    // Crear el grid con estilo Pac-Man
+    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 0; margin: 0 auto;">`;
     
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const celda = arrayEntidades[i][j];
-            let color = '#666';
-            let text = '·';
-            let shadow = 'none';
             
-            if (celda instanceof Buenos) {
-                color = '#00ff00';
+            let bgColor = '#24408e';
+            let color = '#ffffff';
+            let text = '';
+            let shadow = 'none';
+            let borderRadius = '0';
+            
+            if (!celda) {
+                color = '#ffff00';
+                text = '·';
+                shadow = '0 0 5px #ffff00';
+                borderRadius = '50%';
+            } else if (celda instanceof Buenos) {
+                color = '#ffff00';
                 text = 'B';
-                shadow = '0 0 10px #00ff00';
+                shadow = '0 0 8px #ffff00';
             } else if (celda instanceof Malos) {
                 color = '#ff0000';
                 text = 'M';
-                shadow = '0 0 10px #ff0000';
+                shadow = '0 0 8px #ff0000';
             } else if (celda instanceof Obstaculos) {
-                color = '#ffff00';
-                text = '#';
-                shadow = '0 0 5px #ffff00';
+                bgColor = '#0a1a4a';
+                color = '#4a6c8f';
+                text = '█';
+                shadow = 'none';
             }
             
-            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: #000; color: ${color}; text-shadow: ${shadow}; font-size: ${cellSize * 0.6}px; font-weight: bold;">${text}</div>`;
+            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: ${bgColor}; color: ${color}; text-shadow: ${shadow}; font-size: ${Math.floor(cellSize * 0.7)}px; font-weight: bold; border-radius: ${borderRadius};">${text}</div>`;
         }
     }
     
@@ -444,30 +531,26 @@ function ajustarVelocidad(cambio) {
 
 // ===== FUNCIÓN PARA REINTENTAR PARTIDA =====
 function reintentarPartida() {
-    if (coins > 0) {
-        // Gastar una moneda
-        coins--;
-        actualizarCoinDisplay();
-        
-        // Cerrar game over
-        document.getElementById('gameOverPanel').classList.add('hidden');
-        
-        // Resetear contadores de partida
-        Personajes.setnPersonajes(0);
-        Buenos.setnBuenos(0);
-        Malos.setnMalos(0);
-        actualizarContadoresVisuales();
-        
-        // Iniciar nueva simulación
-        iniciarSimulacion();
-    } else {
-        // Mostrar mensaje de que no hay monedas
+    if (coins <= 0) {
         const msg = document.getElementById('noCoinsMessage');
         if (msg) {
             msg.classList.remove('hidden');
             setTimeout(() => msg.classList.add('hidden'), 2000);
         }
+        return;
     }
+    
+    coins--;
+    actualizarCoinDisplay();
+    
+    document.getElementById('gameOverPanel').classList.add('hidden');
+    
+    Personajes.setnPersonajes(0);
+    Buenos.setnBuenos(0);
+    Malos.setnMalos(0);
+    actualizarContadoresVisuales();
+    
+    iniciarSimulacion();
 }
 
 // ===== MOSTRAR RESULTADO =====
@@ -488,45 +571,32 @@ function mostrarResultado() {
     document.getElementById('resultadoBuenos').textContent = buenos;
     document.getElementById('resultadoMalos').textContent = malos;
     
-    // Actualizar monedas en game over
     actualizarGameOverCoins();
-    
-    // Deshabilitar REINTENTAR si no hay monedas
-    const retryBtn = document.getElementById('gameOverRetry');
-    if (retryBtn) {
-        if (coins <= 0) {
-            retryBtn.classList.add('disabled');
-        } else {
-            retryBtn.classList.remove('disabled');
-        }
-    }
     
     document.getElementById('gameOverPanel').classList.remove('hidden');
     document.getElementById('simulationControls').classList.add('hidden');
+    
+    actualizarBotonReintentar();
 }
 
 // ===== VOLVER AL MENÚ =====
 function volverAlMenu() {
     detenerSimulacion();
     
-    // Resetear todo
     opcionSeleccionada = null;
     nPersonajesConfig = null;
     arrayEntidades = null;
     arrayPersonajes = null;
     
-    // Volver al menú
     document.getElementById('arcadeMachine').classList.add('hidden');
     document.getElementById('menuScreen').classList.remove('hidden');
     
-    // Resetear selecciones
     document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.classList.remove('selected');
     });
     document.getElementById('nPersonajesRow').classList.add('hidden');
     document.getElementById('startBtn').disabled = true;
     
-    // Resetear contadores
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
@@ -547,3 +617,4 @@ window.volverAlMenu = volverAlMenu;
 window.insertCoin = insertCoin;
 window.useCoin = useCoin;
 window.reintentarPartida = reintentarPartida;
+window.aplicarDimensionesAutomaticas = aplicarDimensionesAutomaticas;

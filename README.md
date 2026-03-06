@@ -8,6 +8,14 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 ---
 
+# Pedir a la IA
+
+- Dame el index y el css
+- Que mede los estilos de pacman para todo el css para que pege con el tablero pero para un aopcion llamada Pacman y otra con el tablero con el color que pege con la el css usado normal si los colores de Pacman
+- Que el board-grid ocupe todo board-container
+
+---
+
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
@@ -43,6 +51,7 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 ## 🎮 DESCRIPCIÓN DEL JUEGO
 
 **Survivors** es una simulación de batalla entre dos bandos:
+
 - **Buenos (B)** - Representados en color verde 🟢
 - **Malos (M)** - Representados en color rojo 🔴
 - **Obstáculos (#)** - Elementos estáticos que bloquean el paso
@@ -68,7 +77,7 @@ Los personajes se mueven aleatoriamente por el tablero, pero cuando detectan un 
 
 ```
 survivors-js/
-│   
+│
 ├── 📄 index.html                          # Interfaz de usuario
 ├── 📁 css/
 │   └── 📄 style.css                        # Estilos visuales
@@ -110,15 +119,17 @@ survivors-js/
 Puedes jugar directamente desde GitHub Pages sin necesidad de descargar nada:
 
 #### **Opción 1: Acceso directo**
+
 👉 **[JUGAR AHORA - SURVIVORS ONLINE](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)**
 
 #### **Opción 2: A través de Deployments**
+
 1. Ve a la sección **"Deployments"** del repositorio (donde está la imagen)
-   
+
    ![Deployments](assets/images/images_README/deployments.png)
 
 2. Haz clic en el enlace de **github-pages** que aparece en rojo
-   
+
    ![GitHub Pages](assets/images/images_README/github-pages.png)
 
 3. ¡A jugar! El juego se abrirá directamente en tu navegador
@@ -144,14 +155,14 @@ Puedes jugar directamente desde GitHub Pages sin necesidad de descargar nada:
 
 ## 🎮 CONTROLES DEL JUEGO
 
-| Botón | Función | Descripción |
-|-------|---------|-------------|
-| **▶ COMENZAR** | `iniciarSimulacion()` | Inicia una nueva batalla |
-| **⏹ PAUSAR** | `detenerSimulacion()` | Pausa la simulación actual |
-| **▶ CONTINUAR** | `continuarSimulacion()` | Reanuda la simulación pausada |
-| **↺ REINICIAR** | `volverAlMenu()` | Vuelve al menú principal |
-| **⚡ - / ⚡ +** | `ajustarVelocidad()` | Cambia la velocidad de la simulación |
-| **↺ (en victorias)** | `reiniciarVictorias()` | Resetea los contadores de victorias |
+| Botón                | Función                 | Descripción                          |
+| -------------------- | ----------------------- | ------------------------------------ |
+| **▶ COMENZAR**       | `iniciarSimulacion()`   | Inicia una nueva batalla             |
+| **⏹ PAUSAR**         | `detenerSimulacion()`   | Pausa la simulación actual           |
+| **▶ CONTINUAR**      | `continuarSimulacion()` | Reanuda la simulación pausada        |
+| **↺ REINICIAR**      | `volverAlMenu()`        | Vuelve al menú principal             |
+| **⚡ - / ⚡ +**      | `ajustarVelocidad()`    | Cambia la velocidad de la simulación |
+| **↺ (en victorias)** | `reiniciarVictorias()`  | Resetea los contadores de victorias  |
 
 ---
 
@@ -161,19 +172,20 @@ Puedes jugar directamente desde GitHub Pages sin necesidad de descargar nada:
 
 El HTML define la estructura visual del juego con **IDs específicos** que JavaScript utiliza para interactuar:
 
-| ID | Propósito |
-|----|-----------|
-| `totalStats`, `buenosStats`, `malosStats` | Contadores que se actualizan |
-| `victoriasBuenos`, `victoriasMalos` | Contadores de victorias globales |
-| `menuPanel` | Panel de configuración (se oculta/muestra) |
-| `tablero` | Contenedor del tablero (se oculta/muestra) |
-| `tableroContainer` | Donde se pinta el tablero |
-| `resultadoPanel` | Panel de resultados |
-| `startBtn` | Botón de inicio |
-| `alturaInput`, `anchuraInput` | Inputs de dimensiones |
-| `btnPausa`, `btnContinuar` | Botones de control de simulación |
+| ID                                        | Propósito                                  |
+| ----------------------------------------- | ------------------------------------------ |
+| `totalStats`, `buenosStats`, `malosStats` | Contadores que se actualizan               |
+| `victoriasBuenos`, `victoriasMalos`       | Contadores de victorias globales           |
+| `menuPanel`                               | Panel de configuración (se oculta/muestra) |
+| `tablero`                                 | Contenedor del tablero (se oculta/muestra) |
+| `tableroContainer`                        | Donde se pinta el tablero                  |
+| `resultadoPanel`                          | Panel de resultados                        |
+| `startBtn`                                | Botón de inicio                            |
+| `alturaInput`, `anchuraInput`             | Inputs de dimensiones                      |
+| `btnPausa`, `btnContinuar`                | Botones de control de simulación           |
 
 **Conceptos clave:**
+
 - `class="hidden"` - Clase utility para ocultar elementos
 - `id=""` - Identificador único para JavaScript
 - `onclick=""` - Evento que llama a funciones JavaScript
@@ -185,127 +197,152 @@ El CSS utiliza **variables** y **media queries** para adaptarse a diferentes pan
 ```css
 /* Variables CSS para facilitar cambios */
 :root {
-    --color-neon-blue: #00ffff;
-    --color-neon-green: #00ff00;
-    --color-neon-red: #ff0000;
-    --color-gold: #ffd700;
-    --spacing-md: clamp(15px, 3vw, 25px);
+  --color-neon-blue: #00ffff;
+  --color-neon-green: #00ff00;
+  --color-neon-red: #ff0000;
+  --color-gold: #ffd700;
+  --spacing-md: clamp(15px, 3vw, 25px);
 }
 
 /* Panel de victorias */
 .victorias-panel {
-    background: rgba(10, 10, 20, 0.8);
-    border: 2px solid gold;
-    box-shadow: 0 0 20px gold;
+  background: rgba(10, 10, 20, 0.8);
+  border: 2px solid gold;
+  box-shadow: 0 0 20px gold;
 }
 
 /* Animación de victoria */
 @keyframes victoriaPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 /* Media queries para responsive */
 @media (max-width: 768px) {
-    .options-grid {
-        grid-template-columns: 1fr;
-    }
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
 }
 ```
 
 ### 3. Clases JavaScript
 
 #### [Entidad.js - Clase Base](Entidades/Entidad.js)
+
 ```javascript
 class Entidad {
-    constructor(y, x, vx, vy) {
-        this.y = y;  // Posición Y
-        this.x = x;  // Posición X
-        this.vy = vy; // Velocidad Y
-        this.vx = vx; // Velocidad X
-    }
-    
-    distanciaCon(ent) {
-        return Math.sqrt(Math.pow(this.x - ent.x, 2) + Math.pow(this.y - ent.y, 2));
-    }
-    
-    mover(ancho, alto, arrayEntidades) {
-        // Movimiento aleatorio en 8 direcciones
-        const direcciones = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
-        // Lógica de movimiento...
-    }
+  constructor(y, x, vx, vy) {
+    this.y = y; // Posición Y
+    this.x = x; // Posición X
+    this.vy = vy; // Velocidad Y
+    this.vx = vx; // Velocidad X
+  }
+
+  distanciaCon(ent) {
+    return Math.sqrt(Math.pow(this.x - ent.x, 2) + Math.pow(this.y - ent.y, 2));
+  }
+
+  mover(ancho, alto, arrayEntidades) {
+    // Movimiento aleatorio en 8 direcciones
+    const direcciones = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ];
+    // Lógica de movimiento...
+  }
 }
 ```
 
 #### [Personajes.js](Entidades/Personajes.js)
+
 ```javascript
 class Personajes extends Entidad {
-    static nPersonajes = 0; // Variable estática
-    
-    constructor(y, x, vx, vy) {
-        super(y, x, vx, vy);
-        this.vida = Math.floor(Math.random() * 91) + 10; // Vida entre 10-100
-        Personajes.nPersonajes++;
-    }
+  static nPersonajes = 0; // Variable estática
+
+  constructor(y, x, vx, vy) {
+    super(y, x, vx, vy);
+    this.vida = Math.floor(Math.random() * 91) + 10; // Vida entre 10-100
+    Personajes.nPersonajes++;
+  }
 }
 ```
 
 #### [Buenos.js](Entidades/Buenos.js)
+
 ```javascript
 class Buenos extends Personajes {
-    static nBuenos = 0;
-    
-    constructor(y, x) {
-        super(y, x, 1, 1);
-        this.malos = null; // Referencia al malo más cercano
-        Buenos.nBuenos++;
+  static nBuenos = 0;
+
+  constructor(y, x) {
+    super(y, x, 1, 1);
+    this.malos = null; // Referencia al malo más cercano
+    Buenos.nBuenos++;
+  }
+
+  mover(ancho, alto, arrayEntidades) {
+    if (this.malos && this.estaCercaDe(this.malos, 10)) {
+      // Persigue al malo (lógica de persecución)
+      if (this.x < this.malos.x) this.setVx(-1);
+      // ...
+    } else {
+      super.mover(ancho, alto, arrayEntidades);
     }
-    
-    mover(ancho, alto, arrayEntidades) {
-        if (this.malos && this.estaCercaDe(this.malos, 10)) {
-            // Persigue al malo (lógica de persecución)
-            if (this.x < this.malos.x) this.setVx(-1);
-            // ...
-        } else {
-            super.mover(ancho, alto, arrayEntidades);
-        }
-    }
-    
-    toString() { return 'B'; }
+  }
+
+  toString() {
+    return "B";
+  }
 }
 ```
 
 #### [Malos.js](Entidades/Malos.js)
+
 ```javascript
 class Malos extends Personajes {
-    static nMalos = 0;
-    
-    constructor(y, x) {
-        super(y, x, 1, 1);
-        this.bueno = null; // Referencia al bueno más cercano
-        Malos.nMalos++;
+  static nMalos = 0;
+
+  constructor(y, x) {
+    super(y, x, 1, 1);
+    this.bueno = null; // Referencia al bueno más cercano
+    Malos.nMalos++;
+  }
+
+  mover(ancho, alto, arrayEntidades) {
+    // Lógica similar a Buenos pero con direcciones invertidas
+    if (this.bueno && this.estaCercaDe(this.bueno, 10)) {
+      if (this.x < this.bueno.x) this.setVx(1); // Hacia la derecha
+      // ...
     }
-    
-    mover(ancho, alto, arrayEntidades) {
-        // Lógica similar a Buenos pero con direcciones invertidas
-        if (this.bueno && this.estaCercaDe(this.bueno, 10)) {
-            if (this.x < this.bueno.x) this.setVx(1); // Hacia la derecha
-            // ...
-        }
-    }
-    
-    toString() { return 'M'; }
+  }
+
+  toString() {
+    return "M";
+  }
 }
 ```
 
 #### [Obstaculos.js](Entidades/Obstaculos.js)
+
 ```javascript
 class Obstaculos extends Entidad {
-    constructor(y, x) {
-        super(y, x, 0, 0); // No se mueve
-    }
-    
-    toString() { return '#'; }
+  constructor(y, x) {
+    super(y, x, 0, 0); // No se mueve
+  }
+
+  toString() {
+    return "#";
+  }
 }
 ```
 
@@ -313,44 +350,63 @@ class Obstaculos extends Entidad {
 
 ```javascript
 const Funciones = {
-    numPorcent(altura, anchura) {
-        return Math.floor(Math.random() * (altura * anchura * 0.005)) + 1;
-    },
-    
-    generador(altura, anchura, arrayEntidades, arrayPersonajes, nPersonajes, porBuenos, opcion) {
-        this.generadorEntidades(altura, anchura, arrayEntidades, 0.01);
-        // Genera personajes según opción...
-    },
-    
-    pintarTablero(altura, anchura, arrayEntidades) {
-        let sb = '╔' + '═'.repeat(anchura) + '╗\n';
-        for (let i = 0; i < altura; i++) {
-            sb += '║';
-            for (let j = 0; j < anchura; j++) {
-                const celda = arrayEntidades[i][j];
-                if (celda === null) sb += ' ';
-                else if (celda instanceof Buenos) sb += `<span style="color: #00ff00">${celda}</span>`;
-                else if (celda instanceof Malos) sb += `<span style="color: #ff0000">${celda}</span>`;
-                else if (celda instanceof Obstaculos) sb += celda;
-            }
-            sb += '║\n';
-        }
-        sb += '╚' + '═'.repeat(anchura) + '╝';
-        return '<div class="board-content">' + sb + '</div>';
-    },
-    
-    eliminarPersonaje(nPersonajes, arrayPersonajes, arrayEntidades, entidad, x, y) {
-        for (let i = 0; i < nPersonajes; i++) {
-            if (arrayPersonajes[i] === entidad) {
-                arrayPersonajes[i] = null;
-                arrayEntidades[y][x] = null;
-                Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
-                if (entidad instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
-                else if (entidad instanceof Malos) Malos.setnMalos(Malos.getnMalos() - 1);
-                break;
-            }
-        }
+  numPorcent(altura, anchura) {
+    return Math.floor(Math.random() * (altura * anchura * 0.005)) + 1;
+  },
+
+  generador(
+    altura,
+    anchura,
+    arrayEntidades,
+    arrayPersonajes,
+    nPersonajes,
+    porBuenos,
+    opcion,
+  ) {
+    this.generadorEntidades(altura, anchura, arrayEntidades, 0.01);
+    // Genera personajes según opción...
+  },
+
+  pintarTablero(altura, anchura, arrayEntidades) {
+    let sb = "╔" + "═".repeat(anchura) + "╗\n";
+    for (let i = 0; i < altura; i++) {
+      sb += "║";
+      for (let j = 0; j < anchura; j++) {
+        const celda = arrayEntidades[i][j];
+        if (celda === null) sb += " ";
+        else if (celda instanceof Buenos)
+          sb += `<span style="color: #00ff00">${celda}</span>`;
+        else if (celda instanceof Malos)
+          sb += `<span style="color: #ff0000">${celda}</span>`;
+        else if (celda instanceof Obstaculos) sb += celda;
+      }
+      sb += "║\n";
     }
+    sb += "╚" + "═".repeat(anchura) + "╝";
+    return '<div class="board-content">' + sb + "</div>";
+  },
+
+  eliminarPersonaje(
+    nPersonajes,
+    arrayPersonajes,
+    arrayEntidades,
+    entidad,
+    x,
+    y,
+  ) {
+    for (let i = 0; i < nPersonajes; i++) {
+      if (arrayPersonajes[i] === entidad) {
+        arrayPersonajes[i] = null;
+        arrayEntidades[y][x] = null;
+        Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
+        if (entidad instanceof Buenos)
+          Buenos.setnBuenos(Buenos.getnBuenos() - 1);
+        else if (entidad instanceof Malos)
+          Malos.setnMalos(Malos.getnMalos() - 1);
+        break;
+      }
+    }
+  },
 };
 ```
 
@@ -365,41 +421,44 @@ let victoriasBuenos = 0;
 let victoriasMalos = 0;
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    calcularDimensionesRecomendadas();
-    cargarVictorias(); // Carga victorias guardadas
-    // Configurar event listeners...
+document.addEventListener("DOMContentLoaded", () => {
+  calcularDimensionesRecomendadas();
+  cargarVictorias(); // Carga victorias guardadas
+  // Configurar event listeners...
 });
 
 // Funciones de control
 function detenerSimulacion() {
-    if (intervaloSimulacion) {
-        clearInterval(intervaloSimulacion);
-        intervaloSimulacion = null;
-        simulacionPausada = true;
-        console.log('⏸️ Simulación pausada');
-    }
+  if (intervaloSimulacion) {
+    clearInterval(intervaloSimulacion);
+    intervaloSimulacion = null;
+    simulacionPausada = true;
+    console.log("⏸️ Simulación pausada");
+  }
 }
 
 function continuarSimulacion() {
-    if (simulacionPausada && arrayEntidades && arrayPersonajes) {
-        intervaloSimulacion = setInterval(
-            () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual), 
-            velocidadActual
-        );
-        simulacionPausada = false;
-        console.log('▶️ Simulación reanudada');
-    }
+  if (simulacionPausada && arrayEntidades && arrayPersonajes) {
+    intervaloSimulacion = setInterval(
+      () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual),
+      velocidadActual,
+    );
+    simulacionPausada = false;
+    console.log("▶️ Simulación reanudada");
+  }
 }
 
 function limpiarConsola(titulo = null) {
-    console.clear();
-    console.log('%c' + '═'.repeat(50), 'color: #00ffff');
-    if (titulo) {
-        console.log(`%c${titulo}`, 'color: #00ffff; font-size: 14px; font-weight: bold');
-        console.log('%c' + '═'.repeat(50), 'color: #00ffff');
-    }
-    console.log('');
+  console.clear();
+  console.log("%c" + "═".repeat(50), "color: #00ffff");
+  if (titulo) {
+    console.log(
+      `%c${titulo}`,
+      "color: #00ffff; font-size: 14px; font-weight: bold",
+    );
+    console.log("%c" + "═".repeat(50), "color: #00ffff");
+  }
+  console.log("");
 }
 ```
 
@@ -440,11 +499,11 @@ function limpiarConsola(titulo = null) {
 
 ## ⚙️ OPCIONES DE CONFIGURACIÓN
 
-| Opción | Descripción | Cuándo usarla |
-|--------|-------------|---------------|
+| Opción                      | Descripción                              | Cuándo usarla                                         |
+| --------------------------- | ---------------------------------------- | ----------------------------------------------------- |
 | **1. Mitad Buenos y Malos** | Tú eliges el número total (debe ser par) | Para controlar exactamente cuántos personajes quieres |
-| **2. Totalmente Aleatorio** | Número y distribución aleatorios | Para partidas rápidas e impredecibles |
-| **3. Mitad Aleatoria** | Número aleatorio pero par | Para sorpresa pero con equilibrio |
+| **2. Totalmente Aleatorio** | Número y distribución aleatorios         | Para partidas rápidas e impredecibles                 |
+| **3. Mitad Aleatoria**      | Número aleatorio pero par                | Para sorpresa pero con equilibrio                     |
 
 ---
 
@@ -453,26 +512,28 @@ function limpiarConsola(titulo = null) {
 El juego incluye un sistema de estadísticas globales:
 
 ### Características:
+
 - **Persistencia**: Las victorias se guardan en `localStorage`
 - **Visualización**: Panel con contadores en tiempo real
 - **Animaciones**: El contador parpadea cuando un bando gana
 - **Reinicio**: Botón para resetear los contadores
 
 ### Código relevante:
+
 ```javascript
 // Guardar victorias
 function guardarVictorias() {
-    localStorage.setItem('victoriasBuenos', victoriasBuenos);
-    localStorage.setItem('victoriasMalos', victoriasMalos);
+  localStorage.setItem("victoriasBuenos", victoriasBuenos);
+  localStorage.setItem("victoriasMalos", victoriasMalos);
 }
 
 // Cargar victorias
 function cargarVictorias() {
-    const guardadasBuenos = localStorage.getItem('victoriasBuenos');
-    const guardadasMalos = localStorage.getItem('victoriasMalos');
-    if (guardadasBuenos !== null) victoriasBuenos = parseInt(guardadasBuenos);
-    if (guardadasMalos !== null) victoriasMalos = parseInt(guardadasMalos);
-    actualizarVictoriasVisuales();
+  const guardadasBuenos = localStorage.getItem("victoriasBuenos");
+  const guardadasMalos = localStorage.getItem("victoriasMalos");
+  if (guardadasBuenos !== null) victoriasBuenos = parseInt(guardadasBuenos);
+  if (guardadasMalos !== null) victoriasMalos = parseInt(guardadasMalos);
+  actualizarVictoriasVisuales();
 }
 ```
 
@@ -496,12 +557,14 @@ La carpeta `assets/` está estructurada para facilitar futuras mejoras:
 ### 🎯 PRÓXIMAS MEJORAS PLANEADAS
 
 #### Fase 1 - Mejoras Visuales (Corto plazo)
+
 - [ ] **Logo del juego** - `assets/images/logo.png`
 - [ ] **Iconos temáticos** - `assets/icons/bueno.svg`, `assets/icons/malo.svg`
 - [ ] **Fondos dinámicos** - `assets/images/backgrounds/`
 - [ ] **Efectos de partículas** para combates
 
 #### Fase 2 - Efectos de Sonido (Medio plazo)
+
 - [ ] `battle-start.mp3` - Sonido al comenzar la batalla
 - [ ] `victory.mp3` - Fanfarria de victoria
 - [ ] `combat.mp3` - Efecto en cada combate
@@ -511,13 +574,14 @@ La carpeta `assets/` está estructurada para facilitar futuras mejoras:
 ```javascript
 // Ejemplo de implementación de sonidos
 function playSound(soundName) {
-    const audio = new Audio(`assets/sounds/${soundName}.mp3`);
-    audio.volume = 0.5;
-    audio.play().catch(e => console.log('Error al reproducir sonido:', e));
+  const audio = new Audio(`assets/sounds/${soundName}.mp3`);
+  audio.volume = 0.5;
+  audio.play().catch((e) => console.log("Error al reproducir sonido:", e));
 }
 ```
 
 #### Fase 3 - Nuevas Funcionalidades (Largo plazo)
+
 - [ ] **Modo nocturno** - Tema oscuro/claro
 - [ ] **Guardar partidas** - Exportar/importar configuraciones
 - [ ] **Múltiples tableros** - Diferentes formas de tablero
@@ -526,6 +590,7 @@ function playSound(soundName) {
 - [ ] **Replays** - Guardar y ver batallas anteriores
 
 #### Fase 4 - Experiencia Móvil
+
 - [ ] **Splash screens** - Pantallas de carga
 - [ ] **Iconos para home screen** - Instalable como app
 - [ ] **Controles táctiles** - Optimizado para móviles
@@ -533,13 +598,13 @@ function playSound(soundName) {
 
 ### 💡 IDEAS ADICIONALES
 
-| Idea | Descripción | Dificultad |
-|------|-------------|------------|
-| **Estadísticas avanzadas** | Gráficas de victorias/derrotas | ⭐⭐ |
-| **Modo multijugador** | Dos jugadores en el mismo ordenador | ⭐⭐⭐ |
-| **Power-ups** | Objetos especiales que aparecen | ⭐⭐ |
-| **Clasificación global** | Ranking de victorias | ⭐⭐⭐ |
-| **Editor de niveles** | Crear tus propios mapas | ⭐⭐⭐ |
+| Idea                       | Descripción                         | Dificultad |
+| -------------------------- | ----------------------------------- | ---------- |
+| **Estadísticas avanzadas** | Gráficas de victorias/derrotas      | ⭐⭐       |
+| **Modo multijugador**      | Dos jugadores en el mismo ordenador | ⭐⭐⭐     |
+| **Power-ups**              | Objetos especiales que aparecen     | ⭐⭐       |
+| **Clasificación global**   | Ranking de victorias                | ⭐⭐⭐     |
+| **Editor de niveles**      | Crear tus propios mapas             | ⭐⭐⭐     |
 
 ### 🛠️ CÓMO CONTRIBUIR
 
@@ -557,30 +622,37 @@ function playSound(soundName) {
 ## 🎨 PERSONALIZACIÓN
 
 ### Cambiar colores
+
 En `style.css`, modifica las variables CSS:
+
 ```css
 :root {
-    --color-neon-blue: #00ffff;  /* Color principal */
-    --color-neon-green: #00ff00; /* Color de Buenos */
-    --color-neon-red: #ff0000;   /* Color de Malos */
-    --color-gold: #ffd700;       /* Color de victorias */
+  --color-neon-blue: #00ffff; /* Color principal */
+  --color-neon-green: #00ff00; /* Color de Buenos */
+  --color-neon-red: #ff0000; /* Color de Malos */
+  --color-gold: #ffd700; /* Color de victorias */
 }
 ```
 
 ### Cambiar velocidad
+
 Modifica `velocidadActual` en `survivors.js`:
+
 ```javascript
 let velocidadActual = 150; // Menor = más rápido (mínimo 50)
 ```
 
 ### Cambiar tamaño del tablero
+
 Ajusta los límites en `calcularDimensionesRecomendadas()`:
+
 ```javascript
 maxColumns = Math.min(Math.max(maxColumns, 20), 80); // Mín 20, máx 80
-maxRows = Math.min(Math.max(maxRows, 10), 40);       // Mín 10, máx 40
+maxRows = Math.min(Math.max(maxRows, 10), 40); // Mín 10, máx 40
 ```
 
 ### Añadir nuevos tipos de personajes
+
 1. Crea una nueva clase que herede de `Personajes`
 2. Implementa su lógica de movimiento específica
 3. Añade su representación en `toString()`
@@ -590,24 +662,29 @@ maxRows = Math.min(Math.max(maxRows, 10), 40);       // Mín 10, máx 40
 ### Usar la carpeta assets
 
 #### Para imágenes:
+
 ```html
-<img src="assets/images/logo.png" alt="Survivors Logo" class="game-logo">
+<img src="assets/images/logo.png" alt="Survivors Logo" class="game-logo" />
 ```
 
 #### Para iconos:
+
 ```javascript
 function obtenerIcono(tipo) {
-    if (tipo === 'bueno') return '<img src="assets/icons/bueno.svg" class="icono-bueno">';
-    if (tipo === 'malo') return '<img src="assets/icons/malo.svg" class="icono-malo">';
-    return '#';
+  if (tipo === "bueno")
+    return '<img src="assets/icons/bueno.svg" class="icono-bueno">';
+  if (tipo === "malo")
+    return '<img src="assets/icons/malo.svg" class="icono-malo">';
+  return "#";
 }
 ```
 
 #### Para fuentes:
+
 ```css
 @font-face {
-    font-family: 'PixelFont';
-    src: url('../assets/fonts/pixel-font.ttf') format('truetype');
+  font-family: "PixelFont";
+  src: url("../assets/fonts/pixel-font.ttf") format("truetype");
 }
 ```
 
@@ -615,17 +692,17 @@ function obtenerIcono(tipo) {
 
 ## 🐛 SOLUCIÓN DE PROBLEMAS COMUNES
 
-| Problema | Posible solución |
-|----------|------------------|
-| El tablero no se ve | Verifica que `tableroContainer` existe en el HTML |
-| Los contadores no se actualizan | Asegúrate de llamar a `actualizarContadoresVisuales()` |
-| Los personajes no se mueven | Comprueba que `mover()` está siendo llamado en el bucle |
-| El juego no termina | Verifica la condición en `if (Buenos.getnBuenos() <= 0...)` |
-| Error "Obstaculos is not defined" | Ajusta el orden de los scripts en el HTML |
-| El CSS no se aplica | Limpia caché del navegador (Ctrl+F5) |
-| No funciona PAUSAR/CONTINUAR | Verifica que `simulacionPausada` se actualiza correctamente |
-| Las victorias no se guardan | Comprueba que `localStorage` está habilitado |
-| El favicon no se ve | Verifica la ruta en `assets/images/favicon.svg` |
+| Problema                          | Posible solución                                            |
+| --------------------------------- | ----------------------------------------------------------- |
+| El tablero no se ve               | Verifica que `tableroContainer` existe en el HTML           |
+| Los contadores no se actualizan   | Asegúrate de llamar a `actualizarContadoresVisuales()`      |
+| Los personajes no se mueven       | Comprueba que `mover()` está siendo llamado en el bucle     |
+| El juego no termina               | Verifica la condición en `if (Buenos.getnBuenos() <= 0...)` |
+| Error "Obstaculos is not defined" | Ajusta el orden de los scripts en el HTML                   |
+| El CSS no se aplica               | Limpia caché del navegador (Ctrl+F5)                        |
+| No funciona PAUSAR/CONTINUAR      | Verifica que `simulacionPausada` se actualiza correctamente |
+| Las victorias no se guardan       | Comprueba que `localStorage` está habilitado                |
+| El favicon no se ve               | Verifica la ruta en `assets/images/favicon.svg`             |
 
 ---
 
@@ -642,26 +719,32 @@ function obtenerIcono(tipo) {
 7. **`Math.random()`** - Generación aleatoria
 
 ### Modificar combate:
+
 ```javascript
-const resultado = Math.floor(Math.random() * (entidad.getVida() + defensor.getVida()));
+const resultado = Math.floor(
+  Math.random() * (entidad.getVida() + defensor.getVida()),
+);
 if (resultado < entidad.getVida()) {
-    // Gana atacante
+  // Gana atacante
 } else {
-    // Gana defensor
+  // Gana defensor
 }
 ```
 
 ### Cambiar distancia de detección:
+
 ```javascript
-this.estaCercaDe(enemigo, 10) // Cambia 10 por el valor deseado
+this.estaCercaDe(enemigo, 10); // Cambia 10 por el valor deseado
 ```
 
 ### Modificar vida:
+
 ```javascript
 this.vida = Math.floor(Math.random() * 91) + 10; // Valores entre 10-100
 ```
 
 ### Trabajando con assets:
+
 - Todos los recursos van en `assets/` organizados por tipo
 - Usar rutas relativas: `assets/images/...`
 - Optimizar imágenes antes de añadirlas

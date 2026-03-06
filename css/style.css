@@ -15,6 +15,8 @@
     --red: #ff3333;
     --blue: #33ccff;
     --gold: #ffd700;
+    --pacman-blue: #24408e;
+    --pacman-dark-blue: #0a1a4a;
     
     /* Variables responsive */
     --scale-factor: min(1vw, 1vh);
@@ -248,6 +250,7 @@ html, body {
     display: flex;
     flex-direction: column;
     box-shadow: inset 0 0 calc(30px + 2vw) var(--black);
+    overflow: hidden;
 }
 
 /* MARQUESINA CON MONEDAS */
@@ -291,6 +294,7 @@ html, body {
     padding: clamp(8px, 2vh, 15px);
     margin-bottom: clamp(8px, 2vh, 15px);
     min-height: 0;
+    overflow: hidden;
 }
 
 .crt-effect {
@@ -335,6 +339,7 @@ html, body {
     color: var(--green);
     position: relative;
     z-index: 1;
+    overflow: hidden;
 }
 
 /* ===== PANEL DE ESTADÍSTICAS ===== */
@@ -442,19 +447,20 @@ html, body {
     transform: rotate(180deg);
 }
 
-/* ===== TABLERO DE JUEGO ===== */
+/* ===== TABLERO DE JUEGO - ESTILO PAC-MAN ===== */
 .game-board {
     flex: 1;
     min-height: 0;
     background: #000;
-    border: 2px solid #33ff33;
-    border-radius: 10px;
-    padding: 10px;
+    border: 4px solid var(--pacman-blue);
+    border-radius: 15px;
+    padding: 15px;
     margin-top: 10px;
-    overflow: auto;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: inset 0 0 30px var(--pacman-dark-blue);
 }
 
 .board-container {
@@ -463,14 +469,22 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
-/* Grid del tablero - estilos mínimos */
+/* Grid del tablero - estilo Pac-Man */
 .board-grid {
     display: grid;
-    background-color: #1a1a1a;
-    border-radius: 5px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    background-color: var(--pacman-blue);
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 0 0 20px var(--yellow);
+}
+
+/* Animación de parpadeo para los puntos */
+@keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 
 /* ===== GAME OVER ===== */
@@ -791,4 +805,44 @@ html, body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--yellow);
+}
+
+/* ===== BOTÓN DE MODO AUTOMÁTICO ===== */
+.auto-btn {
+    background: linear-gradient(145deg, #0066cc, #003366);
+    border: 3px solid #00ffff;
+    color: #00ffff;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: autoPulse 2s infinite;
+}
+
+.auto-btn:hover {
+    background: #00ffff;
+    color: #003366;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #00ffff;
+}
+
+@keyframes autoPulse {
+    0%, 100% { box-shadow: 0 0 10px #00ffff; }
+    50% { box-shadow: 0 0 20px #00ffff; }
+}
+
+/* Ajuste para el contenedor de filas del menú */
+.menu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: clamp(8px, 2vh, 15px) 0;
+    color: var(--green);
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    flex-wrap: wrap;
 }
