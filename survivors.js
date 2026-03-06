@@ -36,6 +36,67 @@ const VELOCIDADES = {
     MUY_RAPIDA: 70
 };
 
+// ===== CONFIGURACIÓN DE CLASES PARA TOOLTIPS MINIMALISTAS =====
+const CLASES_CONFIG = {
+    curandero: {
+        nombre: 'CURANDERO',
+        vida: 120,
+        dano: 5,
+        habilidad: 'Cura +10%'
+    },
+    paladin: {
+        nombre: 'PALADÍN',
+        vida: 150,
+        dano: 10,
+        habilidad: '-50% daño'
+    },
+    mago: {
+        nombre: 'MAGO',
+        vida: 80,
+        dano: 20,
+        habilidad: 'Daño mágico'
+    },
+    asesino: {
+        nombre: 'ASESINO',
+        vida: 70,
+        dano: 30,
+        habilidad: '15% crítico x2'
+    },
+    tanque: {
+        nombre: 'TANQUE',
+        vida: 200,
+        dano: 10,
+        habilidad: 'Alta resistencia'
+    },
+    brujo: {
+        nombre: 'BRUJO',
+        vida: 90,
+        dano: 25,
+        habilidad: 'Roba 10% vida'
+    }
+};
+
+// ===== FUNCIÓN PARA GENERAR TOOLTIP MINIMALISTA =====
+function generarTooltipClase(clase) {
+    const c = CLASES_CONFIG[clase];
+    if (!c) return '';
+    
+    return `${c.nombre}
+❤️ ${c.vida}  ⚔️ ${c.dano}%
+✨ ${c.habilidad}`;
+}
+
+// ===== FUNCIÓN PARA ACTUALIZAR TOOLTIPS =====
+function actualizarTooltipsClases() {
+    const clases = ['curandero', 'paladin', 'mago', 'asesino', 'tanque', 'brujo'];
+    clases.forEach(clase => {
+        const elemento = document.querySelector(`[data-class="${clase}"]`);
+        if (elemento) {
+            elemento.setAttribute('data-tooltip', generarTooltipClase(clase));
+        }
+    });
+}
+
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Inicializando juego...');
@@ -57,6 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
             redimensionarTablero();
         }
     });
+    
+    // ===== INICIALIZAR TOOLTIPS MINIMALISTAS =====
+    actualizarTooltipsClases();
     
     console.log('✅ Inicialización completa');
 });
@@ -100,13 +164,17 @@ function recalcularDimensiones() {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
     
+    console.log(`📏 Contenedor: ${containerWidth}x${containerHeight}`);
+    
     if (containerWidth === 0 || containerHeight === 0) {
-        console.warn('⚠️ Contenedor sin dimensiones, reintentando...');
-        setTimeout(recalcularDimensiones, 50);
+        console.warn('⚠️ Contenedor sin dimensiones, usando valores por defecto');
+        alturaActual = 20;
+        anchuraActual = 20;
         return;
     }
     
-    const MIN_CELL_SIZE = 16;
+    const MIN_CELL_SIZE = 20;
+    const MAX_CELL_SIZE = 45;
     
     const maxCellsWidth = Math.floor(containerWidth / MIN_CELL_SIZE);
     const maxCellsHeight = Math.floor(containerHeight / MIN_CELL_SIZE);
@@ -117,8 +185,10 @@ function recalcularDimensiones() {
     if (alturaActual % 2 !== 0) alturaActual--;
     if (anchuraActual % 2 !== 0) anchuraActual--;
     
-    alturaActual = Math.max(alturaActual, 8);
-    anchuraActual = Math.max(anchuraActual, 8);
+    alturaActual = Math.max(alturaActual, 16);
+    anchuraActual = Math.max(anchuraActual, 16);
+    alturaActual = Math.min(alturaActual, 40);
+    anchuraActual = Math.min(anchuraActual, 40);
     
     console.log(`📏 Dimensiones calculadas: ${anchuraActual}x${alturaActual}`);
 }
@@ -133,16 +203,20 @@ function redimensionarTablero() {
     const boardWidth = gameBoard.clientWidth;
     const boardHeight = gameBoard.clientHeight;
     
-    if (boardWidth === 0 || boardHeight === 0) return;
+    if (boardWidth === 0 || boardHeight === 0) {
+        console.warn('⚠️ Tablero sin dimensiones, reintentando...');
+        setTimeout(redimensionarTablero, 100);
+        return;
+    }
     
     const cellSizeByWidth = Math.floor(boardWidth / anchura);
     const cellSizeByHeight = Math.floor(boardHeight / altura);
     
     let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-    cellSize = Math.max(cellSize, 14);
+    cellSize = Math.max(cellSize, 16);
     cellSize = Math.min(cellSize, 45);
     
-    const fontSize = Math.floor(cellSize * 0.6);
+    const fontSize = Math.floor(cellSize * 0.5);
     
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
@@ -154,6 +228,8 @@ function redimensionarTablero() {
         cell.style.height = `${cellSize}px`;
         cell.style.fontSize = `${fontSize}px`;
     }
+    
+    console.log(`📏 Celdas redimensionadas: ${cellSize}px`);
 }
 
 // ===== FUNCIÓN PARA GENERAR PERSONAJE CON CLASE =====
@@ -194,7 +270,6 @@ function combatirConClases(atacante, defensor) {
         daño = defensor.recibirDaño(daño);
     }
     
-    // Registrar estadísticas
     totalCombates++;
     dañoTotal += daño;
     
@@ -220,113 +295,6 @@ function combatirConClases(atacante, defensor) {
     return defensor.vida <= 0;
 }
 
-// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
-function aplicarColorCelda(cellDiv, celda) {
-    if (!celda) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ffff00';
-        cellDiv.textContent = '·';
-        cellDiv.style.textShadow = '0 0 5px #ffff00';
-        cellDiv.style.borderRadius = '50%';
-        cellDiv.title = '';
-        cellDiv.classList.remove('taking-damage');
-    } else if (celda instanceof Buenos) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ffff00';
-        cellDiv.textContent = celda.toString();
-        cellDiv.style.textShadow = '0 0 8px #ffff00';
-        cellDiv.style.borderRadius = '0';
-        
-        const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
-        const barrasLlenas = Math.floor(porcentaje / 10);
-        const barrasVacias = 10 - barrasLlenas;
-        const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
-        
-        cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
-        cellDiv.classList.remove('taking-damage');
-    } else if (celda instanceof Malos) {
-        cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ff0000';
-        cellDiv.textContent = celda.toString();
-        cellDiv.style.textShadow = '0 0 8px #ff0000';
-        cellDiv.style.borderRadius = '0';
-        
-        const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
-        const barrasLlenas = Math.floor(porcentaje / 10);
-        const barrasVacias = 10 - barrasLlenas;
-        const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
-        
-        cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
-        cellDiv.classList.remove('taking-damage');
-    } else if (celda instanceof Obstaculos) {
-        cellDiv.style.backgroundColor = '#0a1a4a';
-        cellDiv.style.color = '#4a6c8f';
-        cellDiv.textContent = '█';
-        cellDiv.style.textShadow = 'none';
-        cellDiv.style.borderRadius = '0';
-        cellDiv.title = '🧱 Obstáculo';
-        cellDiv.classList.remove('taking-damage');
-    }
-}
-
-// ===== FUNCIÓN PARA CREAR EL TABLERO CON DIMENSIONES =====
-function crearTableroConDimensiones(altura, anchura) {
-    if (!gameBoard) {
-        gameBoard = document.getElementById('gameBoard');
-        if (!gameBoard) return;
-    }
-    
-    console.log(`📋 Creando tablero con dimensiones fijas: ${anchura}x${altura}`);
-    
-    gameBoard.innerHTML = '';
-    
-    gameBoard.style.display = 'grid';
-    gameBoard.style.gap = '1px';
-    gameBoard.style.backgroundColor = '#24408e';
-    gameBoard.style.padding = '5px';
-    gameBoard.style.borderRadius = '10px';
-    gameBoard.style.margin = '0';
-    gameBoard.style.width = '100%';
-    gameBoard.style.height = '100%';
-    
-    const containerWidth = gameBoard.clientWidth;
-    const containerHeight = gameBoard.clientHeight;
-    
-    if (containerWidth === 0 || containerHeight === 0) {
-        console.warn('⚠️ Contenedor sin dimensiones, usando valores por defecto');
-        const cellSize = 24;
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
-    } else {
-        const cellSizeByWidth = Math.floor(containerWidth / anchura);
-        const cellSizeByHeight = Math.floor(containerHeight / altura);
-        let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-        cellSize = Math.max(cellSize, 14);
-        cellSize = Math.min(cellSize, 45);
-        
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
-    }
-    
-    for (let i = 0; i < altura; i++) {
-        for (let j = 0; j < anchura; j++) {
-            const cellDiv = document.createElement('div');
-            cellDiv.style.display = 'flex';
-            cellDiv.style.alignItems = 'center';
-            cellDiv.style.justifyContent = 'center';
-            cellDiv.style.fontWeight = 'bold';
-            
-            cellDiv.textContent = '·';
-            cellDiv.style.color = '#ffff00';
-            cellDiv.style.backgroundColor = '#24408e';
-            
-            gameBoard.appendChild(cellDiv);
-        }
-    }
-    
-    console.log(`✅ Tablero creado con ${altura * anchura} celdas`);
-}
-
 // ===== FUNCIÓN PARA ACTUALIZAR TODO EL TABLERO =====
 function actualizarTodoElTablero() {
     if (!arrayEntidades || !gameBoard) {
@@ -343,6 +311,11 @@ function actualizarTodoElTablero() {
         return;
     }
     
+    if (cells.length !== altura * anchura) {
+        console.warn(`⚠️ Número de celdas incorrecto: ${cells.length} vs ${altura * anchura}`);
+        return;
+    }
+    
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const index = i * anchura + j;
@@ -351,7 +324,34 @@ function actualizarTodoElTablero() {
             const celda = arrayEntidades[i][j];
             const cellDiv = cells[index];
             
-            aplicarColorCelda(cellDiv, celda);
+            if (!celda) {
+                cellDiv.style.backgroundColor = 'var(--pacman-blue)';
+                cellDiv.style.color = '#ffff00';
+                cellDiv.textContent = '·';
+                cellDiv.style.textShadow = '0 0 5px #ffff00';
+                cellDiv.style.borderRadius = '50%';
+                cellDiv.title = '';
+            } else if (celda instanceof Buenos || celda instanceof Malos) {
+                cellDiv.style.backgroundColor = 'var(--pacman-blue)';
+                cellDiv.style.color = celda instanceof Buenos ? '#ffff00' : '#ff0000';
+                cellDiv.textContent = celda.toString();
+                cellDiv.style.textShadow = celda instanceof Buenos ? 
+                    '0 0 8px #ffff00' : '0 0 8px #ff0000';
+                cellDiv.style.borderRadius = '0';
+                
+                const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
+                const barrasLlenas = Math.floor(porcentaje / 10);
+                const barrasVacias = 10 - barrasLlenas;
+                const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
+                cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
+            } else if (celda instanceof Obstaculos) {
+                cellDiv.style.backgroundColor = '#0a1a4a';
+                cellDiv.style.color = '#4a6c8f';
+                cellDiv.textContent = '█';
+                cellDiv.style.textShadow = 'none';
+                cellDiv.style.borderRadius = '0';
+                cellDiv.title = '🧱 Obstáculo';
+            }
         }
     }
     
@@ -366,7 +366,37 @@ function actualizarCelda(row, col, celda) {
     const index = row * anchura + col;
     const cells = gameBoard.children;
     if (index >= cells.length) return;
-    aplicarColorCelda(cells[index], celda);
+    
+    const cellDiv = cells[index];
+    
+    if (!celda) {
+        cellDiv.style.backgroundColor = 'var(--pacman-blue)';
+        cellDiv.style.color = '#ffff00';
+        cellDiv.textContent = '·';
+        cellDiv.style.textShadow = '0 0 5px #ffff00';
+        cellDiv.style.borderRadius = '50%';
+        cellDiv.title = '';
+    } else if (celda instanceof Buenos || celda instanceof Malos) {
+        cellDiv.style.backgroundColor = 'var(--pacman-blue)';
+        cellDiv.style.color = celda instanceof Buenos ? '#ffff00' : '#ff0000';
+        cellDiv.textContent = celda.toString();
+        cellDiv.style.textShadow = celda instanceof Buenos ? 
+            '0 0 8px #ffff00' : '0 0 8px #ff0000';
+        cellDiv.style.borderRadius = '0';
+        
+        const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
+        const barrasLlenas = Math.floor(porcentaje / 10);
+        const barrasVacias = 10 - barrasLlenas;
+        const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
+        cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
+    } else if (celda instanceof Obstaculos) {
+        cellDiv.style.backgroundColor = '#0a1a4a';
+        cellDiv.style.color = '#4a6c8f';
+        cellDiv.textContent = '█';
+        cellDiv.style.textShadow = 'none';
+        cellDiv.style.borderRadius = '0';
+        cellDiv.title = '🧱 Obstáculo';
+    }
 }
 
 // ===== FUNCIÓN PARA MARCAR CELDA CON DAÑO =====
@@ -456,7 +486,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                         marcarDaño(newY, newX);
                         
                         if (combatirConClases(entidad, defensor)) {
-                            // El defensor murió
                             for (let k = 0; k < nPersonajes; k++) {
                                 if (arrayPersonajes[k] === defensor) {
                                     arrayPersonajes[k] = null;
@@ -497,23 +526,82 @@ function actualizarJuego(altura, anchura, nPersonajes) {
 // ===== FUNCIÓN INICIAR SIMULACIÓN =====
 function iniciarSimulacion() {
     console.log('🎮 INICIANDO SIMULACIÓN...');
-    detenerSimulacion();
+    
+    if (intervaloSimulacion) {
+        clearInterval(intervaloSimulacion);
+        intervaloSimulacion = null;
+    }
     simulacionPausada = false;
     
-    // Resetear estadísticas
     totalCombates = 0;
     dañoTotal = 0;
     totalMuertes = 0;
     detenerReloj();
     iniciarReloj();
     
-    // Resetear contadores
     Personajes.setnPersonajes(0);
     Buenos.setnBuenos(0);
     Malos.setnMalos(0);
     
+    document.getElementById('gameOverPanel').classList.add('hidden');
+    document.getElementById('simulationControls').classList.remove('hidden');
+    
+    esperarDimensionesYIniciar();
+}
+
+// ===== FUNCIÓN PARA ESPERAR DIMENSIONES DEL CONTENEDOR =====
+function esperarDimensionesYIniciar(intentos = 0) {
+    const container = document.querySelector('.game-board-container');
+    if (!container) {
+        console.error('❌ No se encuentra el contenedor del tablero');
+        return;
+    }
+    
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    if (containerWidth > 50 && containerHeight > 50) {
+        console.log(`📏 Contenedor listo: ${containerWidth}x${containerHeight}`);
+        crearTableroConDimensionesReales();
+        return;
+    }
+    
+    if (intentos < 20) {
+        console.log(`⏳ Esperando dimensiones... Intento ${intentos + 1}/20`);
+        setTimeout(() => esperarDimensionesYIniciar(intentos + 1), 100);
+    } else {
+        console.warn('⚠️ No se obtuvieron dimensiones, usando valores por defecto');
+        usarDimensionesPorDefecto();
+    }
+}
+
+// ===== FUNCIÓN PARA USAR DIMENSIONES POR DEFECTO =====
+function usarDimensionesPorDefecto() {
+    console.log('📏 Usando dimensiones por defecto: 20x20');
+    alturaActual = 20;
+    anchuraActual = 20;
+    continuarCreacionTablero();
+}
+
+// ===== FUNCIÓN PARA CREAR TABLERO CON DIMENSIONES REALES =====
+function crearTableroConDimensionesReales() {
     recalcularDimensiones();
     
+    if (alturaActual < 8 || anchuraActual < 8) {
+        console.warn('⚠️ Dimensiones muy pequeñas, ajustando...');
+        alturaActual = Math.max(alturaActual, 16);
+        anchuraActual = Math.max(anchuraActual, 16);
+    }
+    
+    if (alturaActual % 2 !== 0) alturaActual--;
+    if (anchuraActual % 2 !== 0) anchuraActual--;
+    
+    console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual}`);
+    continuarCreacionTablero();
+}
+
+// ===== FUNCIÓN PARA CONTINUAR LA CREACIÓN DEL TABLERO =====
+function continuarCreacionTablero() {
     const altura = alturaActual;
     const anchura = anchuraActual;
     const totalCeldas = altura * anchura;
@@ -541,39 +629,84 @@ function iniciarSimulacion() {
     const numObstaculos = Math.floor(totalCeldas * 0.01);
     for (let i = 0; i < numObstaculos; i++) {
         let x, y;
+        let intentos = 0;
         do {
             x = Math.floor(Math.random() * anchura);
             y = Math.floor(Math.random() * altura);
-        } while (arrayEntidades[y][x] !== null);
-        arrayEntidades[y][x] = new Obstaculos(y, x);
+            intentos++;
+            if (intentos > 1000) break;
+        } while (arrayEntidades[y] && arrayEntidades[y][x] !== null);
+        
+        if (intentos <= 1000 && arrayEntidades[y]) {
+            arrayEntidades[y][x] = new Obstaculos(y, x);
+        }
     }
     añadirLog(`🧱 Obstáculos: ${numObstaculos}`, 'system');
     
     for (let i = 0; i < nPersonajes; i++) {
         let x, y;
+        let intentos = 0;
         do {
             x = Math.floor(Math.random() * anchura);
             y = Math.floor(Math.random() * altura);
-        } while (arrayEntidades[y][x] !== null);
+            intentos++;
+            if (intentos > 1000) break;
+        } while (arrayEntidades[y] && arrayEntidades[y][x] !== null);
         
-        if (i % 2 === 0) {
-            arrayEntidades[y][x] = generarPersonajeConClase('bueno', y, x);
-            arrayPersonajes[i] = arrayEntidades[y][x];
-        } else {
-            arrayEntidades[y][x] = generarPersonajeConClase('malo', y, x);
-            arrayPersonajes[i] = arrayEntidades[y][x];
+        if (intentos <= 1000 && arrayEntidades[y]) {
+            if (i % 2 === 0) {
+                arrayEntidades[y][x] = generarPersonajeConClase('bueno', y, x);
+                arrayPersonajes[i] = arrayEntidades[y][x];
+            } else {
+                arrayEntidades[y][x] = generarPersonajeConClase('malo', y, x);
+                arrayPersonajes[i] = arrayEntidades[y][x];
+            }
         }
     }
     
     añadirLog(`👥 Buenos: ${Buenos.getnBuenos()} | Malos: ${Malos.getnMalos()}`, 'system');
     
-    crearTableroConDimensiones(altura, anchura);
+    crearTableroVisual(altura, anchura);
+}
+
+// ===== FUNCIÓN PARA CREAR TABLERO VISUAL =====
+function crearTableroVisual(altura, anchura) {
+    if (!gameBoard) {
+        gameBoard = document.getElementById('gameBoard');
+    }
+    
+    gameBoard.innerHTML = '';
+    
+    gameBoard.style.display = 'grid';
+    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
+    gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
+    gameBoard.style.gap = '1px';
+    gameBoard.style.backgroundColor = 'var(--pacman-blue)';
+    gameBoard.style.padding = '5px';
+    gameBoard.style.borderRadius = '10px';
+    
+    for (let i = 0; i < altura; i++) {
+        for (let j = 0; j < anchura; j++) {
+            const cellDiv = document.createElement('div');
+            cellDiv.style.display = 'flex';
+            cellDiv.style.alignItems = 'center';
+            cellDiv.style.justifyContent = 'center';
+            cellDiv.style.fontWeight = 'bold';
+            cellDiv.style.width = '100%';
+            cellDiv.style.height = '100%';
+            cellDiv.style.backgroundColor = 'var(--pacman-blue)';
+            cellDiv.style.color = '#ffff00';
+            cellDiv.textContent = '·';
+            gameBoard.appendChild(cellDiv);
+        }
+    }
+    
+    console.log(`✅ Tablero creado: ${altura}x${anchura} (${altura * anchura} celdas)`);
+    
+    actualizarTodoElTablero();
     
     setTimeout(() => {
-        actualizarTodoElTablero();
         redimensionarTablero();
-        actualizarEstadisticasClases();
-        actualizarEstadisticasCombate();
     }, 50);
     
     setTimeout(() => {
@@ -581,10 +714,15 @@ function iniciarSimulacion() {
         redimensionarTablero();
     }, 150);
     
-    document.getElementById('gameOverPanel').classList.add('hidden');
-    document.getElementById('simulationControls').classList.remove('hidden');
+    setTimeout(() => {
+        actualizarTodoElTablero();
+        redimensionarTablero();
+    }, 500);
     
-    intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
+    intervaloSimulacion = setInterval(() => {
+        actualizarJuego(altura, anchura, nPersonajesActual);
+    }, velocidadActual);
+    
     añadirLog('▶️ Batalla comenzada', 'system');
 }
 
@@ -834,9 +972,15 @@ function reiniciarVictorias() {
 
 // ===== FUNCIONES DE JUEGO =====
 function actualizarContadoresVisuales() {
-    document.getElementById('totalStats').textContent = Personajes.getnPersonajes() || 0;
-    document.getElementById('buenosStats').textContent = Buenos.getnBuenos() || 0;
-    document.getElementById('malosStats').textContent = Malos.getnMalos() || 0;
+    const total = Personajes.getnPersonajes() || 0;
+    const buenos = Buenos.getnBuenos() || 0;
+    const malos = Malos.getnMalos() || 0;
+    
+    document.getElementById('totalStats').textContent = total;
+    document.getElementById('buenosStats').textContent = buenos;
+    document.getElementById('malosStats').textContent = malos;
+    document.getElementById('buenosStatsCard').textContent = buenos;
+    document.getElementById('malosStatsCard').textContent = malos;
 }
 
 function iniciarJuego() {
@@ -1040,7 +1184,6 @@ function iniciarControlesTeclado() {
             case 'escape':
                 e.preventDefault();
                 if (!document.getElementById('menuScreen').classList.contains('hidden')) {
-                    // Ya está en el menú
                 } else {
                     volverAlMenu();
                 }

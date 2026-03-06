@@ -238,15 +238,15 @@
                         <div class="stats-row">
                             <div class="stat-item">
                                 <span class="stat-label-small">TOTAL</span>
-                                <span class="stat-value-large" id="totalStats">4</span>
+                                <span class="stat-value-large" id="totalStats">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label-small">⚔️</span>
-                                <span class="stat-value-large good" id="buenosStats">2</span>
+                                <span class="stat-label-small">😇</span>
+                                <span class="stat-value-large good" id="buenosStats">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label-small">💀</span>
-                                <span class="stat-value-large bad" id="malosStats">2</span>
+                                <span class="stat-label-small">😈</span>
+                                <span class="stat-value-large bad" id="malosStats">0</span>
                             </div>
                             <div class="reset-btn-small" onclick="reiniciarVictorias()" title="Reiniciar victorias">↺
                             </div>
@@ -259,7 +259,7 @@
                             <div class="player-icon-small good">B</div>
                             <div class="player-info-compact">
                                 <span class="player-label">1UP</span>
-                                <span class="player-number good" id="buenosStatsCard">2</span>
+                                <span class="player-number good" id="buenosStatsCard">0</span>
                             </div>
                             <div class="player-wins-compact">
                                 <span>🏆</span>
@@ -271,7 +271,7 @@
                             <div class="player-icon-small bad">M</div>
                             <div class="player-info-compact">
                                 <span class="player-label">2UP</span>
-                                <span class="player-number bad" id="malosStatsCard">2</span>
+                                <span class="player-number bad" id="malosStatsCard">0</span>
                             </div>
                             <div class="player-wins-compact">
                                 <span>🏆</span>
@@ -280,40 +280,53 @@
                         </div>
                     </div>
 
-                    <!-- CLASES VIVAS - CUADRÍCULA -->
+                    <!-- CLASES VIVAS - CON TOOLTIPS (HTML LIMPIO) -->
                     <div class="class-stats-panel">
                         <div class="class-stats-header">📊 CLASES</div>
                         <div class="class-stats-grid">
-                            <div class="class-stat-compact">
+
+                            <!-- CURANDERO -->
+                            <div class="class-stat-compact" data-class="curandero">
                                 <span class="class-icon-mini">C</span>
                                 <span class="class-name-mini">Curandero</span>
                                 <span class="class-count-mini" id="curanderoCount">0</span>
                             </div>
-                            <div class="class-stat-compact">
+
+                            <!-- PALADÍN -->
+                            <div class="class-stat-compact" data-class="paladin">
                                 <span class="class-icon-mini">P</span>
                                 <span class="class-name-mini">Paladín</span>
-                                <span class="class-count-mini" id="paladinCount">2</span>
+                                <span class="class-count-mini" id="paladinCount">0</span>
                             </div>
-                            <div class="class-stat-compact">
+
+                            <!-- MAGO -->
+                            <div class="class-stat-compact" data-class="mago">
                                 <span class="class-icon-mini">W</span>
                                 <span class="class-name-mini">Mago</span>
                                 <span class="class-count-mini" id="magoCount">0</span>
                             </div>
-                            <div class="class-stat-compact">
+
+                            <!-- ASESINO -->
+                            <div class="class-stat-compact" data-class="asesino">
                                 <span class="class-icon-mini">A</span>
                                 <span class="class-name-mini">Asesino</span>
-                                <span class="class-count-mini" id="asesinoCount">1</span>
+                                <span class="class-count-mini" id="asesinoCount">0</span>
                             </div>
-                            <div class="class-stat-compact">
+
+                            <!-- TANQUE -->
+                            <div class="class-stat-compact" data-class="tanque">
                                 <span class="class-icon-mini">T</span>
                                 <span class="class-name-mini">Tanque</span>
-                                <span class="class-count-mini" id="tanqueCount">1</span>
+                                <span class="class-count-mini" id="tanqueCount">0</span>
                             </div>
-                            <div class="class-stat-compact">
+
+                            <!-- BRUJO -->
+                            <div class="class-stat-compact" data-class="brujo">
                                 <span class="class-icon-mini">U</span>
                                 <span class="class-name-mini">Brujo</span>
                                 <span class="class-count-mini" id="brujoCount">0</span>
                             </div>
+
                         </div>
                     </div>
 
@@ -323,26 +336,26 @@
                         <div class="combat-stats-grid">
                             <div class="combat-stat-compact">
                                 <span class="combat-stat-label">Total</span>
-                                <span class="combat-stat-value" id="totalCombates">332</span>
+                                <span class="combat-stat-value" id="totalCombates">0</span>
                             </div>
                             <div class="combat-stat-compact">
                                 <span class="combat-stat-label">Daño</span>
-                                <span class="combat-stat-value" id="dañoTotal">1404</span>
+                                <span class="combat-stat-value" id="dañoTotal">0</span>
                             </div>
                             <div class="combat-stat-compact">
                                 <span class="combat-stat-label">Muertes</span>
-                                <span class="combat-stat-value" id="totalMuertes">8</span>
+                                <span class="combat-stat-value" id="totalMuertes">0</span>
                             </div>
                             <div class="combat-stat-compact">
                                 <span class="combat-stat-label">Vivos</span>
-                                <span class="combat-stat-value" id="supervivientes">4</span>
+                                <span class="combat-stat-value" id="supervivientes">0</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- TIEMPO COMPACTO -->
                     <div class="time-panel">
-                        <span class="time-header">⏱️ TIEMPO: </span>
+                        <span class="time-header">⏱️ TIEMPO</span>
                         <span class="time-display" id="tiempoPartida">00:00</span>
                     </div>
 

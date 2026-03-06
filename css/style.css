@@ -2191,3 +2191,76 @@ html, body {
         margin: 10px 0;
     }
 }
+
+/* ===== TOOLTIPS DE CLASES - VERSIÓN MINIMALISTA ===== */
+.class-stat-compact {
+    position: relative;
+    cursor: help;
+}
+
+.class-stat-compact:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 30, 0.98);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    white-space: pre;
+    border-left: 4px solid;
+    z-index: 10000;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    font-family: 'Courier New', monospace;
+    line-height: 1.5;
+    pointer-events: none;
+    text-align: left;
+    min-width: 140px;
+    letter-spacing: 0.3px;
+    font-weight: normal;
+    backdrop-filter: blur(4px);
+}
+
+/* Flecha del tooltip minimalista */
+.class-stat-compact:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: currentColor transparent transparent transparent;
+    margin-bottom: 3px;
+    z-index: 10000;
+}
+
+/* COLORES DE BORDE PARA CADA CLASE */
+.class-stat-compact[data-class="curandero"]:hover::after { border-left-color: #ffff00; }
+.class-stat-compact[data-class="paladin"]:hover::after { border-left-color: #33ccff; }
+.class-stat-compact[data-class="mago"]:hover::after { border-left-color: #9933ff; }
+.class-stat-compact[data-class="asesino"]:hover::after { border-left-color: #ff3333; }
+.class-stat-compact[data-class="tanque"]:hover::after { border-left-color: #ff8800; }
+.class-stat-compact[data-class="brujo"]:hover::after { border-left-color: #ff44aa; }
+
+.class-stat-compact[data-class="curandero"]:hover::before { color: #ffff00; }
+.class-stat-compact[data-class="paladin"]:hover::before { color: #33ccff; }
+.class-stat-compact[data-class="mago"]:hover::before { color: #9933ff; }
+.class-stat-compact[data-class="asesino"]:hover::before { color: #ff3333; }
+.class-stat-compact[data-class="tanque"]:hover::before { color: #ff8800; }
+.class-stat-compact[data-class="brujo"]:hover::before { color: #ff44aa; }
+
+/* Ajuste responsive */
+@media (max-width: 768px) {
+    .class-stat-compact:hover::after {
+        left: auto;
+        right: 0;
+        transform: none;
+        min-width: 130px;
+        font-size: 0.65rem;
+        padding: 6px 10px;
+    }
+}

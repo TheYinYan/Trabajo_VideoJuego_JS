@@ -1,10 +1,8 @@
-## 📄 **README.md (ACTUALIZADO - VERSIÓN 2.4.1)**
-
 # [⚔️ SURVIVORS - Batalla Épica](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)
 
-Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
+Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.4.3-blue)
+![Versión](https://img.shields.io/badge/Versión-2.4.4-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -14,30 +12,19 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-- [✨ NOVEDADES EN VERSIÓN 2.4.1](#-novedades-en-versión-241)
+- [✨ NOVEDADES EN VERSIÓN 2.4.4](#-novedades-en-versión-244)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
-  - [Desde Local](#desde-local)
-  - [Desde la WEB (Sin descargar nada)](#desde-la-web-sin-descargar-nada)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
 - [🎮 CONTROLES DEL JUEGO](#-controles-del-juego)
-  - [Botones en pantalla](#botones-en-pantalla)
-  - [Controles de teclado](#controles-de-teclado)
-- [📚 EXPLICACIÓN DEL CÓDIGO](#-explicación-del-código)
-  - [1. HTML (index.html)](#1-html-indexhtml)
-  - [2. CSS (style.css)](#2-css-stylecss)
-  - [3. Clases JavaScript](#3-clases-javascript)
-  - [4. Funciones Utilitarias (Funciones.js)](#4-funciones-utilitarias-funcionesjs)
-  - [5. Control Principal (survivors.js)](#5-control-principal-survivorsjs)
-- [🔄 FLUJO DEL JUEGO](#-flujo-del-juego)
-- [⚙️ OPCIONES DE CONFIGURACIÓN](#-opciones-de-configuración)
-- [🏆 SISTEMA DE VICTORIAS](#-sistema-de-victorias)
+- [⚔️ SISTEMA DE CLASES](#-sistema-de-clases)
+- [📊 PANEL DE ESTADÍSTICAS](#-panel-de-estadísticas)
 - [📋 BITÁCORA DE COMBATE](#-bitácora-de-combate)
 - [🎨 TEMAS DISPONIBLES](#-temas-disponibles)
-- [🚀 HOJA DE RUTA - FUTURAS EXPANSIONES](#-hoja-de-ruta---futuras-expansiones)
-- [🎨 PERSONALIZACIÓN](#-personalización)
-- [🐛 SOLUCIÓN DE PROBLEMAS COMUNES](#-solución-de-problemas-comunes)
+- [🛠️ PERSONALIZACIÓN](#️-personalización)
+- [🐛 SOLUCIÓN DE PROBLEMAS](#-solución-de-problemas)
 - [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
+- [🚀 HOJA DE RUTA](#-hoja-de-ruta)
 - [📄 LICENCIA](#-licencia)
 
 ---
@@ -46,27 +33,36 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 **Survivors** es una simulación de batalla entre dos bandos con sistema de clases y combate por turnos:
 
-- **Buenos (B)** - Representados en color amarillo 🟡 (o verde en tema clásico)
-- **Malos (M)** - Representados en color rojo 🔴
-- **Obstáculos (#)** - Elementos estáticos que bloquean el paso
-- **Clases especiales** - Cada personaje puede tener habilidades únicas
+- **Buenos** - Representados en color amarillo 🟡
+- **Malos** - Representados en color rojo 🔴
+- **Obstáculos (█)** - Elementos estáticos que bloquean el paso
+- **7 clases únicas** - Cada una con estadísticas y habilidades especiales
 
-Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando. El combate se resuelve mediante un sistema de porcentajes de daño basado en la clase de cada personaje.
+Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y combaten automáticamente hasta que solo queda un bando.
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.4.1
+## ✨ NOVEDADES EN VERSIÓN 2.4.4
 
-- ✅ **Sistema de clases** - 7 clases diferentes con habilidades únicas
-- ✅ **Bitácora de combate** - Panel lateral con registro de eventos
-- ✅ **Dos temas visuales** - Pac-Man (amarillo/azul) y Clásico (verde/negro)
-- ✅ **Controles de teclado** - Juega sin usar el ratón
-- ✅ **Animaciones de movimiento** - Desplazamiento suave entre celdas
-- ✅ **Barras de vida** - Información detallada al pasar el ratón
-- ✅ **Panel de control responsive** - Se adapta a cualquier pantalla
-- ✅ **Múltiples contadores de monedas** - Sincronizados en toda la interfaz
-- ✅ **Sistema de pausa/continuar** - Control total de la simulación
-- ✅ **Almacenamiento local** - Las victorias persisten entre sesiones
+### 🎯 Mejoras Visuales
+- ✅ **Panel de estadísticas rediseñado** - Más compacto y profesional
+- ✅ **Tooltips de clases minimalistas** - Información al pasar el ratón
+- ✅ **Indicadores de color por clase** - Cada clase tiene su propio color
+- ✅ **Diseño responsive mejorado** - Mejor adaptación a móviles
+
+### 🚀 Mejoras Técnicas
+- ✅ **Carga inicial corregida** - El tablero se genera correctamente a la primera
+- ✅ **Sistema de espera de dimensiones** - Espera a que el contenedor tenga tamaño real
+- ✅ **Múltiples reintentos** - Si falla la carga, usa valores por defecto
+- ✅ **Código más modular** - Funciones separadas para mejor mantenimiento
+
+### ⚔️ Sistema de Clases
+- ✅ **Curandero (C)** - Vida: 120, Daño: 5%, Habilidad: Cura +10%
+- ✅ **Paladín (P)** - Vida: 150, Daño: 10%, Habilidad: -50% daño recibido
+- ✅ **Mago (W)** - Vida: 80, Daño: 20%, Habilidad: Daño mágico
+- ✅ **Asesino (A)** - Vida: 70, Daño: 30%, Habilidad: 15% crítico x2
+- ✅ **Tanque (T)** - Vida: 200, Daño: 10%, Habilidad: Alta resistencia
+- ✅ **Brujo (U)** - Vida: 90, Daño: 25%, Habilidad: Roba 10% vida
 
 ---
 
@@ -76,9 +72,9 @@ Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo que
 survivors-js/
 │
 ├── 📄 index.html                          # Interfaz de usuario
-├── 📄 survivors.js                        # Control principal
+├── 📄 survivors.js                        # Control principal (ACTUALIZADO v2.4.4)
 ├── 📁 css/
-│   ├── 📄 style.css                        # Estilos principales
+│   ├── 📄 style.css                        # Estilos principales (ACTUALIZADO)
 │   ├── 📄 style-pacman.css                  # Tema Pac-Man
 │   └── 📄 style-classic.css                 # Tema Clásico
 ├── 📁 assets/
@@ -107,54 +103,50 @@ survivors-js/
 ## 🚀 CÓMO EJECUTAR
 
 ### Desde Local
-
 1. **Descarga todos los archivos** manteniendo la estructura de carpetas
-2. **Abre el archivo `index.html`** en cualquier navegador moderno
-3. **Inserta una moneda** 🪙 haciendo clic en el botón o presionando ESPACIO
-4. **Selecciona un modo de juego** y configura los personajes
-5. **Haz clic en "COMENZAR BATALLA"** o presiona ENTER
-6. **Observa la batalla** en tiempo real
+2. **Abre `index.html`** en cualquier navegador moderno
+3. **Inserta una moneda** 🪙 (clic o ESPACIO)
+4. **Selecciona modo de juego** y configura
+5. **¡Disfruta la batalla!** ⚔️
 
-### Desde la WEB (Sin descargar nada)
-
-Puedes jugar directamente desde GitHub Pages:
-
+### Online
 👉 **[JUGAR AHORA - SURVIVORS ONLINE](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)**
 
 ---
 
 ## 🎯 CARACTERÍSTICAS PRINCIPALES
 
-- ✅ **Interfaz responsive** - Se adapta a móviles, tablets y desktop
-- ✅ **Sistema de monedas** - Necesitas monedas para jugar
-- ✅ **7 clases diferentes** - Cada una con estadísticas y habilidades únicas
-- ✅ **Bitácora de eventos** - Registro de todos los combates
-- ✅ **Dos temas visuales** - Cambia entre Pac-Man y Clásico
-- ✅ **Controles por teclado** - Atajos para todas las acciones
-- ✅ **Barras de vida** - Información detallada al pasar el ratón
-- ✅ **Animaciones suaves** - Movimiento fluido de personajes
-- ✅ **Estadísticas en tiempo real** - Total, Buenos, Malos y victorias
-- ✅ **Control de velocidad** - Ajusta la velocidad de la simulación
+| Característica | Descripción |
+|----------------|-------------|
+| **Interfaz Arcade** | Diseño de máquina recreativa con luces y efectos |
+| **Sistema de Monedas** | Necesitas monedas para jugar (como en los arcades) |
+| **7 Clases Únicas** | Cada clase tiene estadísticas y habilidades diferentes |
+| **Tooltips Informativos** | Info detallada al pasar el ratón |
+| **Bitácora de Eventos** | Registro de todos los combates |
+| **2 Temas Visuales** | Pac-Man (amarillo/azul) y Clásico (verde/negro) |
+| **Controles Teclado** | Atajos para todas las acciones |
+| **Barras de Vida** | Información detallada en tooltips |
+| **Estadísticas Tiempo Real** | Total, Buenos, Malos, victorias |
+| **Control de Velocidad** | Ajusta la velocidad de la simulación |
+| **Persistencia Local** | Las victorias se guardan entre sesiones |
+| **Responsive Design** | Se adapta a móviles, tablets y desktop |
 
 ---
 
 ## 🎮 CONTROLES DEL JUEGO
 
 ### Botones en pantalla
-
-| Botón | Función | Descripción |
-|-------|---------|-------------|
-| **INSERT** | `insertCoin()` | Inserta una moneda (también con ESPACIO) |
-| **PLAY** | `useCoin()` | Usa una moneda y comienza la partida |
-| **PAUSA** | `detenerSimulacion()` | Pausa la simulación actual |
-| **CONTINUAR** | `continuarSimulacion()` | Reanuda la simulación pausada |
-| **SALIR** | `volverAlMenu()` | Vuelve al menú principal |
-| **⚡ - / ⚡ +** | `ajustarVelocidad()` | Cambia la velocidad de la simulación |
-| **↺ (victorias)** | `reiniciarVictorias()` | Resetea los contadores de victorias |
-| **Temas** | `cambiarTema()` | Cambia entre Pac-Man y Clásico |
+| Botón | Función |
+|-------|---------|
+| **INSERT** | Insertar moneda |
+| **PLAY** | Usar moneda y jugar |
+| **PAUSA** | Pausar simulación |
+| **CONTINUAR** | Reanudar simulación |
+| **SALIR** | Volver al menú |
+| **⚔️ - / +** | Cambiar velocidad |
+| **↺** | Reiniciar victorias |
 
 ### Controles de teclado
-
 | Tecla | Función |
 |-------|---------|
 | **ESPACIO** | Insertar moneda |
@@ -168,155 +160,225 @@ Puedes jugar directamente desde GitHub Pages:
 | **1** | Velocidad lenta (300ms) |
 | **2** | Velocidad rápida (120ms) |
 | **L** | Limpiar bitácora |
-| **F1** | Mostrar ayuda en consola |
+| **F1** | Mostrar ayuda |
 
 ---
 
 ## ⚔️ SISTEMA DE CLASES
 
 ### Clases de Buenos
-
-| Clase | Icono | Daño | Vida | Habilidad |
+| Clase | Icono | Vida | Daño | Habilidad |
 |-------|-------|------|------|-----------|
-| **Soldado** | B | 15% | 100 | - |
-| **Curandero** | C | 5% | 120 | Cura 10% a aliados cercanos |
-| **Paladín** | P | 10% | 150 | Reduce el daño recibido 50% |
-| **Mago** | W | 20% | 80 | Daño mágico (sin resistencia) |
+| **Soldado** | `B` | 100 | 15% | - |
+| **Curandero** | `C` | 120 | 5% | Cura 10% a aliados |
+| **Paladín** | `P` | 150 | 10% | Reduce daño 50% |
+| **Mago** | `W` | 80 | 20% | Daño mágico |
 
 ### Clases de Malos
-
-| Clase | Icono | Daño | Vida | Habilidad |
+| Clase | Icono | Vida | Daño | Habilidad |
 |-------|-------|------|------|-----------|
-| **Soldado** | M | 15% | 100 | - |
-| **Asesino** | A | 30% | 70 | 15% de probabilidad de crítico (x2) |
-| **Tanque** | T | 10% | 200 | Contraataca con 10% de daño |
-| **Brujo** | U | 25% | 90 | Roba 10% de la vida infligida |
+| **Soldado** | `M` | 100 | 15% | - |
+| **Asesino** | `A` | 70 | 30% | 15% crítico x2 |
+| **Tanque** | `T` | 200 | 10% | Alta resistencia |
+| **Brujo** | `U` | 90 | 25% | Roba 10% vida |
+
+---
+
+## 📊 PANEL DE ESTADÍSTICAS
+
+El panel lateral derecho muestra:
+
+### HIGH SCORE (Compacto)
+- **TOTAL** - Número total de personajes vivos
+- **😇** - Contador de Buenos
+- **😈** - Contador de Malos
+- **↺** - Botón reiniciar victorias
+
+### Tarjetas de Jugadores
+- **1UP** - Buenos con icono y contador
+- **2UP** - Malos con icono y contador
+- **🏆** - Victorias acumuladas
+
+### CLASES (Con tooltips interactivos)
+- **C Curandero** - Información al pasar el ratón
+- **P Paladín** - Tooltip con estadísticas
+- **W Mago** - Color específico por clase
+- **A Asesino** - Tooltip minimalista
+- **T Tanque** - Borde de color
+- **U Brujo** - Flecha indicadora
+
+### COMBATES (Cuadrícula)
+- **Total** - Número de combates
+- **Daño** - Daño total infligido
+- **Muertes** - Personajes eliminados
+- **Vivos** - Supervivientes actuales
+
+### TIEMPO
+- ⏱️ **00:00** - Tiempo de partida actual
 
 ---
 
 ## 📋 BITÁCORA DE COMBATE
 
-El panel lateral izquierdo incluye una **bitácora** que registra todos los eventos importantes:
+El panel lateral izquierdo incluye una bitácora con registro de eventos:
 
-- ⚔️ Combates y daño infligido
-- 💀 Muertes de personajes
-- 🧙 Habilidades especiales (robo de vida, curaciones)
-- 🏆 Victorias al final de la partida
-- 🪙 Inserción y uso de monedas
-- ⚡ Cambios de velocidad
-
-Puedes filtrar los mensajes por tipo usando los puntos de colores:
-- 🟡 **Sistema** - Eventos del juego
-- 🔴 **Combate** - Batallas y daño
-- 🔵 **Información** - Mensajes generales
+### Tipos de eventos
+- 🟡 **Sistema** - Inicio/pausa, monedas, configuración
+- 🔴 **Combate** - Ataques, daño, habilidades
+- 🔵 **Información** - Modos de juego, opciones
 - 🟢 **Victoria** - Resultados de partidas
+
+### Controles
+- **🗑️** - Limpiar bitácora
+- **Puntos de color** - Filtrar por tipo de evento
+- **Scroll automático** - Siempre muestra el último evento
 
 ---
 
 ## 🎨 TEMAS DISPONIBLES
 
 ### Tema Pac-Man 👻
-- Colores principales: Amarillo (#ffff00) y Azul Pac-Man (#24408e)
-- Ambiente arcade clásico de los 80
+```css
+--primary: #ffff00;
+--secondary: #24408e;
+--accent: #ffd700;
+```
+- Estilo arcade clásico de los 80
 - Efectos de neón y brillos dorados
+- Ambiente de sala de juegos
 
 ### Tema Clásico 🕹️
-- Colores principales: Verde fosforito (#33ff33) y Negro
+```css
+--primary: #33ff33;
+--secondary: #0a2a0a;
+--accent: #00ff00;
+```
 - Estilo terminal/matrix
 - Efectos de brillo en verde
-
-Puedes cambiar entre temas en cualquier momento desde el panel lateral izquierdo.
-
----
-
-## 🚀 HOJA DE RUTA - FUTURAS EXPANSIONES
-
-### Fase 1 - Mejoras Visuales (Corto plazo)
-- [ ] **Logo del juego** - `assets/images/logo.png`
-- [ ] **Iconos SVG** - `assets/icons/bueno.svg`, `assets/icons/malo.svg`
-- [ ] **Fondos dinámicos** - `assets/images/backgrounds/`
-- [ ] **Efectos de partículas** para combates
-
-### Fase 2 - Efectos de Sonido (Medio plazo)
-- [ ] `battle-start.mp3` - Sonido al comenzar
-- [ ] `victory.mp3` - Fanfarria de victoria
-- [ ] `combat.mp3` - Efecto de combate
-- [ ] `coin.mp3` - Sonido al insertar moneda
-
-### Fase 3 - Nuevas Funcionalidades (Largo plazo)
-- [ ] **Más clases** - Añadir nuevas subclases
-- [ ] **Modo torneo** - Series de batallas
-- [ ] **Guardar partidas** - Exportar/importar configuraciones
-- [ ] **Modo multijugador** - Dos jugadores locales
+- Ambiente hacker/retro
 
 ---
 
-## 🎨 PERSONALIZACIÓN
+## 🛠️ PERSONALIZACIÓN
 
-### Cambiar colores del tema actual
-En `css/style-pacman.css` o `css/style-classic.css`, modifica las variables:
+### Configuración de Clases (survivors.js)
+```javascript
+const CLASES_CONFIG = {
+    curandero: {
+        nombre: 'CURANDERO',
+        vida: 120,
+        dano: 5,
+        habilidad: 'Cura +10%'
+    },
+    // ... más clases
+};
+```
 
+### Tooltips Minimalistas
 ```css
-:root {
-    --primary-color: #ffff00;  /* Color principal del tema */
-    --secondary-color: #24408e; /* Color secundario */
-    --panel-bg: linear-gradient(145deg, #0a1a3a, #0a1a2a);
+.class-stat-compact:hover::after {
+    background: rgba(20, 20, 30, 0.98);
+    border-left: 4px solid;
+    padding: 8px 12px;
+    font-size: 0.7rem;
 }
 ```
 
-### Añadir nuevas clases
-1. Crea un nuevo archivo en `Entidades/ClasesBuenas/` o `Entidades/ClasesMalas/`
-2. Implementa la clase heredando de `Buenos` o `Malos`
-3. Define su método `calcularDaño()` y opcionalmente habilidades especiales
-4. Actualiza `generarPersonajeConClase()` en `survivors.js`
+### Añadir Nueva Clase
+1. Crear archivo en `Entidades/ClasesBuenas/` o `ClasesMalas/`
+2. Definir clase con herencia
+3. Añadir a `CLASES_CONFIG`
+4. Actualizar `generarPersonajeConClase()`
 
 ---
 
-## 🐛 SOLUCIÓN DE PROBLEMAS COMUNES
+## 🐛 SOLUCIÓN DE PROBLEMAS
 
-| Problema | Posible solución |
-|----------|------------------|
-| El tablero no se ve al iniciar | Espera un momento, hay múltiples actualizaciones automáticas |
-| Los contadores de monedas no se actualizan | Verifica los IDs: `coinCount`, `gameCoinCount`, `panelCoinCount` |
-| Los personajes no se mueven | Comprueba que hay enemigos cerca (distancia < 10) |
-| No se puede insertar moneda | Usa el botón INSERT o la barra espaciadora |
-| El botón START no se habilita | Selecciona un modo de juego primero |
-| Error "X is not defined" | Verifica el orden de los scripts en el HTML |
-| Las clases no funcionan | Asegúrate de que los archivos de clases se cargan después de las clases base |
+| Problema | Solución |
+|----------|----------|
+| **Tablero no se ve al iniciar** | Espera 1 segundo, hay actualizaciones automáticas |
+| **Personajes no se mueven** | Verifica que hay enemigos cerca |
+| **Tooltips no aparecen** | Comprueba que los atributos `data-class` están correctos |
+| **Botón START deshabilitado** | Selecciona un modo de juego primero |
+| **Error de dimensiones** | El sistema usa valores por defecto (20x20) |
+| **Clases no se muestran** | Verifica el orden de carga de scripts |
+| **Monedas no se actualizan** | Revisa los IDs en el HTML |
 
 ---
 
 ## 📝 NOTAS PARA DESARROLLADORES
 
-### Estructura de clases
+### Estructura de Clases
 ```
-Entidad (clase base)
+Entidad
 ├── Personajes
 │   ├── Buenos
-│   │   ├── Curandero
-│   │   ├── Paladin
-│   │   └── Mago
+│   │   ├── Curandero (C)
+│   │   ├── Paladin (P)
+│   │   └── Mago (W)
 │   └── Malos
-│       ├── Asesino
-│       ├── Tanque
-│       └── Brujo
-└── Obstaculos
+│       ├── Asesino (A)
+│       ├── Tanque (T)
+│       └── Brujo (U)
+└── Obstaculos (█)
 ```
 
-### IDs importantes en el HTML
-| ID | Ubicación |
-|-----|-----------|
-| `coinCount` | Menú principal |
-| `gameCoinCount` | Marquesina |
-| `panelCoinCount` | Panel de control |
-| `gameOverCoinCount` | Pantalla de Game Over |
-| `logContainer` | Contenedor de la bitácora |
+### IDs Importantes
+```html
+<!-- Monedas -->
+<span id="coinCount">0</span>
+<span id="gameCoinCount">0</span>
+<span id="panelCoinCount">0</span>
 
-### Funciones clave
-- `combatirConClases()` - Lógica de combate con clases
-- `actualizarCoinDisplay()` - Actualiza todos los contadores de monedas
-- `añadirLog()` - Añade entradas a la bitácora
-- `cambiarTema()` - Cambia entre temas visuales
+<!-- Estadísticas -->
+<span id="totalStats">0</span>
+<span id="buenosStats">0</span>
+<span id="malosStats">0</span>
+
+<!-- Clases -->
+<span id="curanderoCount">0</span>
+<span id="paladinCount">0</span>
+<span id="magoCount">0</span>
+```
+
+### Funciones Clave
+```javascript
+iniciarSimulacion()      // Inicia la batalla
+combatirConClases()      // Lógica de combate
+actualizarTooltipsClases() // Actualiza tooltips
+generarTooltipClase()    // Genera tooltip minimalista
+```
+
+---
+
+## 🚀 HOJA DE RUTA
+
+### ✅ Completado en v2.4.4
+- [x] Panel de estadísticas compacto
+- [x] Tooltips minimalistas por clase
+- [x] Sistema de espera de dimensiones
+- [x] Carga inicial corregida
+- [x] Código más modular
+
+### 🔜 Próximas Versiones
+
+**v2.5.0 - Mejoras Visuales**
+- [ ] Efectos de partículas en combates
+- [ ] Animaciones de muerte
+- [ ] Iconos SVG personalizados
+- [ ] Fondos dinámicos
+
+**v2.6.0 - Efectos de Sonido**
+- [ ] Sonido al insertar moneda
+- [ ] Efecto de combate
+- [ ] Fanfarria de victoria
+- [ ] Música de fondo
+
+**v3.0.0 - Nuevas Funcionalidades**
+- [ ] Modo torneo
+- [ ] Guardar partidas
+- [ ] Más clases especiales
+- [ ] Modo multijugador local
 
 ---
 
@@ -326,23 +388,19 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 ---
 
-¡Gracias por usar Survivors! ⚔️✨
+## 👏 CRÉDITOS
 
-**Juega ahora online:** [https://theyinyan.github.io/Trabajo_VideoJuego_JS/](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)
+- **Desarrollador**: TheYinYan
+- **Inspiración**: Juegos arcade clásicos
+- **Tecnologías**: HTML5, CSS3, JavaScript ES6+
 
-**¿Preguntas o sugerencias?** Abre un issue en el repositorio.
+---
 
-**Última actualización:** Febrero 2026
+¡Gracias por jugar a SURVIVORS! ⚔️✨
+
+**[🎮 JUGAR AHORA](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)** | **[🐛 Reportar Bug](https://github.com/TheYinYan/Trabajo_VideoJuego_JS/issues)** | **[⭐ Star en GitHub](https://github.com/TheYinYan/Trabajo_VideoJuego_JS)**
+
+---
+
+*Última actualización: Marzo 2026*
 ```
-
-## ✅ **PRINCIPALES ACTUALIZACIONES**
-
-| Sección | Novedades |
-|---------|-----------|
-| **Versión** | Actualizada a 2.4.1 |
-| **Novedades** | Sistema de clases, bitácora, temas, controles teclado |
-| **Controles** | Añadida tabla completa de teclado |
-| **Sistema de clases** | Tabla con todas las clases y habilidades |
-| **Bitácora** | Explicación del sistema de logs |
-| **Temas** | Descripción de los dos temas disponibles |
-| **Solución de problemas** | Nuevos casos específicos |
