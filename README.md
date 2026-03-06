@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.2.4-blue)
+![Versión](https://img.shields.io/badge/Versión-2.2.4.1-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 
@@ -10,8 +10,6 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 # Pedir a la IA 🤖
 
-- el div del tablero no es responsivo a la pantalla:
-- que el Indes.html tenga los estilos de pacman y right-bar se mas atractivo como el arcade-container
 - Que mede los estilos de pacman para todo el css para que pege con el tablero pero para un aopcion llamada Pacman y otra con el tablero con el color que pege con la el css usado normal si los colores de Pacman
 - Que el tablero se adapte a la pantalla y se vea bien en movil y en pc
 

@@ -416,7 +416,7 @@ function ajustarVelocidad(cambio) {
     }
 }
 
-// ===== FUNCIONES DE MONEDAS =====
+// ===== FUNCIÓN INSERTAR MONEDA =====
 function insertCoin() {
     coins++;
     actualizarCoinDisplay();
@@ -431,8 +431,9 @@ function insertCoin() {
         });
     }
     
+    // SIEMPRE actualizar el botón REINTENTAR si game over está visible
     if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-        document.getElementById('gameOverRetry').classList.remove('disabled');
+        actualizarBotonReintentar();
     }
 }
 
@@ -465,20 +466,24 @@ function actualizarGameOverCoins() {
     }
 }
 
+// ===== FUNCIÓN PARA ACTUALIZAR BOTÓN REINTENTAR =====
 function actualizarBotonReintentar() {
     const retryBtn = document.getElementById('gameOverRetry');
     if (!retryBtn) return;
     
-    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-        if (coins <= 0) {
-            retryBtn.classList.add('disabled');
-            retryBtn.style.pointerEvents = 'none';
-            retryBtn.style.opacity = '0.5';
-        } else {
-            retryBtn.classList.remove('disabled');
-            retryBtn.style.pointerEvents = 'auto';
-            retryBtn.style.opacity = '1';
-        }
+    // SIEMPRE actualizar el estado basado en las monedas
+    if (coins > 0) {
+        retryBtn.classList.remove('disabled');
+        retryBtn.style.pointerEvents = 'auto';
+        retryBtn.style.opacity = '1';
+        retryBtn.style.filter = 'none';
+        retryBtn.style.boxShadow = '0 0 20px var(--green)';
+    } else {
+        retryBtn.classList.add('disabled');
+        retryBtn.style.pointerEvents = 'none';
+        retryBtn.style.opacity = '0.4';
+        retryBtn.style.filter = 'grayscale(0.8)';
+        retryBtn.style.boxShadow = 'none';
     }
 }
 
@@ -597,6 +602,7 @@ function reintentarPartida() {
     iniciarSimulacion();
 }
 
+// ===== MOSTRAR RESULTADO =====
 function mostrarResultado() {
     const buenos = Buenos.getnBuenos() || 0;
     const malos = Malos.getnMalos() || 0;
@@ -616,10 +622,25 @@ function mostrarResultado() {
     
     actualizarGameOverCoins();
     
+    // MOSTRAR GAME OVER
     document.getElementById('gameOverPanel').classList.remove('hidden');
     document.getElementById('simulationControls').classList.add('hidden');
     
-    actualizarBotonReintentar();
+    // FORZAR que el botón REINTENTAR esté ACTIVADO si hay monedas
+    const retryBtn = document.getElementById('gameOverRetry');
+    if (retryBtn) {
+        if (coins > 0) {
+            retryBtn.classList.remove('disabled');
+            retryBtn.style.pointerEvents = 'auto';
+            retryBtn.style.opacity = '1';
+            retryBtn.style.filter = 'brightness(1)';
+        } else {
+            retryBtn.classList.add('disabled');
+            retryBtn.style.pointerEvents = 'none';
+            retryBtn.style.opacity = '0.5';
+            retryBtn.style.filter = 'grayscale(0.5)';
+        }
+    }
 }
 
 function volverAlMenu() {

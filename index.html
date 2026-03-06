@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SURVIVORS · ARCADE</title>
-    
+
     <!-- FAVICON -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffd700' stroke='%23b8860b' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='35' fill='%23ffd700' stroke='%23daa520' stroke-width='2'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%23b8860b' font-weight='bold'%3E🪙%3C/text%3E%3C/svg%3E">
-    
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ffd700' stroke='%23b8860b' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='35' fill='%23ffd700' stroke='%23daa520' stroke-width='2'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%23b8860b' font-weight='bold'%3E🪙%3C/text%3E%3C/svg%3E">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <!-- PANTALLA DE MENÚ INICIAL -->
     <div class="menu-screen" id="menuScreen">
         <div class="menu-container">
             <h1 class="menu-title">⚔️ SURVIVORS ⚔️</h1>
-            
+
             <div class="coin-slot" onclick="insertCoin()">
                 <div class="coin-insert">🪙 INSERT COIN 🪙</div>
                 <div class="coin-count" id="coinCount">0</div>
             </div>
-            
+
             <div class="menu-card" id="menuCard" style="opacity: 0.5; pointer-events: none;">
                 <h2>CONFIGURACIÓN</h2>
-                
+
                 <div class="menu-row">
                     <span class="menu-label">MODO DE JUEGO:</span>
                 </div>
-                
+
                 <div class="menu-buttons">
-                    <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ MITAD Y MITAD</button>
-                    <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 TOTALMENTE ALEATORIO</button>
-                    <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 MITAD ALEATORIA</button>
+                    <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ MITAD Y
+                        MITAD</button>
+                    <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 TOTALMENTE
+                        ALEATORIO</button>
+                    <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 MITAD
+                        ALEATORIA</button>
                 </div>
-                
+
                 <div class="menu-row hidden" id="nPersonajesRow">
                     <span class="menu-label">PERSONAJES:</span>
                     <input type="number" id="numPersonajes" value="20" min="2" max="200" step="2" disabled>
                 </div>
-                
+
                 <button class="start-btn" id="startBtn" onclick="iniciarJuego()" disabled>▶ COMENZAR</button>
             </div>
-            
+
             <div class="menu-footer">
                 <span>🎮 1 COIN = 1 PLAY 🎮</span>
             </div>
@@ -60,7 +66,7 @@
                     <div class="bar-decoration"></div>
                 </div>
             </div>
-            
+
             <!-- CONTENIDO CENTRAL -->
             <div class="arcade-center">
                 <!-- MARQUESINA -->
@@ -71,12 +77,12 @@
                         <span id="gameCoinCount">0</span>
                     </div>
                 </div>
-                
+
                 <!-- TABLERO DE JUEGO (centrado) -->
                 <div class="game-board-container">
                     <div class="game-board" id="gameBoard"></div>
                 </div>
-                
+
                 <!-- PANEL DE CONTROL -->
                 <div class="control-panel">
                     <div class="speed-control">
@@ -84,7 +90,7 @@
                         <span class="speed-display" id="velocidadDisplay">150ms</span>
                         <button class="ctrl-btn" onclick="ajustarVelocidad(50)">+</button>
                     </div>
-                    
+
                     <div class="coin-controls">
                         <div class="coin-button" onclick="insertCoin()">
                             <span class="coin-icon">🪙</span>
@@ -95,67 +101,68 @@
                             <span class="coin-text">PLAY</span>
                         </div>
                     </div>
-                    
+
                     <div class="action-controls hidden" id="simulationControls">
                         <button class="action-btn pause" id="btnPausa" onclick="detenerSimulacion()">PAUSA</button>
-                        <button class="action-btn resume" id="btnContinuar" onclick="continuarSimulacion()">CONTINUAR</button>
+                        <button class="action-btn resume" id="btnContinuar"
+                            onclick="continuarSimulacion()">CONTINUAR</button>
                         <button class="action-btn reset" onclick="volverAlMenu()">SALIR</button>
                     </div>
                 </div>
             </div>
-            
+
             <!-- BARRA LATERAL DERECHA (con estadísticas estilo arcade) -->
             <div class="right-bar">
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
-                    
+
                     <div class="stats-panel" id="statsPanel">
                         <div class="stats-header">HIGH SCORE</div>
-                        
+
                         <div class="stats-section">
                             <!-- TOTAL -->
                             <div class="stat-card total">
                                 <span class="stat-label">TOTAL</span>
                                 <span class="stat-value" id="totalStats">0</span>
                             </div>
-                            
-                            <!-- 1UP - BUENOS -->
-                            <div class="stat-card player">
+
+                            <!-- TARJETA DE BUENOS -->
+                            <div class="stat-card player" data-type="good">
                                 <div class="player-badge">1UP</div>
                                 <div class="player-info">
                                     <span class="player-icon good">B</span>
-                                    <span class="player-count" id="buenosStats">0</span>
+                                    <span class="player-count good" id="buenosStats">0</span>
                                 </div>
                                 <div class="player-wins-container">
                                     <span class="wins-label">🏆</span>
                                     <span class="player-wins" id="victoriasBuenos">0</span>
                                 </div>
                             </div>
-                            
-                            <!-- 2UP - MALOS -->
-                            <div class="stat-card player">
+
+                            <!-- TARJETA DE MALOS -->
+                            <div class="stat-card player" data-type="bad">
                                 <div class="player-badge">2UP</div>
                                 <div class="player-info">
                                     <span class="player-icon bad">M</span>
-                                    <span class="player-count" id="malosStats">0</span>
+                                    <span class="player-count bad" id="malosStats">0</span>
                                 </div>
                                 <div class="player-wins-container">
                                     <span class="wins-label">🏆</span>
                                     <span class="player-wins" id="victoriasMalos">0</span>
                                 </div>
                             </div>
-                            
+
                             <!-- BOTÓN REINICIO -->
-                            <button onclick="reiniciarVictorias()" class="reset-btn" title="Reiniciar victorias">↺</button>
+                            <button onclick="reiniciarVictorias()" class="reset-btn"
+                                title="Reiniciar victorias">↺</button>
                         </div>
                     </div>
-                    
+
                     <div class="bar-decoration bottom"></div>
-                    <span class="bar-text">►</span>
-                </div>
+                    </div>
             </div>
         </div>
-        
+
         <!-- GAME OVER (flotante) -->
         <div class="game-over hidden" id="gameOverPanel">
             <div class="game-over-title">GAME OVER</div>
@@ -165,28 +172,28 @@
                 <div>BUENOS: <span id="resultadoBuenos">0</span></div>
                 <div>MALOS: <span id="resultadoMalos">0</span></div>
             </div>
-            
+
             <div class="game-over-controls">
                 <div class="menu-button" onclick="volverAlMenu()">
                     <span class="menu-icon">🏠</span>
                     <span class="menu-text">MENÚ</span>
                 </div>
-                
+
                 <div class="retry-button" id="gameOverRetry" onclick="reintentarPartida()">
                     <span class="retry-icon">▶</span>
                     <span class="retry-text">REINTENTAR</span>
                 </div>
             </div>
-            
+
             <div class="coin-status" id="gameOverCoins">
                 🪙 <span id="gameOverCoinCount">0</span>
             </div>
-            
+
             <div class="no-coins-message hidden" id="noCoinsMessage">
                 ¡Inserta una moneda!
             </div>
         </div>
-        
+
         <!-- ALTAVOZ -->
         <div class="speaker"></div>
     </div>
@@ -199,4 +206,5 @@
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
 </body>
+
 </html>
