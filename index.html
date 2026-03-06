@@ -57,12 +57,93 @@
     <div class="arcade-machine hidden" id="arcadeMachine">
         <!-- Contenedor principal de 3 columnas -->
         <div class="arcade-container">
-            <!-- BARRA LATERAL IZQUIERDA (decorativa) -->
+            <!-- BARRA LATERAL IZQUIERDA (con temas, ayuda y logs) -->
             <div class="left-bar">
                 <div class="bar-content">
-                    <div class="bar-decoration"></div>
+                    <div class="bar-decoration top"></div>
+
+                    <!-- PANEL DE AYUDA CON CONTROLES -->
+                    <div class="help-panel">
+                        <div class="help-header">🎮 CONTROLES</div>
+                        <div class="help-content">
+                            <div class="help-row">
+                                <span class="help-key">ESPACIO</span>
+                                <span class="help-desc">Insertar moneda</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">ENTER</span>
+                                <span class="help-desc">Jugar / Reintentar</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">P</span>
+                                <span class="help-desc">Pausar juego</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">C</span>
+                                <span class="help-desc">Continuar juego</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">R</span>
+                                <span class="help-desc">Reiniciar</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">ESC</span>
+                                <span class="help-desc">Volver al menú</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">+ / -</span>
+                                <span class="help-desc">Velocidad</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">0</span>
+                                <span class="help-desc">Velocidad normal</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">1</span>
+                                <span class="help-desc">Velocidad lenta</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">2</span>
+                                <span class="help-desc">Velocidad rápida</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">L</span>
+                                <span class="help-desc">Limpiar bitácora</span>
+                            </div>
+                            <div class="help-row">
+                                <span class="help-key">F1</span>
+                                <span class="help-desc">Mostrar ayuda</span>
+                            </div>
+                        </div>
+                        <div class="help-footer">
+                            <span class="help-hint">▼</span>
+                        </div>
+                    </div>
+
+                    <!-- PANEL DE LOGS -->
+                    <div class="log-panel">
+                        <div class="log-header">📋 BITÁCORA</div>
+                        <div class="log-container" id="logContainer">
+                            <div class="log-entry system">🕹️ Sistema listo</div>
+                            <div class="log-entry info">🪙 Inserta una moneda</div>
+                        </div>
+                        <div class="log-controls">
+                            <button class="log-clear" onclick="limpiarLogs()" title="Limpiar bitácora">🗑️</button>
+                            <div class="log-filter">
+                                <span class="filter-dot system" onclick="filtrarLogs('system')"
+                                    title="Filtrar sistema"></span>
+                                <span class="filter-dot combat" onclick="filtrarLogs('combat')"
+                                    title="Filtrar combates"></span>
+                                <span class="filter-dot info" onclick="filtrarLogs('info')"
+                                    title="Filtrar información"></span>
+                                <span class="filter-dot victory" onclick="filtrarLogs('victory')"
+                                    title="Filtrar victorias"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bar-decoration bottom"></div>
                     <span class="bar-text">◄</span>
-                    <div class="bar-decoration"></div>
                 </div>
             </div>
 
@@ -77,44 +158,61 @@
                     </div>
                 </div>
 
-                <!-- TABLERO DE JUEGO (centrado) -->
+                <!-- TABLERO DE JUEGO -->
                 <div class="game-board-container">
                     <div class="game-board" id="gameBoard"></div>
                 </div>
 
-                <!-- PANEL DE CONTROL -->
+                <!-- PANEL DE CONTROL REDISEÑADO -->
                 <div class="control-panel">
-                    <div class="speed-control">
-                        <button class="ctrl-btn" onclick="ajustarVelocidad(-50)">-</button>
-                        <span class="speed-display" id="velocidadDisplay">150ms</span>
-                        <button class="ctrl-btn" onclick="ajustarVelocidad(50)">+</button>
+                    <!-- SECCIÓN DE VELOCIDAD -->
+                    <div class="speed-section">
+                        <span class="speed-label">⚡ VEL</span>
+                        <div class="speed-control">
+                            <button class="speed-btn" onclick="ajustarVelocidad(-25)">−</button>
+                            <span class="speed-display" id="velocidadDisplay">200ms</span>
+                            <button class="speed-btn" onclick="ajustarVelocidad(25)">+</button>
+                        </div>
                     </div>
 
-                    <div class="coin-controls">
-                        <div class="coin-button" onclick="insertCoin()">
+                    <!-- SEPARADOR DECORATIVO -->
+                    <div class="control-divider"></div>
+
+                    <!-- SECCIÓN DE MONEDAS -->
+                    <div class="coin-section">
+                        <div class="coin-btn" onclick="insertCoin()">
                             <span class="coin-icon">🪙</span>
                             <span class="coin-text">INSERT</span>
                         </div>
-                        <div class="coin-button" onclick="useCoin()">
+                        <div class="coin-btn" onclick="useCoin()">
                             <span class="coin-icon">▶</span>
                             <span class="coin-text">PLAY</span>
                         </div>
+                        <!-- Indicador de monedas con ID ÚNICO -->
+                        <div class="coin-indicator">
+                            <span>🪙</span>
+                            <span id="panelCoinCount">0</span>
+                        </div>
                     </div>
 
-                    <div class="action-controls hidden" id="simulationControls">
-                        <button class="action-btn pause" id="btnPausa" onclick="detenerSimulacion()">PAUSA</button>
-                        <button class="action-btn resume" id="btnContinuar"
+                    <!-- SEPARADOR DECORATIVO -->
+                    <div class="control-divider"></div>
+
+                    <!-- SECCIÓN DE ACCIONES -->
+                    <div class="action-section hidden" id="simulationControls">
+                        <button class="action-btn-modern pause" id="btnPausa"
+                            onclick="detenerSimulacion()">PAUSA</button>
+                        <button class="action-btn-modern resume" id="btnContinuar"
                             onclick="continuarSimulacion()">CONTINUAR</button>
-                        <button class="action-btn reset" onclick="volverAlMenu()">SALIR</button>
+                        <button class="action-btn-modern reset" onclick="volverAlMenu()">SALIR</button>
                     </div>
                 </div>
             </div>
 
-            <!-- BARRA LATERAL DERECHA (con estadísticas estilo arcade) -->
+            <!-- BARRA LATERAL DERECHA (con estadísticas) -->
             <div class="right-bar">
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
-
                     <div class="stats-panel" id="statsPanel">
                         <div class="stats-header">HIGH SCORE</div>
 
@@ -156,7 +254,6 @@
                                 title="Reiniciar victorias">↺</button>
                         </div>
                     </div>
-
                     <div class="bar-decoration bottom"></div>
                 </div>
             </div>
