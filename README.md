@@ -2,9 +2,9 @@
 
 Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tablero con obstáculos (#). Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/versión-2.2.2-blue)
+![Versión](https://img.shields.io/badge/Versión-2.2.3-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
-![Licencia](https://img.shields.io/badge/licencia-MIT-green)
+![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 
 ---
 
