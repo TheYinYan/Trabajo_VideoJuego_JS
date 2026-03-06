@@ -4,8 +4,6 @@ let opcionSeleccionada = null;
 let nPersonajesConfig = null;
 let arrayEntidades = null;
 let arrayPersonajes = null;
-let alturaActual = 30;
-let anchuraActual = 30;
 let velocidadActual = 150;
 let nPersonajesActual = 0;
 let simulacionPausada = false;
@@ -14,11 +12,18 @@ let victoriasMalos = 0;
 let coins = 0;
 let gameOverCoins = 0;
 
+// Dimensiones FIJAS - 30x30 SIEMPRE
+const ALTURA_FIJA = 30;
+const ANCHURA_FIJA = 30;
+
+// Referencias DOM
+let gameBoard = null;
+let cells = [];
+
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Event listeners del menú
-    document.getElementById('alturaInput').addEventListener('input', validarInputs);
-    document.getElementById('anchuraInput').addEventListener('input', validarInputs);
+    gameBoard = document.getElementById('gameBoard');
+    
     document.getElementById('numPersonajes').addEventListener('input', () => {
         nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
         validarBotonInicio();
@@ -26,313 +31,141 @@ document.addEventListener('DOMContentLoaded', () => {
     
     cargarVictorias();
     actualizarCoinDisplay();
+    
+    // Escuchar cambios de tamaño de ventana
+    window.addEventListener('resize', () => {
+        if (arrayEntidades && cells.length > 0) {
+            redimensionarTablero();
+        }
+    });
 });
 
-// ===== MODO AUTOMÁTICO - CALCULAR DIMENSIONES ÓPTIMAS =====
-function calcularDimensionesOptimas() {
-    // Usamos el contenedor del tablero para las medidas
-    const container = document.getElementById('tableroContainer');
+// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
+function redimensionarTablero() {
+    if (!gameBoard || cells.length === 0 || !arrayEntidades) return;
     
-    // Si no existe el contenedor, usamos dimensiones por defecto
-    if (!container) {
-        return { anchura: 40, altura: 20 };
-    }
+    const altura = arrayEntidades.length;
+    const anchura = arrayEntidades[0].length;
     
-    // Obtener dimensiones del contenedor
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
+    // Obtener dimensiones del contenedor padre
+    const containerWidth = gameBoard.clientWidth;
+    const containerHeight = gameBoard.clientHeight;
     
-    // Tamaño mínimo de celda para legibilidad
-    const MIN_CELL_SIZE = 16;
+    if (containerWidth === 0 || containerHeight === 0) return;
     
-    // Calcular el máximo ancho posible
-    const maxAnchura = Math.floor(containerWidth / MIN_CELL_SIZE);
+    // Calcular tamaño de celda basado en el espacio disponible
+    const cellSizeByWidth = Math.floor(containerWidth / anchura);
+    const cellSizeByHeight = Math.floor(containerHeight / altura);
     
-    // Calcular la altura adecuada
-    const alturaOptima = Math.floor(containerHeight / MIN_CELL_SIZE);
+    // Usar el tamaño más pequeño para mantener celdas cuadradas
+    let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
     
-    // Limitar a rangos razonables (pares)
-    let anchuraFinal = Math.min(Math.max(maxAnchura, 20), 60);
-    let alturaFinal = Math.min(Math.max(alturaOptima, 10), 35);
+    // Tamaños mínimos y máximos para legibilidad
+    cellSize = Math.max(cellSize, 12);
+    cellSize = Math.min(cellSize, 40);
     
-    // Asegurar que sean pares
-    if (anchuraFinal % 2 !== 0) anchuraFinal--;
-    if (alturaFinal % 2 !== 0) alturaFinal--;
+    const fontSize = Math.floor(cellSize * 0.6);
     
-    return {
-        anchura: anchuraFinal,
-        altura: alturaFinal
-    };
-}
-
-// ===== APLICAR DIMENSIONES AUTOMÁTICAS =====
-function aplicarDimensionesAutomaticas() {
-    const dimensiones = calcularDimensionesOptimas();
+    // Actualizar el grid con el nuevo tamaño
+    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
+    gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     
-    document.getElementById('alturaInput').value = dimensiones.altura;
-    document.getElementById('anchuraInput').value = dimensiones.anchura;
-    
-    alturaActual = dimensiones.altura;
-    anchuraActual = dimensiones.anchura;
-    
-    // Mostrar mensaje en consola
-    console.log(`📐 Modo automático: ${dimensiones.anchura} x ${dimensiones.altura}`);
-    
-    // Validar inputs después de cambiar
-    validarInputs();
-}
-
-// ===== SISTEMA DE MONEDAS =====
-function insertCoin() {
-    coins++;
-    actualizarCoinDisplay();
-    
-    if (coins > 0) {
-        document.getElementById('menuCard').classList.add('active');
-        document.getElementById('menuCard').style.opacity = '1';
-        document.getElementById('menuCard').style.pointerEvents = 'all';
-        
-        // Habilitar inputs y botones
-        document.querySelectorAll('#menuCard input, #menuCard button').forEach(el => {
-            el.disabled = false;
-        });
-    }
-    
-    // Si game over está visible, actualizar botón REINTENTAR
-    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-        document.getElementById('gameOverRetry').classList.remove('disabled');
+    // Actualizar todas las celdas
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].style.width = `${cellSize}px`;
+        cells[i].style.height = `${cellSize}px`;
+        cells[i].style.fontSize = `${fontSize}px`;
     }
 }
 
-function useCoin() {
-    if (coins > 0) {
-        coins--;
-        actualizarCoinDisplay();
-        
-        // Si estamos en game over, reintentar directamente
-        if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-            reintentarPartida();
-        } else {
-            iniciarJuego();
+// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
+function aplicarColorCelda(cellDiv, celda) {
+    if (!celda) {
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ffff00';
+        cellDiv.textContent = '·';
+        cellDiv.style.textShadow = '0 0 5px #ffff00';
+        cellDiv.style.borderRadius = '50%';
+    } else if (celda instanceof Buenos) {
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ffff00';
+        cellDiv.textContent = 'B';
+        cellDiv.style.textShadow = '0 0 8px #ffff00';
+        cellDiv.style.borderRadius = '0';
+    } else if (celda instanceof Malos) {
+        cellDiv.style.backgroundColor = '#24408e';
+        cellDiv.style.color = '#ff0000';
+        cellDiv.textContent = 'M';
+        cellDiv.style.textShadow = '0 0 8px #ff0000';
+        cellDiv.style.borderRadius = '0';
+    } else if (celda instanceof Obstaculos) {
+        cellDiv.style.backgroundColor = '#0a1a4a';
+        cellDiv.style.color = '#4a6c8f';
+        cellDiv.textContent = '█';
+        cellDiv.style.textShadow = 'none';
+        cellDiv.style.borderRadius = '0';
+    }
+}
+
+// ===== FUNCIÓN PARA CREAR EL TABLERO =====
+function crearTablero(altura, anchura) {
+    if (!gameBoard) {
+        gameBoard = document.getElementById('gameBoard');
+        if (!gameBoard) return;
+    }
+    
+    gameBoard.innerHTML = '';
+    cells = [];
+    
+    // Configuración base del grid
+    gameBoard.style.display = 'grid';
+    gameBoard.style.gap = '1px';
+    gameBoard.style.backgroundColor = '#24408e';
+    gameBoard.style.padding = '5px';
+    gameBoard.style.borderRadius = '10px';
+    gameBoard.style.margin = 'auto';
+    
+    // Crear celdas con tamaño temporal
+    for (let i = 0; i < altura; i++) {
+        for (let j = 0; j < anchura; j++) {
+            const cellDiv = document.createElement('div');
+            
+            cellDiv.style.display = 'flex';
+            cellDiv.style.alignItems = 'center';
+            cellDiv.style.justifyContent = 'center';
+            cellDiv.style.fontWeight = 'bold';
+            
+            gameBoard.appendChild(cellDiv);
+            cells.push(cellDiv);
         }
-    } else {
-        alert('¡INSERTA UNA MONEDA PRIMERO! 🪙');
     }
-}
-
-function actualizarCoinDisplay() {
-    document.getElementById('coinCount').textContent = coins;
-    document.getElementById('gameCoinCount').textContent = coins;
-    actualizarGameOverCoins();
     
-    // Actualizar botón REINTENTAR
-    actualizarBotonReintentar();
+    // Redimensionar al tamaño correcto
+    setTimeout(() => redimensionarTablero(), 10);
 }
 
-function actualizarGameOverCoins() {
-    const gameOverCoinSpan = document.getElementById('gameOverCoinCount');
-    if (gameOverCoinSpan) {
-        gameOverCoinSpan.textContent = coins;
-    }
-}
-
-// Actualizar estado del botón REINTENTAR
-function actualizarBotonReintentar() {
-    const retryBtn = document.getElementById('gameOverRetry');
-    if (!retryBtn) return;
+// ===== FUNCIÓN PARA ACTUALIZAR TODO EL TABLERO =====
+function actualizarTodoElTablero() {
+    if (!arrayEntidades || cells.length === 0) return;
     
-    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
-        if (coins <= 0) {
-            retryBtn.classList.add('disabled');
-            retryBtn.style.pointerEvents = 'none';
-            retryBtn.style.opacity = '0.5';
-        } else {
-            retryBtn.classList.remove('disabled');
-            retryBtn.style.pointerEvents = 'auto';
-            retryBtn.style.opacity = '1';
+    const altura = arrayEntidades.length;
+    const anchura = arrayEntidades[0].length;
+    
+    for (let i = 0; i < altura; i++) {
+        for (let j = 0; j < anchura; j++) {
+            const index = i * anchura + j;
+            if (index >= cells.length) continue;
+            
+            const celda = arrayEntidades[i][j];
+            aplicarColorCelda(cells[index], celda);
         }
     }
 }
 
-// ===== FUNCIONES DEL MENÚ =====
-function seleccionarOpcion(opcion) {
-    opcionSeleccionada = opcion;
-    
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    event.currentTarget.classList.add('selected');
-    
-    const nPersonajesRow = document.getElementById('nPersonajesRow');
-    if (opcion === 1) {
-        nPersonajesRow.classList.remove('hidden');
-    } else {
-        nPersonajesRow.classList.add('hidden');
-    }
-    
-    validarBotonInicio();
-}
-
-function validarInputs() {
-    const altura = parseInt(document.getElementById('alturaInput').value);
-    const anchura = parseInt(document.getElementById('anchuraInput').value);
-    
-    if (!isNaN(altura) && !isNaN(anchura) && 
-        altura >= 10 && altura % 2 === 0 && 
-        anchura >= 10 && anchura % 2 === 0) {
-        alturaActual = altura;
-        anchuraActual = anchura;
-        validarBotonInicio();
-        return true;
-    }
-    
-    document.getElementById('startBtn').disabled = true;
-    return false;
-}
-
-function validarBotonInicio() {
-    const btnStart = document.getElementById('startBtn');
-    
-    if (opcionSeleccionada === null) {
-        btnStart.disabled = true;
-        return;
-    }
-    
-    if (opcionSeleccionada === 1) {
-        nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
-        btnStart.disabled = !(nPersonajesConfig >= 2 && nPersonajesConfig % 2 === 0);
-    } else {
-        btnStart.disabled = false;
-    }
-}
-
-// ===== FUNCIONES DE VICTORIAS =====
-function actualizarVictoriasVisuales() {
-    document.getElementById('victoriasBuenos').textContent = victoriasBuenos;
-    document.getElementById('victoriasMalos').textContent = victoriasMalos;
-}
-
-function guardarVictorias() {
-    localStorage.setItem('victoriasBuenos', victoriasBuenos);
-    localStorage.setItem('victoriasMalos', victoriasMalos);
-}
-
-function cargarVictorias() {
-    const guardadasBuenos = localStorage.getItem('victoriasBuenos');
-    const guardadasMalos = localStorage.getItem('victoriasMalos');
-    
-    if (guardadasBuenos) victoriasBuenos = parseInt(guardadasBuenos);
-    if (guardadasMalos) victoriasMalos = parseInt(guardadasMalos);
-    
-    actualizarVictoriasVisuales();
-}
-
-function reiniciarVictorias() {
-    if (confirm('¿Reiniciar contadores de victorias?')) {
-        victoriasBuenos = 0;
-        victoriasMalos = 0;
-        actualizarVictoriasVisuales();
-        guardarVictorias();
-    }
-}
-
-// ===== FUNCIONES DE JUEGO =====
-function actualizarContadoresVisuales() {
-    document.getElementById('totalStats').textContent = Personajes.getnPersonajes() || 0;
-    document.getElementById('buenosStats').textContent = Buenos.getnBuenos() || 0;
-    document.getElementById('malosStats').textContent = Malos.getnMalos() || 0;
-}
-
-function iniciarJuego() {
-    if (coins <= 0) {
-        alert('¡NECESITAS UNA MONEDA! 🪙');
-        return;
-    }
-    
-    if (!validarInputs()) {
-        alert('Dimensiones inválidas');
-        return;
-    }
-    
-    if (opcionSeleccionada === null) {
-        alert('Selecciona un modo de juego');
-        return;
-    }
-    
-    // Gastar una moneda
-    coins--;
-    actualizarCoinDisplay();
-    
-    // Ocultar menú, mostrar máquina
-    document.getElementById('menuScreen').classList.add('hidden');
-    document.getElementById('arcadeMachine').classList.remove('hidden');
-    
-    iniciarSimulacion();
-}
-
-function iniciarSimulacion() {
-    detenerSimulacion();
-    simulacionPausada = false;
-    
-    Personajes.setnPersonajes(0);
-    Buenos.setnBuenos(0);
-    Malos.setnMalos(0);
-    actualizarContadoresVisuales();
-    
-    const altura = alturaActual;
-    const anchura = anchuraActual;
-    const porBuenos = Math.floor(Math.random() * (altura * anchura * 0.005)) + 1;
-    const porMalos = Math.floor(Math.random() * (altura * anchura * 0.005)) + 1;
-    
-    let nPersonajes;
-    if (opcionSeleccionada === 1) {
-        nPersonajes = nPersonajesConfig;
-    } else if (opcionSeleccionada === 2) {
-        nPersonajes = porMalos + porBuenos;
-    } else {
-        nPersonajes = Math.floor(Math.random() * (altura * anchura * 0.01)) + 1;
-        while (nPersonajes % 2 !== 0) {
-            nPersonajes = Math.floor(Math.random() * (altura * anchura * 0.01)) + 1;
-        }
-    }
-    
-    nPersonajesActual = nPersonajes;
-    
-    arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
-    arrayPersonajes = Array(nPersonajes).fill(null);
-    
-    // Generar obstáculos (1% del área)
-    for (let i = 0; i < Math.floor(altura * anchura * 0.01); i++) {
-        let x, y;
-        do {
-            x = Math.floor(Math.random() * anchura);
-            y = Math.floor(Math.random() * altura);
-        } while (arrayEntidades[y][x] !== null);
-        arrayEntidades[y][x] = new Obstaculos(y, x);
-    }
-    
-    // Generar personajes
-    for (let i = 0; i < nPersonajes; i++) {
-        let x, y;
-        do {
-            x = Math.floor(Math.random() * anchura);
-            y = Math.floor(Math.random() * altura);
-        } while (arrayEntidades[y][x] !== null);
-        
-        if (i % 2 === 0) {
-            arrayEntidades[y][x] = new Buenos(y, x);
-            arrayPersonajes[i] = arrayEntidades[y][x];
-        } else {
-            arrayEntidades[y][x] = new Malos(y, x);
-            arrayPersonajes[i] = arrayEntidades[y][x];
-        }
-    }
-    
-    actualizarContadoresVisuales();
-    document.getElementById('gameOverPanel').classList.add('hidden');
-    document.getElementById('simulationControls').classList.remove('hidden');
-    
-    intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
+// ===== FUNCIÓN PARA ACTUALIZAR UNA CELDA =====
+function actualizarCelda(index, celda) {
+    if (index >= cells.length) return;
+    aplicarColorCelda(cells[index], celda);
 }
 
 // ===== FUNCIÓN PRINCIPAL DEL JUEGO =====
@@ -389,6 +222,9 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                     if (arrayEntidades[newY][newX] === null) {
                         arrayEntidades[newY][newX] = entidad;
                         arrayEntidades[i][j] = null;
+                        
+                        actualizarCelda(i * anchura + j, null);
+                        actualizarCelda(newY * anchura + newX, entidad);
                     } else if (
                         (arrayEntidades[newY][newX] instanceof Malos && entidad instanceof Buenos) ||
                         (arrayEntidades[newY][newX] instanceof Buenos && entidad instanceof Malos)
@@ -407,6 +243,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                             Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
                             if (defensor instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
                             else Malos.setnMalos(Malos.getnMalos() - 1);
+                            
+                            actualizarCelda(newY * anchura + newX, null);
                         } else {
                             for (let k = 0; k < nPersonajes; k++) {
                                 if (arrayPersonajes[k] === entidad) {
@@ -418,6 +256,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                             Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
                             if (entidad instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
                             else Malos.setnMalos(Malos.getnMalos() - 1);
+                            
+                            actualizarCelda(i * anchura + j, null);
                         }
                         
                         actualizarContadoresVisuales();
@@ -427,77 +267,81 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // ===== TABLERO CON CÁLCULO INTELIGENTE =====
-    const container = document.getElementById('tableroContainer');
-    
-    // Obtener dimensiones exactas del contenedor
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    
-    // Tamaño mínimo y máximo de celda
-    const MIN_CELL_SIZE = 14;
-    const MAX_CELL_SIZE = 40;
-    
-    // Calcular tamaño basado en ANCHO
-    let cellSizeByWidth = Math.floor(containerWidth / anchura);
-    
-    // Calcular tamaño basado en ALTURA
-    let cellSizeByHeight = Math.floor(containerHeight / altura);
-    
-    // Usar el tamaño más pequeño para que quepa todo
-    let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-    
-    // Limitar a rangos
-    cellSize = Math.max(cellSize, MIN_CELL_SIZE);
-    cellSize = Math.min(cellSize, MAX_CELL_SIZE);
-    
-    // Crear el grid con estilo Pac-Man
-    let tableroHTML = `<div class="board-grid" style="display: grid; grid-template-columns: repeat(${anchura}, ${cellSize}px); gap: 0; margin: 0 auto;">`;
-    
-    for (let i = 0; i < altura; i++) {
-        for (let j = 0; j < anchura; j++) {
-            const celda = arrayEntidades[i][j];
-            
-            let bgColor = '#24408e';
-            let color = '#ffffff';
-            let text = '';
-            let shadow = 'none';
-            let borderRadius = '0';
-            
-            if (!celda) {
-                color = '#ffff00';
-                text = '·';
-                shadow = '0 0 5px #ffff00';
-                borderRadius = '50%';
-            } else if (celda instanceof Buenos) {
-                color = '#ffff00';
-                text = 'B';
-                shadow = '0 0 8px #ffff00';
-            } else if (celda instanceof Malos) {
-                color = '#ff0000';
-                text = 'M';
-                shadow = '0 0 8px #ff0000';
-            } else if (celda instanceof Obstaculos) {
-                bgColor = '#0a1a4a';
-                color = '#4a6c8f';
-                text = '█';
-                shadow = 'none';
-            }
-            
-            tableroHTML += `<div style="width: ${cellSize}px; height: ${cellSize}px; display: flex; align-items: center; justify-content: center; background-color: ${bgColor}; color: ${color}; text-shadow: ${shadow}; font-size: ${Math.floor(cellSize * 0.7)}px; font-weight: bold; border-radius: ${borderRadius};">${text}</div>`;
-        }
-    }
-    
-    tableroHTML += '</div>';
-    
-    document.getElementById('tableroContainer').innerHTML = tableroHTML;
     actualizarContadoresVisuales();
     
-    // Verificar fin
     if (Buenos.getnBuenos() <= 0 || Malos.getnMalos() <= 0) {
         detenerSimulacion();
         mostrarResultado();
     }
+}
+
+// ===== FUNCIÓN INICIAR SIMULACIÓN =====
+function iniciarSimulacion() {
+    detenerSimulacion();
+    simulacionPausada = false;
+    
+    Personajes.setnPersonajes(0);
+    Buenos.setnBuenos(0);
+    Malos.setnMalos(0);
+    actualizarContadoresVisuales();
+    
+    const altura = ALTURA_FIJA;
+    const anchura = ANCHURA_FIJA;
+    const totalCeldas = altura * anchura;
+    
+    let nPersonajes;
+    if (opcionSeleccionada === 1) {
+        nPersonajes = nPersonajesConfig;
+    } else if (opcionSeleccionada === 2) {
+        nPersonajes = Math.floor(Math.random() * (totalCeldas * 0.02)) + 5;
+    } else {
+        nPersonajes = Math.floor(Math.random() * (totalCeldas * 0.02)) + 5;
+        while (nPersonajes % 2 !== 0) {
+            nPersonajes = Math.floor(Math.random() * (totalCeldas * 0.02)) + 5;
+        }
+    }
+    
+    nPersonajesActual = nPersonajes;
+    
+    arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
+    arrayPersonajes = Array(nPersonajes).fill(null);
+    
+    // Generar obstáculos (1%)
+    const numObstaculos = Math.floor(totalCeldas * 0.01);
+    for (let i = 0; i < numObstaculos; i++) {
+        let x, y;
+        do {
+            x = Math.floor(Math.random() * anchura);
+            y = Math.floor(Math.random() * altura);
+        } while (arrayEntidades[y][x] !== null);
+        arrayEntidades[y][x] = new Obstaculos(y, x);
+    }
+    
+    // Generar personajes
+    for (let i = 0; i < nPersonajes; i++) {
+        let x, y;
+        do {
+            x = Math.floor(Math.random() * anchura);
+            y = Math.floor(Math.random() * altura);
+        } while (arrayEntidades[y][x] !== null);
+        
+        if (i % 2 === 0) {
+            arrayEntidades[y][x] = new Buenos(y, x);
+            arrayPersonajes[i] = arrayEntidades[y][x];
+        } else {
+            arrayEntidades[y][x] = new Malos(y, x);
+            arrayPersonajes[i] = arrayEntidades[y][x];
+        }
+    }
+    
+    crearTablero(altura, anchura);
+    actualizarTodoElTablero();
+    
+    actualizarContadoresVisuales();
+    document.getElementById('gameOverPanel').classList.add('hidden');
+    document.getElementById('simulationControls').classList.remove('hidden');
+    
+    intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
 
 // ===== FUNCIONES DE CONTROL =====
@@ -512,7 +356,7 @@ function detenerSimulacion() {
 function continuarSimulacion() {
     if (simulacionPausada && arrayEntidades) {
         intervaloSimulacion = setInterval(
-            () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual),
+            () => actualizarJuego(ALTURA_FIJA, ANCHURA_FIJA, nPersonajesActual),
             velocidadActual
         );
         simulacionPausada = false;
@@ -529,7 +373,167 @@ function ajustarVelocidad(cambio) {
     }
 }
 
-// ===== FUNCIÓN PARA REINTENTAR PARTIDA =====
+// ===== RESTO DE FUNCIONES (insertCoin, useCoin, etc.) =====
+// ... (se mantienen igual que en la versión anterior)
+
+// ===== FUNCIONES DE MONEDAS =====
+function insertCoin() {
+    coins++;
+    actualizarCoinDisplay();
+    
+    if (coins > 0) {
+        document.getElementById('menuCard').classList.add('active');
+        document.getElementById('menuCard').style.opacity = '1';
+        document.getElementById('menuCard').style.pointerEvents = 'all';
+        
+        document.querySelectorAll('#menuCard input, #menuCard button').forEach(el => {
+            el.disabled = false;
+        });
+    }
+    
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        document.getElementById('gameOverRetry').classList.remove('disabled');
+    }
+}
+
+function useCoin() {
+    if (coins > 0) {
+        coins--;
+        actualizarCoinDisplay();
+        
+        if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+            reintentarPartida();
+        } else {
+            iniciarJuego();
+        }
+    } else {
+        alert('¡INSERTA UNA MONEDA PRIMERO! 🪙');
+    }
+}
+
+function actualizarCoinDisplay() {
+    document.getElementById('coinCount').textContent = coins;
+    document.getElementById('gameCoinCount').textContent = coins;
+    actualizarGameOverCoins();
+    actualizarBotonReintentar();
+}
+
+function actualizarGameOverCoins() {
+    const gameOverCoinSpan = document.getElementById('gameOverCoinCount');
+    if (gameOverCoinSpan) {
+        gameOverCoinSpan.textContent = coins;
+    }
+}
+
+function actualizarBotonReintentar() {
+    const retryBtn = document.getElementById('gameOverRetry');
+    if (!retryBtn) return;
+    
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        if (coins <= 0) {
+            retryBtn.classList.add('disabled');
+            retryBtn.style.pointerEvents = 'none';
+            retryBtn.style.opacity = '0.5';
+        } else {
+            retryBtn.classList.remove('disabled');
+            retryBtn.style.pointerEvents = 'auto';
+            retryBtn.style.opacity = '1';
+        }
+    }
+}
+
+// ===== FUNCIONES DEL MENÚ =====
+function seleccionarOpcion(opcion) {
+    opcionSeleccionada = opcion;
+    
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+    
+    const nPersonajesRow = document.getElementById('nPersonajesRow');
+    if (opcion === 1) {
+        nPersonajesRow.classList.remove('hidden');
+    } else {
+        nPersonajesRow.classList.add('hidden');
+    }
+    
+    validarBotonInicio();
+}
+
+function validarBotonInicio() {
+    const btnStart = document.getElementById('startBtn');
+    
+    if (opcionSeleccionada === null) {
+        btnStart.disabled = true;
+        return;
+    }
+    
+    if (opcionSeleccionada === 1) {
+        nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
+        btnStart.disabled = !(nPersonajesConfig >= 2 && nPersonajesConfig % 2 === 0);
+    } else {
+        btnStart.disabled = false;
+    }
+}
+
+// ===== FUNCIONES DE VICTORIAS =====
+function actualizarVictoriasVisuales() {
+    document.getElementById('victoriasBuenos').textContent = victoriasBuenos;
+    document.getElementById('victoriasMalos').textContent = victoriasMalos;
+}
+
+function guardarVictorias() {
+    localStorage.setItem('victoriasBuenos', victoriasBuenos);
+    localStorage.setItem('victoriasMalos', victoriasMalos);
+}
+
+function cargarVictorias() {
+    const guardadasBuenos = localStorage.getItem('victoriasBuenos');
+    const guardadasMalos = localStorage.getItem('victoriasMalos');
+    
+    if (guardadasBuenos) victoriasBuenos = parseInt(guardadasBuenos);
+    if (guardadasMalos) victoriasMalos = parseInt(guardadasMalos);
+    
+    actualizarVictoriasVisuales();
+}
+
+function reiniciarVictorias() {
+    if (confirm('¿Reiniciar contadores?')) {
+        victoriasBuenos = 0;
+        victoriasMalos = 0;
+        actualizarVictoriasVisuales();
+        guardarVictorias();
+    }
+}
+
+// ===== FUNCIONES DE JUEGO =====
+function actualizarContadoresVisuales() {
+    document.getElementById('totalStats').textContent = Personajes.getnPersonajes() || 0;
+    document.getElementById('buenosStats').textContent = Buenos.getnBuenos() || 0;
+    document.getElementById('malosStats').textContent = Malos.getnMalos() || 0;
+}
+
+function iniciarJuego() {
+    if (coins <= 0) {
+        alert('¡NECESITAS UNA MONEDA! 🪙');
+        return;
+    }
+    
+    if (opcionSeleccionada === null) {
+        alert('Selecciona un modo de juego');
+        return;
+    }
+    
+    coins--;
+    actualizarCoinDisplay();
+    
+    document.getElementById('menuScreen').classList.add('hidden');
+    document.getElementById('arcadeMachine').classList.remove('hidden');
+    
+    iniciarSimulacion();
+}
+
 function reintentarPartida() {
     if (coins <= 0) {
         const msg = document.getElementById('noCoinsMessage');
@@ -553,7 +557,6 @@ function reintentarPartida() {
     iniciarSimulacion();
 }
 
-// ===== MOSTRAR RESULTADO =====
 function mostrarResultado() {
     const buenos = Buenos.getnBuenos() || 0;
     const malos = Malos.getnMalos() || 0;
@@ -579,7 +582,6 @@ function mostrarResultado() {
     actualizarBotonReintentar();
 }
 
-// ===== VOLVER AL MENÚ =====
 function volverAlMenu() {
     detenerSimulacion();
     
@@ -603,8 +605,12 @@ function volverAlMenu() {
     actualizarContadoresVisuales();
     actualizarCoinDisplay();
     
-    document.getElementById('tableroContainer').innerHTML = '';
+    if (gameBoard) {
+        gameBoard.innerHTML = '';
+        cells = [];
+    }
 }
+
 
 // ===== HACER FUNCIONES GLOBALES =====
 window.iniciarJuego = iniciarJuego;
@@ -617,4 +623,3 @@ window.volverAlMenu = volverAlMenu;
 window.insertCoin = insertCoin;
 window.useCoin = useCoin;
 window.reintentarPartida = reintentarPartida;
-window.aplicarDimensionesAutomaticas = aplicarDimensionesAutomaticas;
