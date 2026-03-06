@@ -8,10 +8,9 @@ Juego de simulación donde personajes Buenos (B) y Malos (M) luchan en un tabler
 
 ---
 
-# Pedir a la IA 🤖
+<!-- # Pedir a la IA 🤖
 
-- Que mede los estilos de pacman para todo el css para que pege con el tablero pero para un aopcion llamada Pacman y otra con el tablero con el color que pege con la el css usado normal si los colores de Pacman
-- Que el tablero se adapte a la pantalla y se vea bien en movil y en pc
+-  -->
 
 ---
 
