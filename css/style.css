@@ -17,12 +17,11 @@
     --gold: #ffd700;
     --pacman-blue: #24408e;
     --pacman-dark-blue: #0a1a4a;
-
+    
     --sidebar-width: 220px;
 }
 
-html,
-body {
+html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -64,15 +63,8 @@ body {
 }
 
 @keyframes coinGlow {
-
-    0%,
-    100% {
-        box-shadow: 0 0 20px var(--gold);
-    }
-
-    50% {
-        box-shadow: 0 0 40px var(--gold);
-    }
+    0%, 100% { box-shadow: 0 0 20px var(--gold); }
+    50% { box-shadow: 0 0 40px var(--gold); }
 }
 
 .coin-insert {
@@ -110,15 +102,8 @@ body {
 }
 
 @keyframes glow {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.8;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
 }
 
 .menu-card {
@@ -215,15 +200,8 @@ body {
 }
 
 @keyframes startPulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 20px var(--yellow);
-    }
-
-    50% {
-        box-shadow: 0 0 40px var(--yellow);
-    }
+    0%, 100% { box-shadow: 0 0 20px var(--yellow); }
+    50% { box-shadow: 0 0 40px var(--yellow); }
 }
 
 .menu-footer {
@@ -252,20 +230,18 @@ body {
     overflow: hidden;
 }
 
-/* BARRAS LATERALES (estilo arcade) */
-.left-bar,
-.right-bar {
+/* BARRAS LATERALES */
+.left-bar, .right-bar {
     width: var(--sidebar-width);
     background: linear-gradient(145deg, #2a1a0a, #1a0a00);
     border: 3px solid var(--gold);
     border-radius: 20px;
-    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3), 0 0 15px var(--gold);
+    box-shadow: inset 0 0 20px rgba(255,215,0,0.3), 0 0 15px var(--gold);
     position: relative;
     overflow: hidden;
 }
 
-.left-bar::before,
-.right-bar::before {
+.left-bar::before, .right-bar::before {
     content: '';
     position: absolute;
     top: 0;
@@ -308,29 +284,13 @@ body {
 }
 
 @keyframes textPulse {
-
-    0%,
-    100% {
-        opacity: 0.7;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 1;
-        transform: scale(1.1);
-    }
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
 }
 
 @keyframes glowPulse {
-
-    0%,
-    100% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 1;
-    }
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
 /* CONTENIDO CENTRAL */
@@ -353,7 +313,7 @@ body {
     align-items: center;
     height: 70px;
     flex-shrink: 0;
-    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3);
+    box-shadow: inset 0 0 20px rgba(255,215,0,0.3);
 }
 
 .marquee h1 {
@@ -377,7 +337,7 @@ body {
     box-shadow: 0 0 15px var(--gold);
 }
 
-/* ===== TABLERO DE JUEGO - TOTALMENTE RESPONSIVO ===== */
+/* CONTENEDOR DEL TABLERO */
 .game-board-container {
     flex: 1;
     min-height: 0;
@@ -389,8 +349,6 @@ body {
     border-radius: 20px;
     padding: 15px;
     box-shadow: inset 0 0 30px var(--pacman-dark-blue);
-    overflow: hidden;
-    width: 100%;
 }
 
 .game-board {
@@ -399,19 +357,23 @@ body {
     background-color: var(--pacman-blue);
     border-radius: 10px;
     padding: 5px;
+    margin: 0;
     width: 100%;
     height: 100%;
-    margin: 0;
 }
 
+/* ===== ESTILOS PARA CELDAS Y COMBATE ===== */
 .game-board > div {
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    transition: all 0.15s ease-out;
+    transition: all 0.1s ease-out;
     backface-visibility: hidden;
     box-sizing: border-box;
+    position: relative;
+    cursor: help;
+    border-radius: 0;
 }
 
 .game-board > div:hover {
@@ -420,7 +382,113 @@ body {
     filter: brightness(1.2);
     box-shadow: 0 0 10px currentColor;
 }
-/* ===== PANEL DE ESTADÍSTICAS EN BARRA DERECHA ===== */
+
+/* Tooltip mejorado */
+.game-board > div:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: pre;
+    border: 2px solid var(--gold);
+    z-index: 1000;
+    margin-bottom: 8px;
+    box-shadow: 0 0 20px var(--gold);
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+    min-width: 160px;
+    text-align: left;
+}
+
+/* Animación de daño */
+@keyframes damageFlash {
+    0% { filter: brightness(1); }
+    30% { filter: brightness(1.8) drop-shadow(0 0 8px red); }
+    70% { filter: brightness(1.3) drop-shadow(0 0 5px orange); }
+    100% { filter: brightness(1); }
+}
+
+.game-board > div.taking-damage {
+    animation: damageFlash 0.3s ease-out;
+}
+
+/* Indicadores de vida por color */
+.game-board > div[title*="❤️"] {
+    transition: all 0.2s ease;
+}
+
+/* Vida baja (menos de 30) */
+.game-board > div[title*="❤️"][title*="/30"] {
+    filter: drop-shadow(0 0 5px red);
+    animation: lowHealthPulse 1s infinite;
+}
+
+.game-board > div[title*="❤️"][title*="/20"] {
+    filter: drop-shadow(0 0 8px red);
+    animation: lowHealthPulse 0.8s infinite;
+}
+
+.game-board > div[title*="❤️"][title*="/10"] {
+    filter: drop-shadow(0 0 10px red);
+    animation: lowHealthPulse 0.5s infinite;
+}
+
+/* Vida media (30-70) */
+.game-board > div[title*="❤️"][title*="/50"], 
+.game-board > div[title*="❤️"][title*="/60"] {
+    filter: drop-shadow(0 0 5px orange);
+}
+
+/* Vida alta (más de 70) */
+.game-board > div[title*="❤️"][title*="/80"],
+.game-board > div[title*="❤️"][title*="/90"],
+.game-board > div[title*="❤️"][title*="/100"] {
+    filter: drop-shadow(0 0 5px #00ff00);
+}
+
+@keyframes lowHealthPulse {
+    0%, 100% { filter: drop-shadow(0 0 5px red) brightness(1); }
+    50% { filter: drop-shadow(0 0 15px red) brightness(1.3); }
+}
+
+/* Colores de tooltip por clase */
+.game-board > div[title*="CURANDERO"]:hover::after {
+    border-color: #00ff00;
+    box-shadow: 0 0 20px #00ff00;
+}
+
+.game-board > div[title*="PALADÍN"]:hover::after {
+    border-color: #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+.game-board > div[title*="MAGO"]:hover::after {
+    border-color: #aa00ff;
+    box-shadow: 0 0 20px #aa00ff;
+}
+
+.game-board > div[title*="ASESINO"]:hover::after {
+    border-color: #ff0000;
+    box-shadow: 0 0 20px #ff0000;
+}
+
+.game-board > div[title*="TANQUE"]:hover::after {
+    border-color: #8b4513;
+    box-shadow: 0 0 20px #8b4513;
+}
+
+.game-board > div[title*="BRUJO"]:hover::after {
+    border-color: #ff00ff;
+    box-shadow: 0 0 20px #ff00ff;
+}
+
+/* ===== PANEL DE ESTADÍSTICAS ===== */
 .stats-content {
     padding: 15px;
     height: 100%;
@@ -433,7 +501,7 @@ body {
     border: 4px solid var(--gold);
     border-radius: 20px;
     padding: 15px 12px;
-    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 30px var(--gold);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 30px var(--gold);
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -446,21 +514,18 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg,
-            transparent 30%,
-            rgba(255, 215, 0, 0.1) 50%,
-            transparent 70%);
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 215, 0, 0.1) 50%,
+        transparent 70%
+    );
     animation: shine 3s infinite;
 }
 
 @keyframes shine {
-    0% {
-        transform: translateX(-100%) translateY(-100%) rotate(45deg);
-    }
-
-    100% {
-        transform: translateX(100%) translateY(100%) rotate(45deg);
-    }
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .stats-header {
@@ -529,7 +594,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
 }
 
 .stat-card.player[data-type="good"] {
@@ -594,13 +659,13 @@ body {
     text-align: center;
 }
 
-.player-count.good {
-    color: #ffff00;
+.player-count.good { 
+    color: #ffff00; 
     text-shadow: 0 0 15px #ffff00, 0 0 25px #ffaa00;
 }
 
-.player-count.bad {
-    color: #ff6666;
+.player-count.bad { 
+    color: #ff6666; 
     text-shadow: 0 0 15px #ff0000, 0 0 25px #ff6666;
 }
 
@@ -654,7 +719,7 @@ body {
     box-shadow: 0 0 30px var(--gold);
 }
 
-/* VALORES ESPECÍFICOS - TAMAÑOS REDUCIDOS */
+/* VALORES ESPECÍFICOS */
 #totalStats {
     font-size: 1.5rem;
     color: white;
@@ -673,8 +738,7 @@ body {
     text-shadow: 0 0 12px #ff0000, 0 0 20px #ff6666;
 }
 
-#victoriasBuenos,
-#victoriasMalos {
+#victoriasBuenos, #victoriasMalos {
     color: var(--gold);
     text-shadow: 0 0 8px var(--gold), 0 0 15px #ffaa00;
     font-size: 1.1rem;
@@ -693,7 +757,7 @@ body {
     gap: 15px;
     height: 70px;
     flex-shrink: 0;
-    box-shadow: inset 0 0 20px rgba(255, 215, 0, 0.3);
+    box-shadow: inset 0 0 20px rgba(255,215,0,0.3);
 }
 
 .speed-control {
@@ -774,20 +838,9 @@ body {
     filter: brightness(1.2);
 }
 
-.action-btn.pause {
-    border-color: var(--yellow);
-    color: var(--yellow);
-}
-
-.action-btn.resume {
-    border-color: var(--blue);
-    color: var(--blue);
-}
-
-.action-btn.reset {
-    border-color: var(--red);
-    color: var(--red);
-}
+.action-btn.pause { border-color: var(--yellow); color: var(--yellow); }
+.action-btn.resume { border-color: var(--blue); color: var(--blue); }
+.action-btn.reset { border-color: var(--red); color: var(--red); }
 
 /* ===== GAME OVER ===== */
 .game-over {
@@ -814,15 +867,8 @@ body {
 }
 
 @keyframes gameoverPulse {
-
-    0%,
-    100% {
-        text-shadow: 0 0 20px var(--red);
-    }
-
-    50% {
-        text-shadow: 0 0 40px var(--red);
-    }
+    0%, 100% { text-shadow: 0 0 20px var(--red); }
+    50% { text-shadow: 0 0 40px var(--red); }
 }
 
 .game-over-winner {
@@ -856,7 +902,6 @@ body {
     align-items: center;
 }
 
-/* Botón MENÚ */
 .menu-button {
     background: linear-gradient(145deg, #333333, #222222);
     border: 4px solid var(--blue);
@@ -873,7 +918,6 @@ body {
 .menu-button:hover {
     transform: scale(1.1);
     box-shadow: 0 0 40px var(--blue);
-    filter: brightness(1.2);
 }
 
 .menu-icon {
@@ -890,7 +934,6 @@ body {
     text-shadow: 0 0 10px var(--blue);
 }
 
-/* Botón REINTENTAR (ACTIVO) */
 .retry-button {
     background: linear-gradient(145deg, #006600, #003300);
     border: 4px solid var(--green);
@@ -907,46 +950,16 @@ body {
 .retry-button:hover {
     transform: scale(1.1);
     box-shadow: 0 0 40px var(--green);
-    filter: brightness(1.2);
 }
 
-.retry-icon {
-    font-size: 1.5rem;
-    color: var(--green);
-    filter: drop-shadow(0 0 10px var(--green));
-}
-
-.retry-text {
-    color: var(--green);
-    font-size: 1.2rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px var(--green);
-}
-
-/* Botón REINTENTAR (DESACTIVADO) */
 .retry-button.disabled {
     opacity: 0.4;
     cursor: not-allowed;
     pointer-events: none;
     filter: grayscale(0.8);
     box-shadow: none;
-    border-color: #666;
 }
 
-.retry-button.disabled .retry-icon,
-.retry-button.disabled .retry-text {
-    color: #888;
-    filter: none;
-    text-shadow: none;
-}
-
-.retry-button.disabled:hover {
-    transform: none;
-    box-shadow: none;
-}
-
-/* Estado de monedas */
 .coin-status {
     background: var(--black);
     border: 2px solid var(--gold);
@@ -959,21 +972,12 @@ body {
     box-shadow: 0 0 15px var(--gold);
 }
 
-.coin-status span {
-    font-size: 1.5rem;
-    margin-left: 8px;
-    color: var(--gold);
-    text-shadow: 0 0 10px var(--gold);
-}
-
-/* Mensaje sin monedas */
 .no-coins-message {
     color: var(--red);
     font-size: 1rem;
     margin-top: 10px;
     animation: blink 1s infinite;
     text-align: center;
-    font-weight: bold;
 }
 
 /* ===== ALTAVOZ ===== */
@@ -991,26 +995,13 @@ body {
 }
 
 @keyframes blink {
-
-    0%,
-    50% {
-        opacity: 1;
-    }
-
-    51%,
-    100% {
-        opacity: 0;
-    }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 @keyframes scan {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 /* ===== MEDIA QUERIES ===== */
@@ -1018,21 +1009,21 @@ body {
     :root {
         --sidebar-width: 180px;
     }
-
+    
     .stats-header {
         font-size: 1rem;
     }
-
+    
     .player-icon {
         width: 28px;
         height: 28px;
         font-size: 1.1rem;
     }
-
+    
     .player-count {
         font-size: 1.3rem;
     }
-
+    
     .control-panel {
         flex-direction: column;
         height: auto;
@@ -1044,37 +1035,13 @@ body {
     :root {
         --sidebar-width: 150px;
     }
-
+    
     .marquee h1 {
         font-size: 1.5rem;
     }
-
+    
     .coin-display {
         font-size: 1.2rem;
         padding: 3px 12px;
     }
-}
-
-/* ===== FORZAR COLORES DE CELDAS ===== */
-.game-board>div {
-    transition: transform 0.15s ease-out !important;
-    backface-visibility: hidden !important;
-    box-sizing: border-box !important;
-}
-
-/* Resetear cualquier posible herencia */
-.game-board>div * {
-    all: unset;
-}
-
-/* Asegurar que los hover no cambien colores */
-.game-board>div:hover {
-    transform: scale(1.1) !important;
-    z-index: 10 !important;
-    filter: brightness(1.2) !important;
-    box-shadow: 0 0 10px currentColor !important;
-    /* Mantener los colores originales */
-    background-color: inherit !important;
-    color: inherit !important;
-    text-shadow: inherit !important;
 }

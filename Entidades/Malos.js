@@ -4,6 +4,9 @@ class Malos extends Personajes {
     constructor(y, x) {
         super(y, x, 1, 1);
         this.bueno = null;
+        this.clase = 'MALO';
+        this.vida = 100;
+        this.vidaMax = 100;
         Malos.nMalos++;
     }
 
@@ -14,43 +17,38 @@ class Malos extends Personajes {
     static setnMalos(n) { Malos.nMalos = n; }
 
     mover(ancho, alto, arrayEntidades) {
+        // Si no hay enemigo, movimiento aleatorio
         if (this.bueno === null) {
             super.mover(ancho, alto, arrayEntidades);
             return;
-        } else if (this.estaCercaDe(this.bueno, 10)) {
-            if (this.x < this.bueno.x) {
-                this.setVx(1);
-            } else if (this.x > this.bueno.x) {
-                this.setVx(-1);
-            } else {
-                this.setVx(0);
-            }
-
-            if (this.y < this.bueno.y) {
-                this.setVy(1);
-            } else if (this.y > this.bueno.y) {
-                this.setVy(-1);
-            } else {
-                this.setVy(0);
-            }
-
-            const auxX = this.x + this.vx;
-            const auxY = this.y + this.vy;
-
-            if (auxX >= 0 && auxX < ancho && auxY >= 0 && auxY < alto) {
-                if (arrayEntidades[auxY][auxX] === null || 
-                    arrayEntidades[auxY][auxX].constructor.name !== 'Obstaculos') {
-                    this.x = auxX;
-                    this.y = auxY;
-                } else {
-                    super.mover(ancho, alto, arrayEntidades);
-                }
-            } else {
-                super.mover(ancho, alto, arrayEntidades);
-            }
-        } else {
-            super.mover(ancho, alto, arrayEntidades);
         }
+        
+        // Calcular dirección hacia el bueno
+        let dx = 0, dy = 0;
+        
+        if (this.x < this.bueno.x) dx = 1;
+        else if (this.x > this.bueno.x) dx = -1;
+        
+        if (this.y < this.bueno.y) dy = 1;
+        else if (this.y > this.bueno.y) dy = -1;
+        
+        // Intentar mover en la dirección calculada
+        const auxX = this.x + dx;
+        const auxY = this.y + dy;
+        
+        // Verificar si el movimiento es válido
+        if (auxX >= 0 && auxX < ancho && auxY >= 0 && auxY < alto) {
+            const destino = arrayEntidades[auxY][auxX];
+            // Puede moverse si está vacío o si es un enemigo (para combatir)
+            if (destino === null || destino instanceof Buenos) {
+                this.x = auxX;
+                this.y = auxY;
+                return;
+            }
+        }
+        
+        // Si no puede moverse hacia el enemigo, movimiento aleatorio
+        super.mover(ancho, alto, arrayEntidades);
     }
 
     toString() {

@@ -44,34 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
 function recalcularDimensiones() {
     if (!gameBoard) return;
     
-    // Obtener dimensiones del game-board
     const boardWidth = gameBoard.clientWidth;
     const boardHeight = gameBoard.clientHeight;
     
     if (boardWidth === 0 || boardHeight === 0) return;
     
-    // TAMAÑO MÍNIMO DE CELDA - AUMENTADO a 16px (antes 10px)
     const MIN_CELL_SIZE = 16;
     
-    // Calcular cuántas celdas caben en el espacio disponible
-    // Usamos un factor de escala para que las celdas sean más grandes
     const maxCellsWidth = Math.floor(boardWidth / MIN_CELL_SIZE);
     const maxCellsHeight = Math.floor(boardHeight / MIN_CELL_SIZE);
     
-    // REDUCCIÓN DEL 20% para que las celdas sean más grandes
-    // (menos celdas, pero más grandes)
     alturaActual = Math.floor(maxCellsHeight * 0.8);
     anchuraActual = Math.floor(maxCellsWidth * 0.8);
     
-    // Asegurar que sean pares para el equilibrio del juego
     if (alturaActual % 2 !== 0) alturaActual--;
     if (anchuraActual % 2 !== 0) anchuraActual--;
     
-    // Límites mínimos
     alturaActual = Math.max(alturaActual, 8);
     anchuraActual = Math.max(anchuraActual, 8);
-    
-    console.log(`📏 Dimensiones calculadas: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
 }
 
 // ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
@@ -81,32 +71,23 @@ function redimensionarTablero() {
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
     
-    // Obtener dimensiones del game-board
     const boardWidth = gameBoard.clientWidth;
     const boardHeight = gameBoard.clientHeight;
     
     if (boardWidth === 0 || boardHeight === 0) return;
     
-    // Calcular tamaño de celda para que OCUPE TODO el espacio
     const cellSizeByWidth = Math.floor(boardWidth / anchura);
     const cellSizeByHeight = Math.floor(boardHeight / altura);
     
-    // Usar el tamaño más pequeño para mantener celdas cuadradas
     let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-    
-    // TAMAÑO MÍNIMO AUMENTADO a 14px (antes 8px)
     cellSize = Math.max(cellSize, 14);
-    
-    // TAMAÑO MÁXIMO para no ser demasiado grandes
     cellSize = Math.min(cellSize, 45);
     
     const fontSize = Math.floor(cellSize * 0.6);
     
-    // Actualizar el grid con el nuevo tamaño
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     
-    // Actualizar todas las celdas
     const cells = gameBoard.children;
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
@@ -114,6 +95,63 @@ function redimensionarTablero() {
         cell.style.height = `${cellSize}px`;
         cell.style.fontSize = `${fontSize}px`;
     }
+}
+
+// ===== FUNCIÓN PARA GENERAR PERSONAJE CON CLASE ALEATORIA =====
+function generarPersonajeConClase(tipo, y, x) {
+    const rand = Math.random();
+    
+    if (tipo === 'bueno') {
+        if (rand < 0.25) return new Curandero(y, x);
+        else if (rand < 0.5) return new Paladin(y, x);
+        else if (rand < 0.75) return new Mago(y, x);
+        else return new Buenos(y, x);
+    } else {
+        if (rand < 0.25) return new Asesino(y, x);
+        else if (rand < 0.5) return new Tanque(y, x);
+        else if (rand < 0.75) return new Brujo(y, x);
+        else return new Malos(y, x);
+    }
+}
+
+// ===== FUNCIÓN DE COMBATE CON CLASES =====
+function combatirConClases(atacante, defensor) {
+    // Calcular daño base según clase
+    let dañoPorcentaje;
+    
+    if (atacante instanceof Curandero) dañoPorcentaje = 5;
+    else if (atacante instanceof Paladin) dañoPorcentaje = 10;
+    else if (atacante instanceof Mago) dañoPorcentaje = 20;
+    else if (atacante instanceof Asesino) {
+        dañoPorcentaje = atacante.calcularDaño(); // Ya incluye crítico
+    }
+    else if (atacante instanceof Tanque) dañoPorcentaje = 10;
+    else if (atacante instanceof Brujo) dañoPorcentaje = 25;
+    else dañoPorcentaje = 15; // Soldado normal
+    
+    // Calcular daño como porcentaje de la vida actual del defensor
+    let daño = Math.floor(defensor.vida * (dañoPorcentaje / 100));
+    
+    // Aplicar reducción de daño si el defensor es Paladín
+    if (defensor instanceof Paladin) {
+        daño = defensor.recibirDaño(daño);
+    }
+    
+    // Aplicar daño
+    const vidaAnterior = defensor.vida;
+    defensor.vida = Math.max(defensor.vida - daño, 0);
+    
+    console.log(`⚔️ ${atacante.clase} ataca a ${defensor.clase}: ${vidaAnterior} → ${defensor.vida} (-${daño}) [${dañoPorcentaje}%]`);
+    
+    // Habilidades especiales post-ataque
+    if (atacante instanceof Brujo && daño > 0) {
+        const vidaRobada = Math.floor(daño * 0.1);
+        atacante.vida = Math.min(atacante.vida + vidaRobada, atacante.vidaMax);
+        console.log(`🧙 Brujo roba ${vidaRobada} vida`);
+    }
+    
+    // Devolver true si el defensor murió
+    return defensor.vida <= 0;
 }
 
 // ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
@@ -124,24 +162,40 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.textContent = '·';
         cellDiv.style.textShadow = '0 0 5px #ffff00';
         cellDiv.style.borderRadius = '50%';
+        cellDiv.title = '';
     } else if (celda instanceof Buenos) {
         cellDiv.style.backgroundColor = '#24408e';
         cellDiv.style.color = '#ffff00';
-        cellDiv.textContent = 'B';
+        cellDiv.textContent = celda.toString();
         cellDiv.style.textShadow = '0 0 8px #ffff00';
         cellDiv.style.borderRadius = '0';
+        
+        const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
+        const barrasLlenas = Math.floor(porcentaje / 10);
+        const barrasVacias = 10 - barrasLlenas;
+        const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
+        
+        cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
     } else if (celda instanceof Malos) {
         cellDiv.style.backgroundColor = '#24408e';
         cellDiv.style.color = '#ff0000';
-        cellDiv.textContent = 'M';
+        cellDiv.textContent = celda.toString();
         cellDiv.style.textShadow = '0 0 8px #ff0000';
         cellDiv.style.borderRadius = '0';
+        
+        const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
+        const barrasLlenas = Math.floor(porcentaje / 10);
+        const barrasVacias = 10 - barrasLlenas;
+        const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
+        
+        cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
     } else if (celda instanceof Obstaculos) {
         cellDiv.style.backgroundColor = '#0a1a4a';
         cellDiv.style.color = '#4a6c8f';
         cellDiv.textContent = '█';
         cellDiv.style.textShadow = 'none';
         cellDiv.style.borderRadius = '0';
+        cellDiv.title = '🧱 Obstáculo';
     }
 }
 
@@ -154,7 +208,6 @@ function crearTablero() {
     
     gameBoard.innerHTML = '';
     
-    // Configuración base del grid
     gameBoard.style.display = 'grid';
     gameBoard.style.gap = '1px';
     gameBoard.style.backgroundColor = '#24408e';
@@ -164,29 +217,22 @@ function crearTablero() {
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
     
-    // Calcular dimensiones si no existen
     if (alturaActual === 0 || anchuraActual === 0) {
         recalcularDimensiones();
     }
     
-    // Crear celdas con tamaño temporal
     for (let i = 0; i < alturaActual; i++) {
         for (let j = 0; j < anchuraActual; j++) {
             const cellDiv = document.createElement('div');
-            
             cellDiv.style.display = 'flex';
             cellDiv.style.alignItems = 'center';
             cellDiv.style.justifyContent = 'center';
             cellDiv.style.fontWeight = 'bold';
-            
             gameBoard.appendChild(cellDiv);
         }
     }
     
-    // Redimensionar al tamaño correcto
     setTimeout(() => redimensionarTablero(), 10);
-    
-    console.log(`✅ Tablero creado: ${alturaActual * anchuraActual} celdas (${anchuraActual}x${alturaActual})`);
 }
 
 // ===== FUNCIÓN PARA ACTUALIZAR TODO EL TABLERO =====
@@ -201,7 +247,6 @@ function actualizarTodoElTablero() {
         for (let j = 0; j < anchura; j++) {
             const index = i * anchura + j;
             if (index >= cells.length) continue;
-            
             const celda = arrayEntidades[i][j];
             aplicarColorCelda(cells[index], celda);
         }
@@ -211,6 +256,7 @@ function actualizarTodoElTablero() {
 // ===== FUNCIÓN PARA ACTUALIZAR UNA CELDA =====
 function actualizarCelda(row, col, celda) {
     if (!gameBoard) return;
+    if (!arrayEntidades) return;
     const anchura = arrayEntidades[0].length;
     const index = row * anchura + col;
     const cells = gameBoard.children;
@@ -218,9 +264,9 @@ function actualizarCelda(row, col, celda) {
     aplicarColorCelda(cells[index], celda);
 }
 
-// ===== FUNCIÓN PRINCIPAL DEL JUEGO =====
+// ===== FUNCIÓN PRINCIPAL DEL JUEGO (CORREGIDA) =====
 function actualizarJuego(altura, anchura, nPersonajes) {
-    // Asignar enemigos cercanos
+    // 1. ASIGNAR ENEMIGOS CERCANOS
     for (let i = 0; i < nPersonajes; i++) {
         if (!arrayPersonajes[i]) continue;
         
@@ -236,7 +282,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                 }
             }
             arrayPersonajes[i].setMalos(target);
-        } else {
+        } else if (arrayPersonajes[i] instanceof Malos) {
             let minDist = Infinity;
             let target = null;
             for (let j = 0; j < nPersonajes; j++) {
@@ -251,7 +297,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // Mover
+    // 2. PRIMERO MOVER TODOS
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
@@ -260,7 +306,9 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // Combatir
+    // 3. LUEGO COMBATIR (después de mover)
+    let huboCombate = false;
+    
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
@@ -268,46 +316,52 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                 const newX = entidad.getX();
                 const newY = entidad.getY();
                 
+                // Si la entidad se movió a una nueva posición
                 if (newX !== j || newY !== i) {
+                    // Caso 1: La casilla destino está vacía
                     if (arrayEntidades[newY][newX] === null) {
                         arrayEntidades[newY][newX] = entidad;
                         arrayEntidades[i][j] = null;
                         
                         actualizarCelda(i, j, null);
                         actualizarCelda(newY, newX, entidad);
-                    } else if (
+                    } 
+                    // Caso 2: Hay combate (Bueno vs Malo)
+                    else if (
                         (arrayEntidades[newY][newX] instanceof Malos && entidad instanceof Buenos) ||
                         (arrayEntidades[newY][newX] instanceof Buenos && entidad instanceof Malos)
                     ) {
+                        huboCombate = true;
                         const defensor = arrayEntidades[newY][newX];
-                        const resultado = Math.floor(Math.random() * (entidad.getVida() + defensor.getVida()));
                         
-                        if (resultado < entidad.getVida()) {
+                        console.log(`⚔️ COMBATE: ${entidad.clase} vs ${defensor.clase}`);
+                        
+                        // Combatir con el sistema de clases
+                        if (combatirConClases(entidad, defensor)) {
+                            // El defensor murió - el atacante ocupa su lugar
                             for (let k = 0; k < nPersonajes; k++) {
                                 if (arrayPersonajes[k] === defensor) {
                                     arrayPersonajes[k] = null;
                                     break;
                                 }
                             }
-                            arrayEntidades[newY][newX] = null;
+                            
+                            // El atacante se mueve a la casilla del defensor
+                            arrayEntidades[newY][newX] = entidad;
+                            arrayEntidades[i][j] = null;
+                            
                             Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
                             if (defensor instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
                             else Malos.setnMalos(Malos.getnMalos() - 1);
                             
-                            actualizarCelda(newY, newX, null);
-                        } else {
-                            for (let k = 0; k < nPersonajes; k++) {
-                                if (arrayPersonajes[k] === entidad) {
-                                    arrayPersonajes[k] = null;
-                                    break;
-                                }
-                            }
-                            arrayEntidades[i][j] = null;
-                            Personajes.setnPersonajes(Personajes.getnPersonajes() - 1);
-                            if (entidad instanceof Buenos) Buenos.setnBuenos(Buenos.getnBuenos() - 1);
-                            else Malos.setnMalos(Malos.getnMalos() - 1);
-                            
                             actualizarCelda(i, j, null);
+                            actualizarCelda(newY, newX, entidad);
+                            
+                            console.log(`💀 Muere ${defensor.clase}`);
+                        } else {
+                            // Nadie murió - ambos se quedan donde están
+                            console.log(`🤝 Empate - ambos sobreviven`);
+                            // No hay movimiento
                         }
                         
                         actualizarContadoresVisuales();
@@ -317,12 +371,60 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
+    // 4. ACTUALIZAR VISUALIZACIÓN
     actualizarContadoresVisuales();
     
+    // 5. VERIFICAR FIN DEL JUEGO
     if (Buenos.getnBuenos() <= 0 || Malos.getnMalos() <= 0) {
+        console.log('🏁 JUEGO TERMINADO');
         detenerSimulacion();
         mostrarResultado();
+    } else if (huboCombate) {
+        // Si hubo combate, actualizar las celdas de los combatientes
+        // (ya se actualizaron individualmente)
     }
+}
+
+// ===== FUNCIÓN DE COMBATE MEJORADA =====
+function combatirConClases(atacante, defensor) {
+    // Calcular daño base según clase del atacante
+    let dañoPorcentaje;
+    
+    if (atacante instanceof Curandero) dañoPorcentaje = 5;
+    else if (atacante instanceof Paladin) dañoPorcentaje = 10;
+    else if (atacante instanceof Mago) dañoPorcentaje = 20;
+    else if (atacante instanceof Asesino) {
+        dañoPorcentaje = atacante.calcularDaño(); // 30% o 60% con crítico
+    }
+    else if (atacante instanceof Tanque) dañoPorcentaje = 10;
+    else if (atacante instanceof Brujo) dañoPorcentaje = 25;
+    else dañoPorcentaje = 15; // Soldado normal
+    
+    // Calcular daño como porcentaje de la vida actual del defensor
+    let daño = Math.floor(defensor.vida * (dañoPorcentaje / 100));
+    daño = Math.max(1, daño); // Mínimo 1 de daño
+    
+    // Aplicar reducción de daño si el defensor es Paladín
+    if (defensor instanceof Paladin) {
+        daño = defensor.recibirDaño(daño);
+    }
+    
+    // Registrar el combate
+    console.log(`   ${atacante.clase} ataca: ${daño} daño (${dañoPorcentaje}%)`);
+    console.log(`   ${defensor.clase} vida: ${defensor.vida} → ${defensor.vida - daño}`);
+    
+    // Aplicar daño
+    defensor.vida = Math.max(defensor.vida - daño, 0);
+    
+    // Habilidades especiales post-ataque
+    if (atacante instanceof Brujo && daño > 0) {
+        const vidaRobada = Math.floor(daño * 0.1);
+        atacante.vida = Math.min(atacante.vida + vidaRobada, atacante.vidaMax);
+        console.log(`   🧙 Brujo roba ${vidaRobada} vida`);
+    }
+    
+    // Devolver true si el defensor murió
+    return defensor.vida <= 0;
 }
 
 // ===== FUNCIÓN INICIAR SIMULACIÓN =====
@@ -335,7 +437,6 @@ function iniciarSimulacion() {
     Malos.setnMalos(0);
     actualizarContadoresVisuales();
     
-    // Recalcular dimensiones basadas en el tamaño actual de la pantalla
     recalcularDimensiones();
     
     const altura = alturaActual;
@@ -359,7 +460,6 @@ function iniciarSimulacion() {
     arrayEntidades = Array(altura).fill().map(() => Array(anchura).fill(null));
     arrayPersonajes = Array(nPersonajes).fill(null);
     
-    // Generar obstáculos (1%)
     const numObstaculos = Math.floor(totalCeldas * 0.01);
     for (let i = 0; i < numObstaculos; i++) {
         let x, y;
@@ -370,7 +470,7 @@ function iniciarSimulacion() {
         arrayEntidades[y][x] = new Obstaculos(y, x);
     }
     
-    // Generar personajes
+    // Generar personajes con clases
     for (let i = 0; i < nPersonajes; i++) {
         let x, y;
         do {
@@ -379,10 +479,10 @@ function iniciarSimulacion() {
         } while (arrayEntidades[y][x] !== null);
         
         if (i % 2 === 0) {
-            arrayEntidades[y][x] = new Buenos(y, x);
+            arrayEntidades[y][x] = generarPersonajeConClase('bueno', y, x);
             arrayPersonajes[i] = arrayEntidades[y][x];
         } else {
-            arrayEntidades[y][x] = new Malos(y, x);
+            arrayEntidades[y][x] = generarPersonajeConClase('malo', y, x);
             arrayPersonajes[i] = arrayEntidades[y][x];
         }
     }
@@ -397,14 +497,6 @@ function iniciarSimulacion() {
     intervaloSimulacion = setInterval(() => actualizarJuego(altura, anchura, nPersonajes), velocidadActual);
 }
 
-// ===== RESTO DE FUNCIONES (sin cambios) =====
-// ... (detenerSimulacion, continuarSimulacion, ajustarVelocidad, insertCoin, useCoin, 
-//      actualizarCoinDisplay, actualizarGameOverCoins, actualizarBotonReintentar,
-//      seleccionarOpcion, validarBotonInicio, actualizarVictoriasVisuales,
-//      guardarVictorias, cargarVictorias, reiniciarVictorias,
-//      actualizarContadoresVisuales, iniciarJuego, reintentarPartida,
-//      mostrarResultado, volverAlMenu)
-
 // ===== FUNCIONES DE CONTROL =====
 function detenerSimulacion() {
     if (intervaloSimulacion) {
@@ -417,7 +509,7 @@ function detenerSimulacion() {
 function continuarSimulacion() {
     if (simulacionPausada && arrayEntidades) {
         intervaloSimulacion = setInterval(
-            () => actualizarJuego(ALTURA_FIJA, ANCHURA_FIJA, nPersonajesActual),
+            () => actualizarJuego(alturaActual, anchuraActual, nPersonajesActual),
             velocidadActual
         );
         simulacionPausada = false;
@@ -434,7 +526,7 @@ function ajustarVelocidad(cambio) {
     }
 }
 
-// ===== FUNCIÓN INSERTAR MONEDA =====
+// ===== FUNCIONES DE MONEDAS =====
 function insertCoin() {
     coins++;
     actualizarCoinDisplay();
@@ -449,7 +541,6 @@ function insertCoin() {
         });
     }
     
-    // SIEMPRE actualizar el botón REINTENTAR si game over está visible
     if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
         actualizarBotonReintentar();
     }
@@ -484,24 +575,22 @@ function actualizarGameOverCoins() {
     }
 }
 
-// ===== FUNCIÓN PARA ACTUALIZAR BOTÓN REINTENTAR =====
 function actualizarBotonReintentar() {
     const retryBtn = document.getElementById('gameOverRetry');
     if (!retryBtn) return;
     
-    // SIEMPRE actualizar el estado basado en las monedas
-    if (coins > 0) {
-        retryBtn.classList.remove('disabled');
-        retryBtn.style.pointerEvents = 'auto';
-        retryBtn.style.opacity = '1';
-        retryBtn.style.filter = 'none';
-        retryBtn.style.boxShadow = '0 0 20px var(--green)';
-    } else {
-        retryBtn.classList.add('disabled');
-        retryBtn.style.pointerEvents = 'none';
-        retryBtn.style.opacity = '0.4';
-        retryBtn.style.filter = 'grayscale(0.8)';
-        retryBtn.style.boxShadow = 'none';
+    if (!document.getElementById('gameOverPanel').classList.contains('hidden')) {
+        if (coins > 0) {
+            retryBtn.classList.remove('disabled');
+            retryBtn.style.pointerEvents = 'auto';
+            retryBtn.style.opacity = '1';
+            retryBtn.style.filter = 'none';
+        } else {
+            retryBtn.classList.add('disabled');
+            retryBtn.style.pointerEvents = 'none';
+            retryBtn.style.opacity = '0.4';
+            retryBtn.style.filter = 'grayscale(0.8)';
+        }
     }
 }
 
@@ -620,7 +709,6 @@ function reintentarPartida() {
     iniciarSimulacion();
 }
 
-// ===== MOSTRAR RESULTADO =====
 function mostrarResultado() {
     const buenos = Buenos.getnBuenos() || 0;
     const malos = Malos.getnMalos() || 0;
@@ -632,7 +720,7 @@ function mostrarResultado() {
     actualizarVictoriasVisuales();
     
     document.getElementById('resultadoTitulo').textContent = 
-    buenos <= 0 ? '💀 MALOS GANAN 💀' : '✨ BUENOS GANAN ✨';
+        buenos <= 0 ? '💀 MALOS GANAN 💀' : '✨ BUENOS GANAN ✨';
     document.getElementById('resultadoTitulo').style.color = buenos <= 0 ? '#ff0000' : '#00ff00';
     document.getElementById('resultadoTotal').textContent = Personajes.getnPersonajes() || 0;
     document.getElementById('resultadoBuenos').textContent = buenos;
@@ -640,25 +728,10 @@ function mostrarResultado() {
     
     actualizarGameOverCoins();
     
-    // MOSTRAR GAME OVER
     document.getElementById('gameOverPanel').classList.remove('hidden');
     document.getElementById('simulationControls').classList.add('hidden');
     
-    // FORZAR que el botón REINTENTAR esté ACTIVADO si hay monedas
-    const retryBtn = document.getElementById('gameOverRetry');
-    if (retryBtn) {
-        if (coins > 0) {
-            retryBtn.classList.remove('disabled');
-            retryBtn.style.pointerEvents = 'auto';
-            retryBtn.style.opacity = '1';
-            retryBtn.style.filter = 'brightness(1)';
-        } else {
-            retryBtn.classList.add('disabled');
-            retryBtn.style.pointerEvents = 'none';
-            retryBtn.style.opacity = '0.5';
-            retryBtn.style.filter = 'grayscale(0.5)';
-        }
-    }
+    actualizarBotonReintentar();
 }
 
 function volverAlMenu() {
@@ -686,7 +759,6 @@ function volverAlMenu() {
     
     if (gameBoard) {
         gameBoard.innerHTML = '';
-        cells = [];
     }
 }
 
