@@ -766,6 +766,73 @@ html, body {
     gap: 8px;
 }
 
+/* ===== INDICADOR DE VELOCIDAD MEJORADO ===== */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.speed-display {
+    background: var(--black);
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    padding: 6px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    min-width: 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.speed-display::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background: rgba(255, 255, 0, 0.2);
+    pointer-events: none;
+    transition: width 0.3s;
+}
+
+/* Barra de progreso de velocidad según el atributo data-speed */
+.speed-display[data-speed="lenta"]::after {
+    width: 30%;
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.speed-display[data-speed="normal"]::after {
+    width: 60%;
+    background: rgba(255, 255, 0, 0.2);
+}
+
+.speed-display[data-speed="rapida"]::after {
+    width: 90%;
+    background: rgba(255, 0, 0, 0.2);
+}
+
+.ctrl-btn {
+    background: var(--black);
+    border: 2px solid var(--blue);
+    color: var(--blue);
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.ctrl-btn:hover {
+    background: var(--blue);
+    color: var(--black);
+    box-shadow: 0 0 15px var(--blue);
+}
+
 .ctrl-btn {
     background: var(--black);
     border: 2px solid var(--blue);

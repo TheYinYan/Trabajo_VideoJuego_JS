@@ -17,13 +17,16 @@ class Buenos extends Personajes {
     static setnBuenos(n) { Buenos.nBuenos = n; }
 
     mover(ancho, alto, arrayEntidades) {
-        // Si no hay enemigo, movimiento aleatorio
+        // Pequeña probabilidad de no moverse (30%)
+        if (Math.random() < 0.3) {
+            return; // No se mueve en este turno
+        }
+        
         if (this.malos === null) {
             super.mover(ancho, alto, arrayEntidades);
             return;
         }
         
-        // Calcular dirección hacia el malo
         let dx = 0, dy = 0;
         
         if (this.x < this.malos.x) dx = 1;
@@ -32,14 +35,11 @@ class Buenos extends Personajes {
         if (this.y < this.malos.y) dy = 1;
         else if (this.y > this.malos.y) dy = -1;
         
-        // Intentar mover en la dirección calculada
         const auxX = this.x + dx;
         const auxY = this.y + dy;
         
-        // Verificar si el movimiento es válido
         if (auxX >= 0 && auxX < ancho && auxY >= 0 && auxY < alto) {
             const destino = arrayEntidades[auxY][auxX];
-            // Puede moverse si está vacío o si es un enemigo (para combatir)
             if (destino === null || destino instanceof Malos) {
                 this.x = auxX;
                 this.y = auxY;
@@ -47,7 +47,6 @@ class Buenos extends Personajes {
             }
         }
         
-        // Si no puede moverse hacia el enemigo, movimiento aleatorio
         super.mover(ancho, alto, arrayEntidades);
     }
 

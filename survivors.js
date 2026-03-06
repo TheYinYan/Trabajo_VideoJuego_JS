@@ -4,7 +4,7 @@ let opcionSeleccionada = null;
 let nPersonajesConfig = null;
 let arrayEntidades = null;
 let arrayPersonajes = null;
-let velocidadActual = 150;
+let velocidadActual = 250; // CAMBIADO: de 150 a 250 (más lento)
 let nPersonajesActual = 0;
 let simulacionPausada = false;
 let victoriasBuenos = 0;
@@ -18,6 +18,14 @@ let anchuraActual = 0;
 
 // Referencias DOM
 let gameBoard = null;
+
+// ===== CONSTANTES DE VELOCIDAD =====
+const VELOCIDADES = {
+    LENTA: 350,
+    NORMAL: 250,
+    RAPIDA: 150,
+    MUY_RAPIDA: 80
+};
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,7 +46,43 @@ document.addEventListener('DOMContentLoaded', () => {
             redimensionarTablero();
         }
     });
+    
+    // Control de velocidad con teclado
+    document.addEventListener('keydown', (e) => {
+        if (!intervaloSimulacion) return;
+        
+        if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            ajustarVelocidad(-25);
+        } else if (e.key === '-' || e.key === '_') {
+            e.preventDefault();
+            ajustarVelocidad(25);
+        } else if (e.key === '0') {
+            e.preventDefault();
+            velocidadActual = VELOCIDADES.NORMAL;
+            document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
+            actualizarIndicadorVelocidad();
+            if (intervaloSimulacion) {
+                detenerSimulacion();
+                continuarSimulacion();
+            }
+        }
+    });
 });
+
+// ===== FUNCIÓN PARA ACTUALIZAR INDICADOR DE VELOCIDAD =====
+function actualizarIndicadorVelocidad() {
+    const display = document.getElementById('velocidadDisplay');
+    if (!display) return;
+    
+    if (velocidadActual >= 300) {
+        display.setAttribute('data-speed', 'lenta');
+    } else if (velocidadActual >= 180) {
+        display.setAttribute('data-speed', 'normal');
+    } else {
+        display.setAttribute('data-speed', 'rapida');
+    }
+}
 
 // ===== FUNCIÓN PARA CALCULAR DIMENSIONES ÓPTIMAS =====
 function recalcularDimensiones() {
@@ -123,34 +167,29 @@ function combatirConClases(atacante, defensor) {
     else if (atacante instanceof Paladin) dañoPorcentaje = 10;
     else if (atacante instanceof Mago) dañoPorcentaje = 20;
     else if (atacante instanceof Asesino) {
-        dañoPorcentaje = atacante.calcularDaño(); // Ya incluye crítico
+        dañoPorcentaje = atacante.calcularDaño();
     }
     else if (atacante instanceof Tanque) dañoPorcentaje = 10;
     else if (atacante instanceof Brujo) dañoPorcentaje = 25;
-    else dañoPorcentaje = 15; // Soldado normal
+    else dañoPorcentaje = 15;
     
-    // Calcular daño como porcentaje de la vida actual del defensor
     let daño = Math.floor(defensor.vida * (dañoPorcentaje / 100));
+    daño = Math.max(1, daño);
     
-    // Aplicar reducción de daño si el defensor es Paladín
     if (defensor instanceof Paladin) {
         daño = defensor.recibirDaño(daño);
     }
     
-    // Aplicar daño
     const vidaAnterior = defensor.vida;
     defensor.vida = Math.max(defensor.vida - daño, 0);
     
     console.log(`⚔️ ${atacante.clase} ataca a ${defensor.clase}: ${vidaAnterior} → ${defensor.vida} (-${daño}) [${dañoPorcentaje}%]`);
     
-    // Habilidades especiales post-ataque
     if (atacante instanceof Brujo && daño > 0) {
         const vidaRobada = Math.floor(daño * 0.1);
         atacante.vida = Math.min(atacante.vida + vidaRobada, atacante.vidaMax);
-        console.log(`🧙 Brujo roba ${vidaRobada} vida`);
     }
     
-    // Devolver true si el defensor murió
     return defensor.vida <= 0;
 }
 
@@ -163,6 +202,7 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.style.textShadow = '0 0 5px #ffff00';
         cellDiv.style.borderRadius = '50%';
         cellDiv.title = '';
+        cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Buenos) {
         cellDiv.style.backgroundColor = '#24408e';
         cellDiv.style.color = '#ffff00';
@@ -176,6 +216,7 @@ function aplicarColorCelda(cellDiv, celda) {
         const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
         
         cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
+        cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Malos) {
         cellDiv.style.backgroundColor = '#24408e';
         cellDiv.style.color = '#ff0000';
@@ -189,6 +230,7 @@ function aplicarColorCelda(cellDiv, celda) {
         const barra = '█'.repeat(barrasLlenas) + '░'.repeat(barrasVacias);
         
         cellDiv.title = `${celda.clase}\n❤️ Vida: ${celda.vida}/${celda.vidaMax} (${porcentaje}%)\n[${barra}]`;
+        cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Obstaculos) {
         cellDiv.style.backgroundColor = '#0a1a4a';
         cellDiv.style.color = '#4a6c8f';
@@ -196,6 +238,7 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.style.textShadow = 'none';
         cellDiv.style.borderRadius = '0';
         cellDiv.title = '🧱 Obstáculo';
+        cellDiv.classList.remove('taking-damage');
     }
 }
 
@@ -264,7 +307,23 @@ function actualizarCelda(row, col, celda) {
     aplicarColorCelda(cells[index], celda);
 }
 
-// ===== FUNCIÓN PRINCIPAL DEL JUEGO (CORREGIDA) =====
+// ===== FUNCIÓN PARA MARCAR CELDA CON DAÑO =====
+function marcarDaño(row, col) {
+    if (!gameBoard) return;
+    if (!arrayEntidades) return;
+    const anchura = arrayEntidades[0].length;
+    const index = row * anchura + col;
+    const cells = gameBoard.children;
+    if (index >= cells.length) return;
+    
+    const cellDiv = cells[index];
+    cellDiv.classList.add('taking-damage');
+    setTimeout(() => {
+        cellDiv.classList.remove('taking-damage');
+    }, 300);
+}
+
+// ===== FUNCIÓN PRINCIPAL DEL JUEGO =====
 function actualizarJuego(altura, anchura, nPersonajes) {
     // 1. ASIGNAR ENEMIGOS CERCANOS
     for (let i = 0; i < nPersonajes; i++) {
@@ -297,18 +356,19 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // 2. PRIMERO MOVER TODOS
+    // 2. MOVER PERSONAJES (con probabilidad de no moverse para ralentizar)
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
+                // 30% de probabilidad de no moverse en este turno
+                if (Math.random() < 0.3) continue;
+                
                 arrayEntidades[i][j].mover(anchura, altura, arrayEntidades);
             }
         }
     }
     
-    // 3. LUEGO COMBATIR (después de mover)
-    let huboCombate = false;
-    
+    // 3. COMBATIR
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
@@ -316,9 +376,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                 const newX = entidad.getX();
                 const newY = entidad.getY();
                 
-                // Si la entidad se movió a una nueva posición
                 if (newX !== j || newY !== i) {
-                    // Caso 1: La casilla destino está vacía
                     if (arrayEntidades[newY][newX] === null) {
                         arrayEntidades[newY][newX] = entidad;
                         arrayEntidades[i][j] = null;
@@ -326,19 +384,18 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                         actualizarCelda(i, j, null);
                         actualizarCelda(newY, newX, entidad);
                     } 
-                    // Caso 2: Hay combate (Bueno vs Malo)
                     else if (
                         (arrayEntidades[newY][newX] instanceof Malos && entidad instanceof Buenos) ||
                         (arrayEntidades[newY][newX] instanceof Buenos && entidad instanceof Malos)
                     ) {
-                        huboCombate = true;
                         const defensor = arrayEntidades[newY][newX];
                         
-                        console.log(`⚔️ COMBATE: ${entidad.clase} vs ${defensor.clase}`);
+                        // Marcar celdas con efecto de daño
+                        marcarDaño(i, j);
+                        marcarDaño(newY, newX);
                         
-                        // Combatir con el sistema de clases
                         if (combatirConClases(entidad, defensor)) {
-                            // El defensor murió - el atacante ocupa su lugar
+                            // El defensor murió
                             for (let k = 0; k < nPersonajes; k++) {
                                 if (arrayPersonajes[k] === defensor) {
                                     arrayPersonajes[k] = null;
@@ -346,7 +403,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                                 }
                             }
                             
-                            // El atacante se mueve a la casilla del defensor
                             arrayEntidades[newY][newX] = entidad;
                             arrayEntidades[i][j] = null;
                             
@@ -356,12 +412,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                             
                             actualizarCelda(i, j, null);
                             actualizarCelda(newY, newX, entidad);
-                            
-                            console.log(`💀 Muere ${defensor.clase}`);
                         } else {
-                            // Nadie murió - ambos se quedan donde están
-                            console.log(`🤝 Empate - ambos sobreviven`);
-                            // No hay movimiento
+                            actualizarCelda(newY, newX, defensor);
                         }
                         
                         actualizarContadoresVisuales();
@@ -371,60 +423,27 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
     
-    // 4. ACTUALIZAR VISUALIZACIÓN
     actualizarContadoresVisuales();
     
-    // 5. VERIFICAR FIN DEL JUEGO
+    // 4. VERIFICAR FIN DEL JUEGO
     if (Buenos.getnBuenos() <= 0 || Malos.getnMalos() <= 0) {
-        console.log('🏁 JUEGO TERMINADO');
         detenerSimulacion();
         mostrarResultado();
-    } else if (huboCombate) {
-        // Si hubo combate, actualizar las celdas de los combatientes
-        // (ya se actualizaron individualmente)
+    } else {
+        // Ajustar velocidad según número de personajes vivos (opcional)
+        const numVivos = Buenos.getnBuenos() + Malos.getnMalos();
+        if (numVivos > 0) {
+            // Más personajes = más lento, menos personajes = más rápido
+            const velocidadDinamica = Math.max(150, Math.min(350, 300 - (numVivos * 2)));
+            if (Math.abs(velocidadDinamica - velocidadActual) > 30) {
+                velocidadActual = velocidadDinamica;
+                actualizarIndicadorVelocidad();
+                document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
+                detenerSimulacion();
+                continuarSimulacion();
+            }
+        }
     }
-}
-
-// ===== FUNCIÓN DE COMBATE MEJORADA =====
-function combatirConClases(atacante, defensor) {
-    // Calcular daño base según clase del atacante
-    let dañoPorcentaje;
-    
-    if (atacante instanceof Curandero) dañoPorcentaje = 5;
-    else if (atacante instanceof Paladin) dañoPorcentaje = 10;
-    else if (atacante instanceof Mago) dañoPorcentaje = 20;
-    else if (atacante instanceof Asesino) {
-        dañoPorcentaje = atacante.calcularDaño(); // 30% o 60% con crítico
-    }
-    else if (atacante instanceof Tanque) dañoPorcentaje = 10;
-    else if (atacante instanceof Brujo) dañoPorcentaje = 25;
-    else dañoPorcentaje = 15; // Soldado normal
-    
-    // Calcular daño como porcentaje de la vida actual del defensor
-    let daño = Math.floor(defensor.vida * (dañoPorcentaje / 100));
-    daño = Math.max(1, daño); // Mínimo 1 de daño
-    
-    // Aplicar reducción de daño si el defensor es Paladín
-    if (defensor instanceof Paladin) {
-        daño = defensor.recibirDaño(daño);
-    }
-    
-    // Registrar el combate
-    console.log(`   ${atacante.clase} ataca: ${daño} daño (${dañoPorcentaje}%)`);
-    console.log(`   ${defensor.clase} vida: ${defensor.vida} → ${defensor.vida - daño}`);
-    
-    // Aplicar daño
-    defensor.vida = Math.max(defensor.vida - daño, 0);
-    
-    // Habilidades especiales post-ataque
-    if (atacante instanceof Brujo && daño > 0) {
-        const vidaRobada = Math.floor(daño * 0.1);
-        atacante.vida = Math.min(atacante.vida + vidaRobada, atacante.vidaMax);
-        console.log(`   🧙 Brujo roba ${vidaRobada} vida`);
-    }
-    
-    // Devolver true si el defensor murió
-    return defensor.vida <= 0;
 }
 
 // ===== FUNCIÓN INICIAR SIMULACIÓN =====
@@ -470,7 +489,6 @@ function iniciarSimulacion() {
         arrayEntidades[y][x] = new Obstaculos(y, x);
     }
     
-    // Generar personajes con clases
     for (let i = 0; i < nPersonajes; i++) {
         let x, y;
         do {
@@ -517,8 +535,16 @@ function continuarSimulacion() {
 }
 
 function ajustarVelocidad(cambio) {
-    velocidadActual = Math.max(50, Math.min(500, velocidadActual + cambio));
+    velocidadActual = Math.max(80, Math.min(400, velocidadActual + cambio));
     document.getElementById('velocidadDisplay').textContent = velocidadActual + 'ms';
+    actualizarIndicadorVelocidad();
+    
+    let velocidadTexto = '';
+    if (velocidadActual >= 300) velocidadTexto = '🐢 LENTA';
+    else if (velocidadActual >= 180) velocidadTexto = '⚡ NORMAL';
+    else velocidadTexto = '🚀 RÁPIDA';
+    
+    console.log(`⏱️ Velocidad: ${velocidadActual}ms (${velocidadTexto})`);
     
     if (intervaloSimulacion) {
         detenerSimulacion();
