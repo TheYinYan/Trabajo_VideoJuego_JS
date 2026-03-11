@@ -17,10 +17,7 @@ class Malos extends Personajes {
     static setnMalos(n) { Malos.nMalos = n; }
 
     mover(ancho, alto, arrayEntidades) {
-        // Pequeña probabilidad de no moverse (30%)
-        if (Math.random() < 0.3) {
-            return; // No se mueve en este turno
-        }
+        if (Math.random() < 0.3) return;
         
         if (this.bueno === null) {
             super.mover(ancho, alto, arrayEntidades);

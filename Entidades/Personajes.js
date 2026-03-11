@@ -12,13 +12,12 @@ class Personajes extends Entidad {
     getVida() { return this.vida; }
     getVidaMax() { return this.vidaMax; }
     
-    // Métodos para el sistema de clases
     calcularDaño() {
-        return 15; // 15% por defecto
+        return 15;
     }
     
     recibirDaño(daño) {
-        return daño; // Por defecto, recibe daño completo
+        return daño;
     }
     
     static getnPersonajes() { return Personajes.nPersonajes; }

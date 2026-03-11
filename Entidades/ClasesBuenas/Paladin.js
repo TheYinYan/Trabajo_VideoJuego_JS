@@ -11,8 +11,11 @@ class Paladin extends Buenos {
     }
     
     recibirDaño(daño) {
-        return Math.floor(daño * 0.5); // Reduce daño 50%
+        // Reducir el daño en un 50% (redondeado hacia arriba para que siempre haga al menos 1 de daño)
+        return Math.max(1, Math.floor(daño * 0.5));
     }
     
-    toString() { return 'P'; }
+    toString() {
+        return 'P';
+    }
 }

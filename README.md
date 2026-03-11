@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.4.5-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -46,18 +46,19 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ###  Ideas
 
+#### Por ahora se han implementado las siguientes mejoras: 
 - Nuevo diseño del panel de estadísticas, más compacto y profesional
 - Tooltips de clases minimalistas con información al pasar el ratón
 - Indicadores de color por clase para fácil identificación
 - Sistema de espera de dimensiones para evitar problemas de carga
-- Múltiples reintentos para generar el tablero si falla la carga inicial
+- Múltiples reintentos para generar el tablero si falla la carga initial
 - Código más modular y organizado para mejor mantenimiento
 - Corrección de errores relacionados con la carga del tablero y las estadísticas
 - Optimización de la lógica de combate y generación de personajes
 - Mejoras en la interfaz de usuario para una experiencia más fluida
+- Parece que esta duplicando los personajes. HAY 3 MALOS Y DICE QUE hay 6 y con los buenos pasa igual ya que vas poniendo uno y dice 2 y si pones otro dice 4. Creo que el problema esta en la función generarPersonajeConClase() ya que cada vez que se llama a esa función se incrementa el contador de personajes sin importar si realmente se ha generado un nuevo personaje o no. Deberías revisar esa función para asegurarte de que solo se incrementa el contador cuando realmente se ha generado un nuevo personaje y no cuando simplemente se ha intentado generar uno.
 
-
-Parece que esta duplicando los personajes. HAY 3 MALOS Y DICE QUE hay 6 y con los buenos pasa igual ya que vas poniendo uno y dice 2 y si pones dos dice que hay 4 y asi sucesivamente
+#### Próximas mejoras visuales y de funcionalidad:
 
 - Actualización de la documentación y README para reflejar los cambios
 - Preparación para futuras mejoras visuales y de funcionalidad
