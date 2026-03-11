@@ -794,7 +794,7 @@ html, body {
     box-shadow: 0 0 15px var(--gold);
 }
 
-/* ===== TABLERO DE JUEGO - OCUPA TODO EL ANCHO ===== */
+/* ===== TABLERO DE JUEGO - VERSIÓN DEFINITIVA ===== */
 .game-board-container {
     flex: 1;
     min-height: 0;
@@ -804,30 +804,30 @@ html, body {
     background: var(--black);
     border: 4px solid var(--pacman-blue);
     border-radius: 20px;
-    padding: 15px;
+    padding: 10px; /* Reducido de 15px */
     box-shadow: inset 0 0 30px var(--pacman-dark-blue);
-    overflow: auto; /* Cambiado a auto para permitir scroll si es necesario */
+    overflow: hidden; /* Cambiado de auto a hidden */
     width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .game-board {
     display: grid;
     gap: 1px;
     background-color: var(--pacman-blue);
-    border-radius: 10px;
-    padding: 5px;
+    border-radius: 8px; /* Reducido de 10px */
+    padding: 3px; /* Reducido de 5px */
     margin: 0;
-    width: auto; /* Cambiado de 100% a auto */
-    height: auto; /* Cambiado de 100% a auto */
-    min-width: min(100%, max-content); /* Mínimo el 100% del contenedor o el contenido */
+    width: 100%; /* Forzar que ocupe el 100% del contenedor */
+    height: 100%; /* Forzar que ocupe el 100% del contenedor */
     max-width: 100%;
     max-height: 100%;
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
     transition: all 0.05s linear;
-    justify-content: flex-start; /* Alinear a la izquierda */
-    align-content: flex-start; /* Alinear arriba */
+    box-sizing: border-box;
 }
 
 .game-board > div {
