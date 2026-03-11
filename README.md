@@ -42,7 +42,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.4.4
+## ✨ NOVEDADES EN VERSIÓN 2.5
 
 ###  Ideas
 
