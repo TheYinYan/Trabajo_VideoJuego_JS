@@ -37,6 +37,8 @@
                         ALEATORIO</button>
                     <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 MITAD
                         ALEATORIA</button>
+                    <button class="mode-btn" id="survivorBtn" onclick="seleccionarModoSurvivor()" disabled>⚔️ MODO
+                        SURVIVOR</button>
                 </div>
 
                 <div class="menu-row hidden" id="nPersonajesRow">
@@ -57,34 +59,67 @@
     <div class="arcade-machine hidden" id="arcadeMachine">
         <!-- Contenedor principal de 3 columnas -->
         <div class="arcade-container">
-            <!-- BARRA LATERAL IZQUIERDA (con temas, ayuda y logs) -->
+            <!-- BARRA LATERAL IZQUIERDA -->
             <div class="left-bar">
                 <div class="bar-content">
                     <div class="bar-decoration top"></div>
 
-                    <!-- SELECTOR DE TEMAS -->
-                    <!-- <div class="theme-selector">
-                        <div class="theme-title">TEMA</div>
-                        <div class="theme-options">
-                            <div class="theme-option" id="themePacman" onclick="cambiarTema('pacman')">
-                                <span class="theme-icon">👻</span>
-                                <span class="theme-name">PAC-MAN</span>
-                                <div class="theme-colors">
-                                    <span class="color-dot" style="background: #ffff00;"></span>
-                                    <span class="color-dot" style="background: #24408e;"></span>
-                                </div>
+                    <!-- ===== PANEL MODO SURVIVOR ===== -->
+                    <div class="survivor-panel hidden" id="survivorPanel">
+                        <div class="survivor-stats">
+                            <div class="survivor-stat">
+                                <span>💰</span>
+                                <span id="survivorMonedas">100</span>
                             </div>
-                            <div class="theme-option" id="themeClassic" onclick="cambiarTema('classic')">
-                                <span class="theme-icon">🕹️</span>
-                                <span class="theme-name">CLÁSICO</span>
-                                <div class="theme-colors">
-                                    <span class="color-dot" style="background: #33ff33;"></span>
-                                    <span class="color-dot" style="background: #0a2a0a;"></span>
-                                </div>
+                            <div class="survivor-stat">
+                                <span>🏆</span>
+                                <span id="survivorPuntos">0</span>
+                            </div>
+                            <div class="survivor-stat">
+                                <span>⚔️ RONDA</span>
+                                <span id="survivorRonda">1</span>
+                            </div>
+                            <div class="survivor-stat">
+                                <span>👥 MALOS</span>
+                                <span id="survivorMalosRestantes">3</span>
                             </div>
                         </div>
-                        <div class="theme-indicator" id="themeIndicator">PAC-MAN</div>
-                    </div> -->
+
+                        <div class="survivor-controls">
+                            <button class="action-btn-modern resume" onclick="iniciarRonda()"
+                                style="width:100%; margin-bottom:10px;">▶ COMENZAR RONDA</button>
+                        </div>
+
+                        <div class="survivor-shop" id="survivorShop">
+                            <div class="shop-title">🛒 TIENDA</div>
+                            <div class="shop-items">
+                                <div class="shop-item" onclick="seleccionarPersonajeTienda('soldado', 20)">
+                                    <span class="item-icon">B</span>
+                                    <span class="item-name">Soldado</span>
+                                    <span class="item-price">20💰</span>
+                                </div>
+                                <div class="shop-item" onclick="seleccionarPersonajeTienda('curandero', 25)">
+                                    <span class="item-icon">C</span>
+                                    <span class="item-name">Curandero</span>
+                                    <span class="item-price">25💰</span>
+                                </div>
+                                <div class="shop-item" onclick="seleccionarPersonajeTienda('paladin', 30)">
+                                    <span class="item-icon">P</span>
+                                    <span class="item-name">Paladín</span>
+                                    <span class="item-price">30💰</span>
+                                </div>
+                                <div class="shop-item" onclick="seleccionarPersonajeTienda('mago', 35)">
+                                    <span class="item-icon">W</span>
+                                    <span class="item-name">Mago</span>
+                                    <span class="item-price">35💰</span>
+                                </div>
+                            </div>
+                            <div class="shop-status" id="shopStatus"
+                                style="margin-top:10px; color:var(--blue); text-align:center; font-size:0.8rem;">
+                                ⬆️ Selecciona un personaje
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- PANEL DE AYUDA CON CONTROLES -->
                     <div class="help-panel">
@@ -227,7 +262,7 @@
                 </div>
             </div>
 
-            <!-- BARRA LATERAL DERECHA REDISEÑADA -->
+            <!-- BARRA LATERAL DERECHA - NUEVO DISEÑO COMPACTO -->
             <div class="right-bar">
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
@@ -280,48 +315,60 @@
                         </div>
                     </div>
 
-                    <!-- CLASES VIVAS - CON TOOLTIPS (HTML LIMPIO) -->
+                    <!-- CLASES VIVAS - CON TOOLTIPS E INDICADORES DE COLOR -->
                     <div class="class-stats-panel">
                         <div class="class-stats-header">📊 CLASES</div>
                         <div class="class-stats-grid">
 
-                            <!-- CURANDERO -->
-                            <div class="class-stat-compact" data-class="curandero">
+                            <!-- CURANDERO (Amarillo) -->
+                            <div class="class-stat-compact" data-class="curandero" data-tooltip="CURANDERO
+❤️ 120  ⚔️ 5%
+✨ Cura +10% a aliados">
                                 <span class="class-icon-mini">C</span>
                                 <span class="class-name-mini">Curandero</span>
                                 <span class="class-count-mini" id="curanderoCount">0</span>
                             </div>
 
-                            <!-- PALADÍN -->
-                            <div class="class-stat-compact" data-class="paladin">
+                            <!-- PALADÍN (Azul) -->
+                            <div class="class-stat-compact" data-class="paladin" data-tooltip="PALADÍN
+❤️ 150  ⚔️ 10%
+✨ Reduce daño 50%">
                                 <span class="class-icon-mini">P</span>
                                 <span class="class-name-mini">Paladín</span>
                                 <span class="class-count-mini" id="paladinCount">0</span>
                             </div>
 
-                            <!-- MAGO -->
-                            <div class="class-stat-compact" data-class="mago">
+                            <!-- MAGO (Púrpura) -->
+                            <div class="class-stat-compact" data-class="mago" data-tooltip="MAGO
+❤️ 80  ⚔️ 20%
+✨ Daño mágico">
                                 <span class="class-icon-mini">W</span>
                                 <span class="class-name-mini">Mago</span>
                                 <span class="class-count-mini" id="magoCount">0</span>
                             </div>
 
-                            <!-- ASESINO -->
-                            <div class="class-stat-compact" data-class="asesino">
+                            <!-- ASESINO (Rojo) -->
+                            <div class="class-stat-compact" data-class="asesino" data-tooltip="ASESINO
+❤️ 70  ⚔️ 30%
+✨ 15% crítico x2">
                                 <span class="class-icon-mini">A</span>
                                 <span class="class-name-mini">Asesino</span>
                                 <span class="class-count-mini" id="asesinoCount">0</span>
                             </div>
 
-                            <!-- TANQUE -->
-                            <div class="class-stat-compact" data-class="tanque">
+                            <!-- TANQUE (Naranja) -->
+                            <div class="class-stat-compact" data-class="tanque" data-tooltip="TANQUE
+❤️ 200  ⚔️ 10%
+✨ Alta resistencia">
                                 <span class="class-icon-mini">T</span>
                                 <span class="class-name-mini">Tanque</span>
                                 <span class="class-count-mini" id="tanqueCount">0</span>
                             </div>
 
-                            <!-- BRUJO -->
-                            <div class="class-stat-compact" data-class="brujo">
+                            <!-- BRUJO (Rosa) -->
+                            <div class="class-stat-compact" data-class="brujo" data-tooltip="BRUJO
+❤️ 90  ⚔️ 25%
+✨ Roba 10% vida">
                                 <span class="class-icon-mini">U</span>
                                 <span class="class-name-mini">Brujo</span>
                                 <span class="class-count-mini" id="brujoCount">0</span>
@@ -330,7 +377,7 @@
                         </div>
                     </div>
 
-                    <!-- COMBATES - CUADRÍCULA -->
+                    <!-- COMBATES - CUADRÍCULA COMPACTA -->
                     <div class="combat-stats-panel">
                         <div class="combat-stats-header">⚔️ COMBATES</div>
                         <div class="combat-stats-grid">
