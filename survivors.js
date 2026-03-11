@@ -1,5 +1,5 @@
 // ============================================
-// SURVIVORS - VERSIÓN SIMPLIFICADA Y FUNCIONAL
+// SURVIVORS - VERSIÓN CON DIMENSIONES DINÁMICAS
 // ============================================
 
 // ===== VARIABLES GLOBALES =====
@@ -109,7 +109,7 @@ function validarBotonInicio() {
     }
 }
 
-// ===== FUNCIÓN PARA CALCULAR DIMENSIONES =====
+// ===== FUNCIÓN PARA CALCULAR DIMENSIONES - OPTIMIZADA PARA ANCHO =====
 function recalcularDimensiones() {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
@@ -126,62 +126,121 @@ function recalcularDimensiones() {
     
     if (containerWidth === 0 || containerHeight === 0) {
         console.warn('⚠️ Contenedor sin dimensiones');
-        alturaActual = 20;
+        alturaActual = 15;
         anchuraActual = 20;
         return;
     }
     
-    // Calcular número de celdas basado en el tamaño del contenedor
-    let celdasPorAncho, celdasPorAlto;
-    
+    // Tamaño de celda deseado según dispositivo
+    let TAMANO_CELDA_DESEADO;
     if (window.innerWidth <= 480) {
-        celdasPorAncho = Math.floor(containerWidth / 20);
-        celdasPorAlto = Math.floor(containerHeight / 20);
+        TAMANO_CELDA_DESEADO = 22; // Móvil
     } else if (window.innerWidth <= 768) {
-        celdasPorAncho = Math.floor(containerWidth / 24);
-        celdasPorAlto = Math.floor(containerHeight / 24);
+        TAMANO_CELDA_DESEADO = 26; // Tablet
     } else {
-        celdasPorAncho = Math.floor(containerWidth / 28);
-        celdasPorAlto = Math.floor(containerHeight / 28);
+        TAMANO_CELDA_DESEADO = 30; // Desktop
     }
     
-    celdasPorAncho = Math.min(40, Math.max(16, celdasPorAncho));
-    celdasPorAlto = Math.min(30, Math.max(12, celdasPorAlto));
+    // Calcular cuántas celdas caben en el ancho (queremos que ocupe el máximo posible)
+    let celdasPorAncho = Math.floor(containerWidth / TAMANO_CELDA_DESEADO);
+    
+    // Calcular cuántas celdas caben en el alto
+    let celdasPorAlto = Math.floor(containerHeight / TAMANO_CELDA_DESEADO);
+    
+    // Reducir un poco para dejar márgenes
+    celdasPorAncho = Math.floor(celdasPorAncho * 0.92);
+    celdasPorAlto = Math.floor(celdasPorAlto * 0.92);
+    
+    // Límites para no hacer el tablero ni muy pequeño ni muy grande
+    celdasPorAncho = Math.min(45, Math.max(15, celdasPorAncho));
+    celdasPorAlto = Math.min(30, Math.max(10, celdasPorAlto));
+    
+    // Ajustar proporción - el ancho puede ser mayor
+    if (celdasPorAncho > celdasPorAlto * 2) {
+        celdasPorAncho = Math.floor(celdasPorAlto * 1.8);
+    }
     
     alturaActual = celdasPorAlto;
     anchuraActual = celdasPorAncho;
     
+    // Asegurar que sean pares para el modo normal
     if (opcionSeleccionada !== 'survivor') {
         if (alturaActual % 2 !== 0) alturaActual--;
         if (anchuraActual % 2 !== 0) anchuraActual--;
     }
     
-    console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual}`);
+    console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
+    
+    // Calcular el tamaño real que tendrán las celdas
+    const tamanoReal = Math.floor(containerWidth / anchuraActual);
+    console.log(`📐 Tamaño celda aproximado: ${tamanoReal}px`);
 }
 
-// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
+// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO - OCUPA TODO EL ANCHO =====
 function redimensionarTablero() {
     if (!gameBoard || !arrayEntidades) return;
     
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
     
-    const boardWidth = gameBoard.clientWidth;
-    const boardHeight = gameBoard.clientHeight;
+    const container = gameBoard.parentElement;
+    if (!container) return;
     
-    if (boardWidth === 0 || boardHeight === 0) return;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
     
-    const cellSizeByWidth = Math.floor(boardWidth / anchura);
-    const cellSizeByHeight = Math.floor(boardHeight / altura);
+    if (containerWidth === 0 || containerHeight === 0) return;
     
-    let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-    cellSize = Math.max(cellSize, 14);
-    cellSize = Math.min(cellSize, 45);
+    console.log(`📐 Redimensionando: contenedor ${containerWidth}x${containerHeight}, grid ${anchura}x${altura}`);
     
-    const fontSize = Math.floor(cellSize * 0.6);
+    // ===== NUEVO CÁLCULO PARA OCUPAR TODO EL ANCHO =====
+    // Calculamos el tamaño de celda basado en el ancho del contenedor
+    let cellSizeByWidth = Math.floor(containerWidth / anchura);
     
+    // Calculamos el tamaño basado en el alto (por si acaso)
+    let cellSizeByHeight = Math.floor(containerHeight / altura);
+    
+    // USAMOS EL TAMAÑO BASADO EN ANCHO - queremos que ocupe todo el ancho
+    let cellSize = cellSizeByWidth;
+    
+    // Verificamos si con ese tamaño cabe en el alto
+    let altoTotal = cellSize * altura + (altura - 1) * 1; // 1px de gap
+    
+    if (altoTotal > containerHeight) {
+        // Si no cabe en alto, usamos el tamaño basado en alto
+        cellSize = cellSizeByHeight;
+        console.log(`⚠️ Ajustando por alto: ${cellSize}px`);
+    }
+    
+    // Tamaños mínimos y máximos
+    if (window.innerWidth <= 480) {
+        cellSize = Math.max(16, Math.min(cellSize, 35));
+    } else if (window.innerWidth <= 768) {
+        cellSize = Math.max(18, Math.min(cellSize, 40));
+    } else {
+        cellSize = Math.max(20, Math.min(cellSize, 50));
+    }
+    
+    // Recalcular dimensiones totales
+    const anchoTotal = cellSize * anchura + (anchura - 1) * 1;
+    const altoTotalCalc = cellSize * altura + (altura - 1) * 1;
+    
+    const fontSize = Math.floor(cellSize * 0.5);
+    
+    console.log(`📏 Tamaño celda: ${cellSize}px, Grid total: ${anchoTotal}x${altoTotalCalc}`);
+    console.log(`📊 Contenedor: ${containerWidth}x${containerHeight}, Diferencia ancho: ${containerWidth - anchoTotal}px`);
+    
+    // Aplicar el nuevo tamaño
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
+    
+    // IMPORTANTE: No centrar, dejar que ocupe el espacio natural
+    gameBoard.style.justifyContent = 'flex-start';
+    gameBoard.style.alignContent = 'flex-start';
+    
+    // Asegurar que el gameBoard tenga el ancho correcto
+    gameBoard.style.width = `${anchoTotal}px`;
+    gameBoard.style.height = `${altoTotalCalc}px`;
     
     const cells = gameBoard.children;
     for (let i = 0; i < cells.length; i++) {
@@ -189,6 +248,7 @@ function redimensionarTablero() {
         cell.style.width = `${cellSize}px`;
         cell.style.height = `${cellSize}px`;
         cell.style.fontSize = `${fontSize}px`;
+        cell.style.lineHeight = `${cellSize}px`;
     }
 }
 
@@ -260,24 +320,9 @@ function crearTableroConDimensiones(altura, anchura) {
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
     
-    // Calcular tamaño de celda inicial
-    const containerWidth = gameBoard.clientWidth;
-    const containerHeight = gameBoard.clientHeight;
-    
-    if (containerWidth === 0 || containerHeight === 0) {
-        // Usar valores por defecto si el contenedor no tiene dimensiones
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 24px)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, 24px)`;
-    } else {
-        const cellSizeByWidth = Math.floor(containerWidth / anchura);
-        const cellSizeByHeight = Math.floor(containerHeight / altura);
-        let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-        cellSize = Math.max(cellSize, 14);
-        cellSize = Math.min(cellSize, 45);
-        
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
-    }
+    // Inicialmente usamos 1fr para distribución
+    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
+    gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
     
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
@@ -298,14 +343,10 @@ function crearTableroConDimensiones(altura, anchura) {
     
     console.log(`✅ Tablero creado con ${altura * anchura} celdas`);
     
-    // Si es modo survivor, hacer las celdas clickeables
-    if (modoSurvivorActivo) {
-        setTimeout(() => {
-            hacerCeldaClickeable();
-        }, 200);
-    }
+    // Redimensionar inmediatamente
+    redimensionarTablero();
     
-    // Redimensionar después de crear
+    // Y varias veces más para asegurar
     setTimeout(() => {
         redimensionarTablero();
     }, 50);
@@ -317,6 +358,20 @@ function crearTableroConDimensiones(altura, anchura) {
     setTimeout(() => {
         redimensionarTablero();
     }, 500);
+    
+    // También redimensionar cuando la ventana cambie
+    window.addEventListener('resize', () => {
+        if (arrayEntidades) {
+            redimensionarTablero();
+        }
+    });
+    
+    // Si es modo survivor, hacer las celdas clickeables
+    if (modoSurvivorActivo) {
+        setTimeout(() => {
+            hacerCeldaClickeable();
+        }, 200);
+    }
 }
 
 // ===== FUNCIÓN PARA HACER CELDAS CLICKEABLES =====
@@ -652,7 +707,7 @@ function esperarDimensionesYIniciar(intentos = 0) {
         setTimeout(() => esperarDimensionesYIniciar(intentos + 1), 100);
     } else {
         console.warn('⚠️ Usando dimensiones por defecto');
-        alturaActual = 20;
+        alturaActual = 15;
         anchuraActual = 20;
         
         if (opcionSeleccionada === 'survivor') {
@@ -745,9 +800,9 @@ function crearTableroSurvivor() {
     const anchura = anchuraActual;
     
     if (altura === 0 || anchura === 0) {
-        alturaActual = 20;
+        alturaActual = 15;
         anchuraActual = 20;
-        altura = 20;
+        altura = 15;
         anchura = 20;
     }
     
@@ -1586,8 +1641,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('resize', () => {
         if (arrayEntidades) {
-            recalcularDimensiones();
-            redimensionarTablero(); 
+            redimensionarTablero();
         }
     });
     

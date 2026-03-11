@@ -794,7 +794,7 @@ html, body {
     box-shadow: 0 0 15px var(--gold);
 }
 
-/* ===== TABLERO DE JUEGO - CORREGIDO ===== */
+/* ===== TABLERO DE JUEGO - OCUPA TODO EL ANCHO ===== */
 .game-board-container {
     flex: 1;
     min-height: 0;
@@ -806,7 +806,8 @@ html, body {
     border-radius: 20px;
     padding: 15px;
     box-shadow: inset 0 0 30px var(--pacman-dark-blue);
-    overflow: hidden; /* IMPORTANTE: Evita que el contenido se desborde */
+    overflow: auto; /* Cambiado a auto para permitir scroll si es necesario */
+    width: 100%;
 }
 
 .game-board {
@@ -816,14 +817,17 @@ html, body {
     border-radius: 10px;
     padding: 5px;
     margin: 0;
-    width: 100%;
-    height: 100%;
-    max-width: 100%; /* IMPORTANTE: No excede el contenedor */
-    max-height: 100%; /* IMPORTANTE: No excede el contenedor */
+    width: auto; /* Cambiado de 100% a auto */
+    height: auto; /* Cambiado de 100% a auto */
+    min-width: min(100%, max-content); /* Mínimo el 100% del contenedor o el contenido */
+    max-width: 100%;
+    max-height: 100%;
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
     transition: all 0.05s linear;
+    justify-content: flex-start; /* Alinear a la izquierda */
+    align-content: flex-start; /* Alinear arriba */
 }
 
 .game-board > div {
@@ -839,14 +843,15 @@ html, body {
     position: relative;
     cursor: help;
     image-rendering: crisp-edges;
-    width: 100%; /* Asegura que ocupe todo el espacio de la celda */
-    height: 100%; /* Asegura que ocupe todo el espacio de la celda */
-    min-width: 0; /* Permite que se reduzca si es necesario */
-    min-height: 0; /* Permite que se reduzca si es necesario */
-    overflow: hidden; /* Evita que el contenido se desborde */
-    text-overflow: clip; /* No muestra puntos suspensivos */
-    white-space: nowrap; /* Evita que el texto se rompa */
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
 }
+
 
 .game-board > div:hover {
     transform: scale(1.15);
