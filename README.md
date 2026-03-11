@@ -60,6 +60,12 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 #### Próximas mejoras visuales y de funcionalidad:
 
+- habilitar los otros modos de juego (2, 3 y 4) con sus respectivas configuraciones
+- Efectos de partículas en combates para mayor impacto visual
+- Animaciones de muerte para personajes eliminados
+- Iconos SVG personalizados para cada clase
+- Fondos dinámicos que cambian según el modo de juego
+- Sonidos de combate, inserción de moneda y fanfarrias de victoria
 - Actualización de la documentación y README para reflejar los cambios
 - Preparación para futuras mejoras visuales y de funcionalidad
 
