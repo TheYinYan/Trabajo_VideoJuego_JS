@@ -44,6 +44,13 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ## ✨ NOVEDADES EN VERSIÓN 2.4.4
 
+###  Ideas
+
+- Crear un modo de juego con el tablero vacio y va añadiediendo personajes con un costo y tienes una catidad principal de monedas, los malso van a ir a pareciendo a leatoriamente, cuanado elimines a un malo tendara un catidad de monedas dependiendo de la clase, cada ronda serira aumentando la dificultad (Más malos y aparicion de otras clases de malos ya definidos), ademas de monedas daran puntos y se ira guardado los puntos y cuando pierdas o termine, pedira tu nombre y guardara la puntuacion con tu nombre guaradara los 10 mejores, con los top 3 en colores. (Si tiene una duda pregunta) Se llamara survivor.
+ 
+- Ya no hay cambio de temas de colores en vez de eso si se puedo o no queda feo un boton al nuevo modo survivor
+
+
 ### 🎯 Mejoras Visuales
 - ✅ **Panel de estadísticas rediseñado** - Más compacto y profesional
 - ✅ **Tooltips de clases minimalistas** - Información al pasar el ratón
@@ -232,30 +239,6 @@ El panel lateral izquierdo incluye una bitácora con registro de eventos:
 - **🗑️** - Limpiar bitácora
 - **Puntos de color** - Filtrar por tipo de evento
 - **Scroll automático** - Siempre muestra el último evento
-
----
-
-## 🎨 TEMAS DISPONIBLES
-
-### Tema Pac-Man 👻
-```css
---primary: #ffff00;
---secondary: #24408e;
---accent: #ffd700;
-```
-- Estilo arcade clásico de los 80
-- Efectos de neón y brillos dorados
-- Ambiente de sala de juegos
-
-### Tema Clásico 🕹️
-```css
---primary: #33ff33;
---secondary: #0a2a0a;
---accent: #00ff00;
-```
-- Estilo terminal/matrix
-- Efectos de brillo en verde
-- Ambiente hacker/retro
 
 ---
 
