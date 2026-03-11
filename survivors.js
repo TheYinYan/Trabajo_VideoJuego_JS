@@ -721,7 +721,6 @@ function crearTableroVisual(altura, anchura) {
     
     intervaloSimulacion = setInterval(() => {
         actualizarJuego(altura, anchura, nPersonajesActual);
-    }, velocidadActual);
     
     añadirLog('▶️ Batalla comenzada', 'system');
 }
