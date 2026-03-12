@@ -528,5 +528,3 @@ MIT © 2026 - Libre uso, modificación y distribución
 ### 🐛 **Solución de problemas:**
 - Añadido caso de "victorias suman de más"
 - Recomendación de flag `gameOverProcesado`
-
-¡El README ahora refleja todas las características actuales del juego! 🎮
