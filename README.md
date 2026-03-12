@@ -18,8 +18,10 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
 - [🎮 CONTROLES DEL JUEGO](#-controles-del-juego)
 - [⚔️ SISTEMA DE CLASES](#-sistema-de-clases)
+- [🎮 MODOS DE JUEGO](#-modos-de-juego)
 - [📊 PANEL DE ESTADÍSTICAS](#-panel-de-estadísticas)
 - [📋 BITÁCORA DE COMBATE](#-bitácora-de-combate)
+- [🏆 SISTEMA DE RANKING](#-sistema-de-ranking)
 - [🎨 TEMAS DISPONIBLES](#-temas-disponibles)
 - [🛠️ PERSONALIZACIÓN](#️-personalización)
 - [🐛 SOLUCIÓN DE PROBLEMAS](#-solución-de-problemas)
@@ -37,6 +39,7 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 - **Malos** - Representados en color rojo 🔴
 - **Obstáculos (█)** - Elementos estáticos que bloquean el paso
 - **7 clases únicas** - Cada una con estadísticas y habilidades especiales
+- **4 modos de juego** - Diferentes formas de jugar y estrategias
 
 Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y combaten automáticamente hasta que solo queda un bando.
 
@@ -45,23 +48,22 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 ## ✨ NOVEDADES EN VERSIÓN 2.5.1
 
 ### 🎯 Mejoras Visuales
-
 - ✅ **Nuevo sistema de tooltips** - Información detallada al pasar el ratón sobre las clases
 - ✅ **Nuevo diseño de tarjetas de jugador** - Más visuales y con iconos representativos
 - ✅ **Panel de estadísticas rediseñado** - Más compacto, profesional y con mejor distribución
 - ✅ **Indicadores de color por clase** - Cada clase tiene su propio color para fácil identificación
+- ✅ **Botón de ranking en barra derecha** - Visualización rápida del top 10
 - ✅ **Diseño responsive mejorado** - Mejor adaptación a móviles, tablets y pantallas grandes
 
 ### 🚀 Mejoras Técnicas
-
 - ✅ **Corrección de carga inicial** - El tablero se muestra correctamente al cargar la página
 - ✅ **Sistema de espera de dimensiones** - Espera a que el contenedor tenga tamaño real antes de crear el tablero
 - ✅ **Múltiples reintentos** - Si falla la carga, usa valores por defecto para garantizar la jugabilidad
 - ✅ **Código más modular** - Funciones separadas por responsabilidad para mejor mantenimiento
 - ✅ **Optimización de rendimiento** - Cálculos de dimensiones más eficientes
+- ✅ **Corrección de contadores** - Las victorias se suman correctamente (1 por partida)
 
 ### ⚔️ Sistema de Clases
-
 - ✅ **Curandero (C)** - Vida: 120, Daño: 5%, Habilidad: Cura +10% a aliados cercanos
 - ✅ **Paladín (P)** - Vida: 150, Daño: 10%, Habilidad: Reduce el daño recibido un 50%
 - ✅ **Mago (W)** - Vida: 80, Daño: 20%, Habilidad: Daño mágico (sin resistencia)
@@ -70,20 +72,16 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 - ✅ **Brujo (U)** - Vida: 90, Daño: 25%, Habilidad: Roba 10% de la vida infligida
 
 ### 🎮 Modo Pixel Perfect
-
 - ✅ **Nuevo modo de visualización** - Actívalo con el checkbox en el panel de control
 - ✅ **Una celda por píxel** - Para una experiencia de juego única
 - ✅ **Límite de seguridad** - Máximo 200,000 celdas para evitar congelar la página
 - ✅ **Desactivación automática** - Si el contenedor es demasiado grande, se desactiva solo
 
-### 📝 Notas de Actualización
-
-- Se han corregido problemas de carga inicial del tablero que afectaban a algunos navegadores
-- Se ha implementado un sistema de espera para asegurar que el tablero tenga dimensiones antes de iniciar la simulación
-- Se han añadido múltiples reintentos para manejar casos donde el tablero no se carga correctamente
-- Se ha rediseñado el panel de estadísticas para hacerlo más compacto y visualmente atractivo
-- Se ha mejorado la experiencia de usuario con tooltips más informativos y mejor posicionados
-- Se ha optimizado el código para mejor rendimiento y mantenibilidad
+### 🏆 Sistema de Ranking
+- ✅ **Ranking local** - Guarda las 10 mejores puntuaciones
+- ✅ **Visualización rápida** - Botón "VER RANKING" en barra derecha
+- ✅ **Top 3 con colores** - Oro, plata y bronce
+- ✅ **Sin modificaciones** - Solo visualización, no se pueden añadir puntos
 
 ---
 
@@ -124,7 +122,6 @@ survivors-js/
 ## 🚀 CÓMO EJECUTAR
 
 ### Desde Local
-
 1. **Descarga todos los archivos** manteniendo la estructura de carpetas
 2. **Abre `index.html`** en cualquier navegador moderno (Chrome, Firefox, Edge, Safari)
 3. **Inserta una moneda** 🪙 (haciendo clic en INSERT o presionando ESPACIO)
@@ -133,7 +130,6 @@ survivors-js/
 6. **¡Disfruta la batalla!** ⚔️
 
 ### Online
-
 👉 **[JUGAR AHORA - SURVIVORS ONLINE](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)**
 
 ---
@@ -144,9 +140,11 @@ survivors-js/
 |----------------|-------------|
 | **Interfaz Arcade** | Diseño de máquina recreativa con luces, efectos y paneles laterales |
 | **Sistema de Monedas** | Necesitas monedas para jugar (como en los arcades clásicos) |
+| **4 Modos de Juego** | Diferentes formas de jugar: 1, 2, 3 y SURVIVOR |
 | **7 Clases Únicas** | Cada clase tiene estadísticas y habilidades diferentes |
 | **Tooltips Informativos** | Info detallada al pasar el ratón sobre clases y personajes |
 | **Bitácora de Eventos** | Registro de todos los combates con filtros por tipo |
+| **Ranking Local** | Top 10 puntuaciones guardadas en localStorage |
 | **2 Temas Visuales** | Pac-Man (amarillo/azul) y Clásico (verde/negro) |
 | **Controles Teclado** | Atajos para todas las acciones del juego |
 | **Barras de Vida** | Información detallada en tooltips con barra de progreso |
@@ -161,7 +159,6 @@ survivors-js/
 ## 🎮 CONTROLES DEL JUEGO
 
 ### Botones en pantalla
-
 | Botón | Función |
 |-------|---------|
 | **INSERT** | Insertar moneda |
@@ -172,9 +169,9 @@ survivors-js/
 | **⚔️ - / +** | Cambiar velocidad de simulación |
 | **↺** | Reiniciar contadores de victorias |
 | **Pixel Perfect** | Activar/desactivar modo pixel |
+| **🏆 VER RANKING** | Mostrar ranking (solo visualización) |
 
 ### Controles de teclado
-
 | Tecla | Función |
 |-------|---------|
 | **ESPACIO** | Insertar moneda |
@@ -195,7 +192,6 @@ survivors-js/
 ## ⚔️ SISTEMA DE CLASES
 
 ### Clases de Buenos
-
 | Clase | Icono | Vida | Daño | Habilidad |
 |-------|-------|------|------|-----------|
 | **Soldado** | `B` | 100 | 15% | - |
@@ -204,13 +200,30 @@ survivors-js/
 | **Mago** | `W` | 80 | 20% | Daño mágico (sin resistencia) |
 
 ### Clases de Malos
-
 | Clase | Icono | Vida | Daño | Habilidad |
 |-------|-------|------|------|-----------|
 | **Soldado** | `M` | 100 | 15% | - |
 | **Asesino** | `A` | 70 | 30% | 15% de probabilidad de crítico (x2 daño) |
 | **Tanque** | `T` | 200 | 10% | Alta resistencia |
 | **Brujo** | `U` | 90 | 25% | Roba 10% de la vida infligida |
+
+---
+
+## 🎮 MODOS DE JUEGO
+
+| Modo | Nombre | Descripción | Características |
+|------|--------|-------------|-----------------|
+| **1** | Mitad y mitad | Número configurable de personajes | Requiere número par ≥2, mitad buenos y mitad malos |
+| **2** | Totalmente aleatorio | Número y distribución aleatoria | Número aleatorio entre 5 y 2% del tablero |
+| **3** | Mitad aleatoria | Número aleatorio pero equilibrado | Número par aleatorio, mitad buenos y mitad malos |
+| **⚔️ SURVIVOR** | Supervivencia | Compra personajes y sobrevive oleadas | Monedas iniciales: 125, tienda con 4 clases |
+
+### Modo SURVIVOR
+- **Monedas iniciales**: 125💰
+- **Tienda**: Soldado (20💰), Curandero (25💰), Paladín (30💰), Mago (35💰)
+- **Oleadas**: Los malos aumentan cada ronda
+- **Recompensas**: +10-25💰 por eliminar malos según su clase
+- **Puntuación**: Se guarda en el ranking al finalizar
 
 ---
 
@@ -246,6 +259,9 @@ El panel lateral derecho muestra información en tiempo real:
 ### TIEMPO
 - ⏱️ **00:00** - Tiempo de partida actual (se actualiza cada segundo)
 
+### BOTÓN DE RANKING
+- 🏆 **VER RANKING** - Muestra el top 10 de puntuaciones (solo visualización)
+
 ---
 
 ## 📋 BITÁCORA DE COMBATE
@@ -262,6 +278,27 @@ El panel lateral izquierdo incluye una bitácora con registro de eventos:
 - **🗑️** - Limpiar todos los registros
 - **Puntos de color** - Filtrar por tipo de evento
 - **Scroll automático** - Siempre muestra el último evento registrado
+
+---
+
+## 🏆 SISTEMA DE RANKING
+
+### Características
+- **Almacenamiento**: localStorage del navegador
+- **Top 10**: Solo se guardan las 10 mejores puntuaciones
+- **Colores especiales**:
+  - 🥇 **#1 Oro** - Fondo dorado
+  - 🥈 **#2 Plata** - Fondo plateado
+  - 🥉 **#3 Bronce** - Fondo bronce
+
+### Acceso al ranking
+- **Automático**: Al terminar una partida en modo SURVIVOR con ronda > 0
+- **Manual**: Botón "VER RANKING" en la barra lateral derecha (solo visualización)
+
+### Formato de puntuación
+- **Nombre**: 8 caracteres máximo (mayúsculas)
+- **Puntos**: Puntuación total de la partida
+- **Fecha**: Se guarda automáticamente
 
 ---
 
@@ -333,10 +370,12 @@ const CLASES_CONFIG = {
 | **Personajes no se mueven** | Verifica que hay enemigos cerca (distancia de detección) |
 | **Tooltips no aparecen** | Comprueba que los atributos `data-class` y `data-tooltip` están correctos |
 | **Botón START deshabilitado** | Selecciona un modo de juego primero (modo 1 requiere número par) |
-| **Error de dimensiones** | El sistema usa valores por defecto (15x20) después de 20 intentos |
+| **Error de dimensiones** | El sistema usa valores por defecto (12x16) después de 20 intentos |
 | **Clases no se muestran** | Verifica el orden de carga de scripts en el HTML |
 | **Monedas no se actualizan** | Revisa los IDs en el HTML: `coinCount`, `gameCoinCount`, `panelCoinCount` |
 | **Modo pixel no funciona** | El contenedor puede ser demasiado grande (>200,000 celdas potenciales) |
+| **Ranking no aparece** | Asegura que localStorage está habilitado en el navegador |
+| **Las victorias suman de más** | Verifica que no haya game over duplicado (usar flag `gameOverProcesado`) |
 
 ---
 
@@ -380,9 +419,18 @@ Entidad
 iniciarSimulacion()      // Inicia la batalla con todas las configuraciones
 combatirConClases()      // Lógica de combate entre clases
 actualizarTooltipsClases() // Actualiza tooltips dinámicamente
-generarTooltipClase()    // Genera tooltip minimalista
-recalcularDimensiones()  // Calcula dimensiones del tablero
+recalcularDimensiones()  // Calcula dimensiones del tablero (prioriza ancho)
 redimensionarTablero()   // Ajusta el tamaño de las celdas
+togglePixelMode()        // Activa/desactiva modo Pixel Perfect
+mostrarRankingSoloVer()  // Muestra ranking sin opción de guardar
+```
+
+### Variables Importantes
+```javascript
+pixelPerfect             // true/false - Modo Pixel Perfect
+MAX_PIXEL_CELLS = 200000 // Límite de celdas en modo pixel
+monedasSurvivor = 125    // Monedas iniciales en modo SURVIVOR
+gameOverProcesado        // Evita game over duplicado
 ```
 
 ---
@@ -397,7 +445,10 @@ redimensionarTablero()   // Ajusta el tamaño de las celdas
 - [x] Código más modular y optimizado
 - [x] Modo Pixel Perfect (experimental)
 - [x] Sistema de ranking local con top 10
+- [x] Botón de ranking en barra derecha (solo visualización)
+- [x] Corrección de contadores de victorias (1 por partida)
 - [x] Persistencia de victorias en localStorage
+- [x] Modos 1, 2, 3 y SURVIVOR completamente funcionales
 
 ### 🔜 Próximas Versiones
 
@@ -460,23 +511,22 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 *Última actualización: Marzo 2026*
 
-
 ## Principales actualizaciones:
 
-### 📝 **Versión actualizada a 2.5.1**
-- Añadido el modo **Pixel Perfect** con su descripción
-- Nuevas características de tooltips y diseño de tarjetas
-- Sistema de espera de dimensiones documentado
-- Hoja de ruta actualizada
+### ✅ **Versión 2.5.1**
+- Añadido sistema de ranking completo
+- Botón "VER RANKING" en barra derecha
+- Modo Pixel Perfect documentado
+- Monedas iniciales en survivor: 125💰
+- Corrección de contadores de victorias
 
-### 🎯 **Secciones mejoradas:**
-- **NOVEDADES** - Ahora incluye todas las características de la 2.5.1
-- **CARACTERÍSTICAS** - Añadido modo Pixel Perfect a la lista
-- **SOLUCIÓN DE PROBLEMAS** - Nuevos casos específicos
-- **HOJA DE RUTA** - Actualizada con lo completado en 2.5.1
+### 📊 **Nuevas secciones:**
+- **SISTEMA DE RANKING** - Explicación detallada del ranking
+- **MODOS DE JUEGO** - Tabla con todos los modos disponibles
+- **Notas para desarrolladores** - Variables importantes añadidas
 
-### 📊 **Información técnica:**
-- Documentado el sistema de reintentos (20 intentos)
-- Explicado el límite de 200,000 celdas en modo pixel
-- Valores por defecto (15x20) cuando falla la carga
-- Detalles de las clases y habilidades actualizados
+### 🐛 **Solución de problemas:**
+- Añadido caso de "victorias suman de más"
+- Recomendación de flag `gameOverProcesado`
+
+¡El README ahora refleja todas las características actuales del juego! 🎮
