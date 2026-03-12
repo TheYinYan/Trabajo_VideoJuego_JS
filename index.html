@@ -33,8 +33,11 @@
                 <div class="menu-buttons">
                     <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ MITAD Y
                         MITAD</button>
+                    <!-- MODO 2 - Totalmente aleatorio -->
                     <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 TOTALMENTE
                         ALEATORIO</button>
+
+                    <!-- MODO 3 - Mitad aleatoria -->
                     <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 MITAD
                         ALEATORIA</button>
                     <button class="mode-btn" id="survivorBtn" onclick="seleccionarModoSurvivor()" disabled>⚔️ MODO
@@ -235,6 +238,11 @@
 
                     <div class="control-divider"></div>
 
+                    <div class="pixel-section">
+                        <label><input type="checkbox" id="pixelToggle" onchange="togglePixelMode()"> Pixel
+                            perfect</label>
+                    </div>
+
                     <div class="control-divider"></div>
 
                     <div class="coin-section">
@@ -264,7 +272,7 @@
                 </div>
             </div>
 
-            <!-- BARRA LATERAL DERECHA - NUEVO DISEÑO COMPACTO -->
+            <!-- BARRA LATERAL DERECHA -->
             <div class="right-bar">
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
@@ -406,6 +414,13 @@
                     <div class="time-panel">
                         <span class="time-header">⏱️ TIEMPO</span>
                         <span class="time-display" id="tiempoPartida">00:00</span>
+                    </div>
+
+                    <!-- ===== BOTÓN DE RANKING (SOLO VER) EN BARRA DERECHA ===== -->
+                    <div class="ranking-view-button" onclick="mostrarRankingSoloVer()">
+                        <div class="ranking-view-icon">🏆</div>
+                        <div class="ranking-view-text">VER RANKING</div>
+                        <div class="ranking-view-glow"></div>
                     </div>
 
                     <div class="bar-decoration bottom"></div>

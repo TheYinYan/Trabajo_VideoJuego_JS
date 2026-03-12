@@ -750,62 +750,6 @@ html, body {
     border-color: white;
 }
 
-/* ===== MODALES ===== */
-.ranking-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.ranking-container {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    text-align: center;
-}
-.ranking-title {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-.ranking-list {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-}
-.ranking-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-}
-.ranking-position { font-weight: bold; }
-.ranking-name { flex: 1; margin: 0 10px; text-align: left; }
-.ranking-score { font-weight: bold; }
-.ranking-input input {
-    width: 60%;
-    padding: 4px;
-    margin-right: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.ranking-input button {
-    padding: 5px 8px;
-    border: none;
-    background: var(--blue);
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
 /* ===== CONTENIDO CENTRAL ===== */
 .arcade-center {
     flex: 1;
@@ -860,9 +804,9 @@ html, body {
     background: var(--black);
     border: 4px solid var(--pacman-blue);
     border-radius: 20px;
-    padding: 10px; /* Reducido de 15px */
+    padding: 10px;
     box-shadow: inset 0 0 30px var(--pacman-dark-blue);
-    overflow: hidden; /* Cambiado de auto a hidden */
+    overflow: hidden;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -873,11 +817,11 @@ html, body {
     display: grid;
     gap: 0px;
     background-color: var(--pacman-blue);
-    border-radius: 8px; /* Reducido de 10px */
-    padding: 0px; /* Reducido de 3px */
+    border-radius: 8px;
+    padding: 0px;
     margin: 0;
-    width: 100%; /* Forzar que ocupe el 100% del contenedor */
-    height: 100%; /* Forzar que ocupe el 100% del contenedor */
+    width: 100%;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
     transform: translateZ(0);
@@ -908,7 +852,6 @@ html, body {
     text-overflow: clip;
     white-space: nowrap;
 }
-
 
 .game-board > div:hover {
     transform: scale(1.15);
@@ -946,7 +889,7 @@ html, body {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Barra de vida visual - CORREGIDO */
+/* Barra de vida visual */
 .game-board > div[data-vida] {
     position: relative;
 }
@@ -961,7 +904,7 @@ html, body {
     background: rgba(0, 0, 0, 0.5);
     border-radius: 2px;
     overflow: hidden;
-    pointer-events: none; /* No interfiere con clicks */
+    pointer-events: none;
 }
 
 .game-board > div[data-vida]::after {
@@ -974,7 +917,7 @@ html, body {
     background: linear-gradient(90deg, #00ff00, #ffff00);
     border-radius: 2px;
     transition: width 0.2s ease-out;
-    pointer-events: none; /* No interfiere con clicks */
+    pointer-events: none;
 }
 
 /* Efecto de estela al moverse */
@@ -990,7 +933,7 @@ html, body {
     to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes fadeOut {    
+@keyframes fadeOut {
     from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.8); }
 }
@@ -1441,6 +1384,34 @@ html, body {
     background: linear-gradient(180deg, transparent, var(--gold), transparent);
     margin: 0 3px;
     flex-shrink: 0;
+}
+
+/* Pixel section */
+.pixel-section {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--blue);
+    border-radius: 30px;
+    padding: 4px 12px;
+    color: var(--blue);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.pixel-section input {
+    accent-color: var(--blue);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.pixel-section label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 /* ===== MODO SURVIVOR ===== */
@@ -2174,6 +2145,236 @@ html, body {
     border: 1px solid rgba(51,255,51,0.3);
 }
 
+/* ===== RANKING MODAL - VENTANA EMERGENTE ===== */
+.ranking-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(8px);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.ranking-container {
+    background: linear-gradient(145deg, #1a2a3a, #0a1a2a);
+    border: 4px solid var(--gold);
+    border-radius: 20px;
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 0 50px var(--gold), inset 0 0 20px rgba(255,215,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.ranking-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%);
+    animation: shine 4s infinite;
+    pointer-events: none;
+}
+
+.ranking-title {
+    color: var(--gold);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px var(--gold);
+    letter-spacing: 3px;
+    position: relative;
+}
+
+.ranking-list {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(255,215,0,0.2);
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin: 5px 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    border-left: 4px solid;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.ranking-item:hover {
+    transform: translateX(5px);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.ranking-item.top1 {
+    border-left-color: var(--gold);
+    background: rgba(255, 215, 0, 0.2);
+    color: var(--gold);
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--gold);
+}
+
+.ranking-item.top2 {
+    border-left-color: #c0c0c0;
+    background: rgba(192, 192, 192, 0.2);
+    color: #c0c0c0;
+}
+
+.ranking-item.top3 {
+    border-left-color: #cd7f32;
+    background: rgba(205, 127, 50, 0.2);
+    color: #cd7f32;
+}
+
+.ranking-position {
+    width: 40px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.ranking-name {
+    flex: 1;
+    margin: 0 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.ranking-score {
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+}
+
+.ranking-input {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.ranking-input input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.ranking-input input:focus {
+    border-color: #ffaa00;
+    box-shadow: 0 0 15px var(--gold);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.ranking-input input::placeholder {
+    color: rgba(255, 215, 0, 0.5);
+    font-size: 0.9rem;
+}
+
+.ranking-input button {
+    background: var(--gold);
+    border: none;
+    color: black;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ranking-input button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--gold);
+    background: #ffaa00;
+}
+
+.ranking-input button:active {
+    transform: scale(0.95);
+}
+
+.ranking-close {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--red);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ranking-close:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px var(--red);
+    background: #ff5555;
+}
+
+.ranking-close:active {
+    transform: scale(0.98);
+}
+
+/* Scrollbar personalizada para el ranking */
+.ranking-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ranking-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.ranking-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold), #ffaa00);
+    border-radius: 3px;
+}
+
+.ranking-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffaa00, var(--gold));
+}
+
 /* ===== GAME OVER ===== */
 .game-over {
     position: absolute;
@@ -2356,20 +2557,23 @@ html, body {
 /* ===== SCROLLBARS MEJORADAS ===== */
 .help-content::-webkit-scrollbar,
 .log-container::-webkit-scrollbar,
-.stats-content::-webkit-scrollbar {
+.stats-content::-webkit-scrollbar,
+.ranking-list::-webkit-scrollbar {
     width: 6px;
 }
 
 .help-content::-webkit-scrollbar-track,
 .log-container::-webkit-scrollbar-track,
-.stats-content::-webkit-scrollbar-track {
+.stats-content::-webkit-scrollbar-track,
+.ranking-list::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 3px;
 }
 
 .help-content::-webkit-scrollbar-thumb,
 .log-container::-webkit-scrollbar-thumb,
-.stats-content::-webkit-scrollbar-thumb {
+.stats-content::-webkit-scrollbar-thumb,
+.ranking-list::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--gold), #ffaa00);
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -2377,7 +2581,8 @@ html, body {
 
 .help-content::-webkit-scrollbar-thumb:hover,
 .log-container::-webkit-scrollbar-thumb:hover,
-.stats-content::-webkit-scrollbar-thumb:hover {
+.stats-content::-webkit-scrollbar-thumb:hover,
+.ranking-list::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #ffaa00, var(--gold));
 }
 
@@ -2532,14 +2737,6 @@ html, body {
     }
     
     .speed-section {
-
-    /* nuevo control pixel */
-    .pixel-section {
-        text-align: center;
-        color: var(--white);
-        font-size: 0.85rem;
-        margin: 4px 0;
-    }
         flex-direction: column;
         padding: 6px;
     }
@@ -2638,4 +2835,90 @@ html, body {
         padding: 10px;
         margin: 10px 0;
     }
+}
+
+/* ===== BOTÓN DE RANKING - MISMO TAMAÑO QUE LOS PANELES ===== */
+.ranking-view-button {
+    width: 100%;
+    margin: 5px 0;
+    padding: 12px 15px;
+    background: linear-gradient(145deg, rgba(15, 26, 47, 0.9), rgba(10, 18, 32, 0.95));
+    border: 2px solid var(--gold); /* Mismo borde que stats-panel */
+    border-radius: 15px; /* Mismo radio que stats-panel */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 10px rgba(255,215,0,0.3);
+    backdrop-filter: blur(5px); /* Mismo efecto que los paneles */
+    z-index: 10;
+}
+
+.ranking-view-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%);
+    animation: shine 4s infinite;
+    pointer-events: none;
+}
+
+.ranking-view-button:hover {
+    transform: translateY(-2px);
+    border-color: #ffaa00;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 20px var(--gold);
+}
+
+.ranking-view-button:active {
+    transform: translateY(1px);
+}
+
+.ranking-view-icon {
+    font-size: 1.5rem; /* Mismo tamaño que los iconos de jugador */
+    filter: drop-shadow(0 0 5px var(--gold));
+    animation: rankingPulse 2s infinite;
+}
+
+@keyframes rankingPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px var(--gold)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 10px var(--gold)); }
+}
+
+.ranking-view-text {
+    color: var(--gold);
+    font-size: 0.9rem; /* Mismo tamaño que los headers de clase */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px var(--gold);
+}
+
+.ranking-view-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ranking-view-button:hover .ranking-view-glow {
+    opacity: 1;
+}
+
+/* Ajuste para que tenga el mismo padding que los paneles */
+.stats-content .ranking-view-button {
+    margin-top: 8px;
+    margin-bottom: 8px;
 }

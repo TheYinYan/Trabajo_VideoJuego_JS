@@ -52,7 +52,7 @@ let intervaloReloj = null;
 let modoSurvivorActivo = false;
 let rondasSuperadas = 0;
 let puntosTotales = 0;
-let monedasSurvivor = 100;
+let monedasSurvivor = 125;
 let malosEnRonda = 3;
 let rankingJugadores = [];
 
@@ -406,7 +406,7 @@ function crearTableroConDimensiones(altura, anchura) {
     }
 }
 
-// ===== FUNCIÓN PARA HACER CELDAS CLICKEABLES =====
+// ===== FUNCIÓN PARA HACER CELDAS CLICKEABLES - CORREGIDA =====
 function hacerCeldaClickeable() {
     if (!gameBoard || !arrayEntidades) return;
 
@@ -417,10 +417,24 @@ function hacerCeldaClickeable() {
         const fila = Math.floor(i / anchuraActual);
         const columna = i % anchuraActual;
 
+        // Eliminar onclick anterior para evitar duplicados
+        cell.onclick = null;
+        
+        // Añadir nuevo onclick con validación
         cell.onclick = (e) => {
             e.stopPropagation();
+            
+            // Solo procesar si:
+            // 1. Está en modo survivor
+            // 2. El juego está pausado
+            // 3. Hay un personaje seleccionado en la tienda
+            // 4. La celda está vacía (esta validación ya está en comprarPersonaje)
             if (modoSurvivorActivo && simulacionPausada && personajeSeleccionado) {
+                console.log(`👆 Clic en celda [${fila},${columna}] con personaje: ${personajeSeleccionado}`);
                 comprarPersonaje(personajeSeleccionado, fila, columna);
+            } else if (!personajeSeleccionado) {
+                // Si no hay personaje seleccionado, mostrar mensaje informativo
+                añadirLog('⚠️ Primero selecciona un personaje en la tienda', 'info');
             }
         };
         cell.style.cursor = 'pointer';
@@ -729,7 +743,7 @@ function iniciarSimulacion() {
         modoSurvivorActivo = true;
         rondasSuperadas = 0;
         puntosTotales = 0;
-        monedasSurvivor = 100;
+        monedasSurvivor = 125;
         malosEnRonda = 3;
         personajeSeleccionado = null;
 
@@ -949,68 +963,142 @@ function iniciarSurvivor() {
     iniciarSimulacion();
 }
 
+// ===== SELECCIONAR PERSONAJE EN TIENDA =====
 function seleccionarPersonajeTienda(tipo, costo) {
-    if (!modoSurvivorActivo || !simulacionPausada) {
+    // Validar modo survivor
+    if (!modoSurvivorActivo) {
+        añadirLog('❌ Modo survivor no activo', 'info');
+        return;
+    }
+    
+    // Validar que el juego esté pausado
+    if (!simulacionPausada) {
         añadirLog('❌ Debes estar en pausa para comprar', 'info');
         return;
     }
 
+    // Mostrar mensaje con el costo actual
+    añadirLog(`💰 Monedas disponibles: ${monedasSurvivor} - Costo: ${costo}`, 'info');
+
+    // Establecer personaje seleccionado
     personajeSeleccionado = tipo;
     costoseleccionado = costo;
-    document.getElementById('shopStatus').innerHTML = `✅ ${tipo.toUpperCase()} seleccionado - Haz clic en una casilla vacía`;
+    
+    // Actualizar interfaz
+    document.getElementById('shopStatus').innerHTML = `✅ ${tipo.toUpperCase()} seleccionado - Haz clic en una casilla vacía (${costo}💰)`;
     añadirLog(`🛒 Selecciona una casilla para colocar ${tipo} (${costo}💰)`, 'system');
 }
 
+// ===== COMPRAR PERSONAJE - CORREGIDO (CREACIÓN DESPUÉS DE VERIFICAR) =====
 function comprarPersonaje(tipo, fila, columna) {
-    if (!modoSurvivorActivo || !arrayEntidades) return false;
-
+    // Validar modo survivor
+    if (!modoSurvivorActivo) {
+        console.log('❌ No se puede comprar: modo survivor inactivo');
+        return false;
+    }
+    
+    // Validar que el juego esté pausado
+    if (!simulacionPausada) {
+        añadirLog('❌ Debes estar en pausa para comprar', 'info');
+        return false;
+    }
+    
+    // Validar que haya un personaje seleccionado
+    if (!personajeSeleccionado) {
+        añadirLog('❌ No hay personaje seleccionado', 'info');
+        return false;
+    }
+    
+    // Validar que el tipo coincida con el seleccionado
+    if (tipo !== personajeSeleccionado) {
+        console.log('⚠️ Tipo de personaje no coincide con el seleccionado');
+        return false;
+    }
+    
+    // Validar coordenadas
     if (fila === undefined || columna === undefined) {
         añadirLog('❌ Debes seleccionar una casilla', 'info');
+        return false;
+    }
+
+    // Validar que arrayEntidades existe
+    if (!arrayEntidades) {
+        añadirLog('❌ No hay tablero activo', 'info');
         return false;
     }
 
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
 
+    // Validar límites del tablero
     if (fila < 0 || fila >= altura || columna < 0 || columna >= anchura) {
         añadirLog('❌ Casilla fuera del tablero', 'info');
         return false;
     }
 
+    // Validar que la casilla esté vacía
     if (arrayEntidades[fila][columna] !== null) {
         añadirLog('❌ Casilla ocupada', 'info');
         return false;
     }
 
+    // Determinar costo
     let costo = 20;
-    let nuevoPersonaje = null;
-
     switch (tipo) {
-        case 'curandero': costo = 25; nuevoPersonaje = new Curandero(fila, columna); break;
-        case 'paladin': costo = 30; nuevoPersonaje = new Paladin(fila, columna); break;
-        case 'mago': costo = 35; nuevoPersonaje = new Mago(fila, columna); break;
-        case 'soldado': costo = 20; nuevoPersonaje = new Buenos(fila, columna); break;
-        default: return false;
+        case 'curandero': costo = 25; break;
+        case 'paladin': costo = 30; break;
+        case 'mago': costo = 35; break;
+        case 'soldado': costo = 20; break;
+        default: 
+            añadirLog('❌ Tipo de personaje no válido', 'info');
+            return false;
     }
 
-    if (monedasSurvivor >= costo) {
-        monedasSurvivor -= costo;
-        arrayEntidades[fila][columna] = nuevoPersonaje;
-        arrayPersonajes.push(nuevoPersonaje);
-
-        actualizarCelda(fila, columna, nuevoPersonaje);
-        añadirLog(`✅ Colocado: ${nuevoPersonaje.clase} en [${fila},${columna}] (${costo}💰)`, 'system');
-        actualizarPanelSurvivor();
-        actualizarContadoresVisuales();
-
-        personajeSeleccionado = null;
-        document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
-
-        return true;
-    } else {
-        añadirLog(`❌ Monedas insuficientes (necesitas ${costo}💰)`, 'info');
+    // ===== IMPORTANTE: Verificar monedas ANTES de crear el personaje =====
+    if (monedasSurvivor < costo) {
+        añadirLog(`❌ Monedas insuficientes (tienes ${monedasSurvivor}💰, necesitas ${costo}💰)`, 'info');
         return false;
     }
+
+    // ===== AHORA SÍ, crear el personaje (después de verificar monedas) =====
+    let nuevoPersonaje = null;
+    switch (tipo) {
+        case 'curandero': 
+            nuevoPersonaje = new Curandero(fila, columna); 
+            break;
+        case 'paladin': 
+            nuevoPersonaje = new Paladin(fila, columna); 
+            break;
+        case 'mago': 
+            nuevoPersonaje = new Mago(fila, columna); 
+            break;
+        case 'soldado': 
+            nuevoPersonaje = new Buenos(fila, columna); 
+            break;
+    }
+
+    // Realizar la compra (restar monedas)
+    monedasSurvivor -= costo;
+    
+    // Colocar el personaje en el tablero
+    arrayEntidades[fila][columna] = nuevoPersonaje;
+    arrayPersonajes.push(nuevoPersonaje);
+
+    // Actualizar celda visualmente
+    actualizarCelda(fila, columna, nuevoPersonaje);
+    
+    // Logs y actualizaciones
+    añadirLog(`✅ Colocado: ${nuevoPersonaje.clase} en [${fila},${columna}] (${costo}💰)`, 'system');
+    añadirLog(`💰 Monedas restantes: ${monedasSurvivor}`, 'system');
+    
+    actualizarPanelSurvivor();
+    actualizarContadoresVisuales();
+
+    // Limpiar selección
+    personajeSeleccionado = null;
+    document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
+
+    return true;
 }
 
 function iniciarRonda() {
@@ -1188,28 +1276,50 @@ function actualizarIndicadorVelocidad() {
     else display.setAttribute('data-speed', 'rapida');
 }
 
-// ===== FUNCIONES DE RELOJ =====
+// ===== FUNCIÓN DE RELOJ - CORREGIDA =====
 function iniciarReloj() {
+    // Detener cualquier reloj anterior
+    if (intervaloReloj) {
+        clearInterval(intervaloReloj);
+        intervaloReloj = null;
+    }
+    
+    // Establecer tiempo de inicio AHORA MISMO
     tiempoInicio = Date.now();
-    if (intervaloReloj) clearInterval(intervaloReloj);
-
+    
+    // Mostrar 00:00 inmediatamente
+    const relojDisplay = document.getElementById('tiempoPartida');
+    if (relojDisplay) {
+        relojDisplay.textContent = '00:00';
+    }
+    
+    // Crear nuevo intervalo
     intervaloReloj = setInterval(() => {
+        // No actualizar si el juego está pausado o no hay entidades
         if (!arrayEntidades || simulacionPausada) return;
-
-        const tiempo = Math.floor((Date.now() - tiempoInicio) / 1000);
-        const minutos = Math.floor(tiempo / 60).toString().padStart(2, '0');
-        const segundos = (tiempo % 60).toString().padStart(2, '0');
-
+        
+        // Calcular tiempo transcurrido desde tiempoInicio
+        const tiempoTranscurrido = Math.floor((Date.now() - tiempoInicio) / 1000);
+        const minutos = Math.floor(tiempoTranscurrido / 60).toString().padStart(2, '0');
+        const segundos = (tiempoTranscurrido % 60).toString().padStart(2, '0');
+        
         const relojDisplay = document.getElementById('tiempoPartida');
-        if (relojDisplay) relojDisplay.textContent = `${minutos}:${segundos}`;
+        if (relojDisplay) {
+            relojDisplay.textContent = `${minutos}:${segundos}`;
+        }
     }, 1000);
+    
+    console.log('⏱️ Reloj iniciado desde 00:00');
 }
 
+// ===== DETENER RELOJ =====
 function detenerReloj() {
     if (intervaloReloj) {
         clearInterval(intervaloReloj);
         intervaloReloj = null;
     }
+    // Nota: NO reseteamos tiempoInicio aquí para mantener el valor si es necesario
+    console.log('⏱️ Reloj detenido');
 }
 
 // ===== FUNCIONES DE ESTADÍSTICAS =====
@@ -1443,10 +1553,8 @@ function mostrarResultado() {
     const malos = Malos.getnMalos() || 0;
 
     if (buenos <= 0) {
-        victoriasMalos++;
         añadirLog(`💀 MALOS GANAN - Victoria #${victoriasMalos}`, 'victory');
     } else {
-        victoriasBuenos++;
         añadirLog(`✨ BUENOS GANAN - Victoria #${victoriasBuenos}`, 'victory');
     }
 
@@ -1824,6 +1932,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('✅ Inicialización completa');
 });
+
+// ===== MOSTRAR RANKING SOLO VER (SIN INPUT) =====
+function mostrarRankingSoloVer() {
+    cargarRanking();
+    
+    const rankingHTML = rankingJugadores.map((entry, index) => {
+        let clase = '';
+        if (index === 0) clase = 'top1';
+        else if (index === 1) clase = 'top2';
+        else if (index === 2) clase = 'top3';
+        
+        return `<div class="ranking-item ${clase}">
+            <span class="ranking-position">#${index + 1}</span>
+            <span class="ranking-name">${entry.nombre}</span>
+            <span class="ranking-score">${entry.puntos}</span>
+        </div>`;
+    }).join('');
+    
+    // Crear modal solo para visualización (sin input)
+    const modal = document.createElement('div');
+    modal.className = 'ranking-modal';
+    modal.innerHTML = `
+        <div class="ranking-container">
+            <div class="ranking-title">🏆 RANKING</div>
+            <div class="ranking-list">
+                ${rankingHTML || '<div style="color: #888; text-align: center; padding: 30px; font-size: 1.2rem;">No hay puntuaciones aún</div>'}
+            </div>
+            <div style="text-align: center; margin: 20px 0; color: var(--gold); font-size: 1rem;">
+                ⭐ Top 10 mejores puntuaciones ⭐
+            </div>
+            <button class="ranking-close" onclick="cerrarRanking()">CERRAR</button>
+        </div>
+    `;
+    
+    // Asegurar que no haya otros modales
+    const modalExistente = document.querySelector('.ranking-modal');
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+    
+    document.body.appendChild(modal);
+    
+    // Añadir evento para cerrar con Escape
+    const cerrarEsc = (e) => {
+        if (e.key === 'Escape') {
+            cerrarRanking();
+            document.removeEventListener('keydown', cerrarEsc);
+        }
+    };
+    document.addEventListener('keydown', cerrarEsc);
+    
+    añadirLog('👀 Visualizando ranking', 'system');
+}
+
+// ===== FUNCIÓN PARA SELECCIONAR OPCIÓN - CORREGIDA =====
+function seleccionarOpcion(opcion) {
+    console.log(`🎮 Seleccionando modo: ${opcion}`);
+    opcionSeleccionada = opcion;
+    
+    // Quitar clase selected de todos los botones
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    // Añadir clase selected al botón actual (usando event)
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('selected');
+    } else {
+        // Fallback por si no hay event
+        const botones = {
+            1: document.getElementById('opcion1Btn'),
+            2: document.getElementById('opcion2Btn'),
+            3: document.getElementById('opcion3Btn'),
+            'survivor': document.getElementById('survivorBtn')
+        };
+        if (botones[opcion]) {
+            botones[opcion].classList.add('selected');
+        }
+    }
+    
+    // Mostrar/ocultar campo de número de personajes
+    const nPersonajesRow = document.getElementById('nPersonajesRow');
+    if (opcion === 1) {
+        nPersonajesRow.classList.remove('hidden');
+        añadirLog('⚙️ Modo 1: Necesitas especificar número de personajes', 'info');
+    } else {
+        nPersonajesRow.classList.add('hidden');
+        añadirLog(`⚙️ Modo ${opcion} seleccionado`, 'info');
+    }
+    
+    // Habilitar botón START
+    validarBotonInicio();
+}
 
 // ===== EXPORTAR FUNCIONES GLOBALES =====
 window.iniciarJuego = iniciarJuego;
