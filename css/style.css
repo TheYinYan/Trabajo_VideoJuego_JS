@@ -2217,47 +2217,83 @@ html, body {
     border: 1px solid rgba(255,215,0,0.2);
 }
 
+/* ===== ITEMS DEL RANKING MEJORADOS ===== */
 .ranking-item {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
-    margin: 5px 0;
-    background: rgba(0, 0, 0, 0.5);
+    padding: 12px 15px;
+    margin: 6px 0;
+    background: rgba(30, 40, 50, 0.8); /* Más claro que antes */
     border-radius: 8px;
     border-left: 4px solid;
     font-size: 1rem;
-    transition: transform 0.2s;
+    transition: all 0.2s ease;
+    color: #ffffff; /* Texto blanco para mejor contraste */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .ranking-item:hover {
     transform: translateX(5px);
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(50, 60, 70, 0.9);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
+/* TOP 1 - ORO */
 .ranking-item.top1 {
     border-left-color: var(--gold);
-    background: rgba(255, 215, 0, 0.2);
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.3), rgba(30, 40, 50, 0.8));
     color: var(--gold);
     font-weight: bold;
-    text-shadow: 0 0 10px var(--gold);
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
 }
 
+.ranking-item.top1:hover {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.4), rgba(40, 50, 60, 0.9));
+}
+
+/* TOP 2 - PLATA */
 .ranking-item.top2 {
     border-left-color: #c0c0c0;
-    background: rgba(192, 192, 192, 0.2);
-    color: #c0c0c0;
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.3), rgba(30, 40, 50, 0.8));
+    color: #e0e0e0;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(192,192,192,0.5);
 }
 
+.ranking-item.top2:hover {
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.4), rgba(40, 50, 60, 0.9));
+}
+
+/* TOP 3 - BRONCE */
 .ranking-item.top3 {
     border-left-color: #cd7f32;
-    background: rgba(205, 127, 50, 0.2);
-    color: #cd7f32;
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.3), rgba(30, 40, 50, 0.8));
+    color: #ffb347;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(205,127,50,0.5);
+}
+
+.ranking-item.top3:hover {
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.4), rgba(40, 50, 60, 0.9));
+}
+
+/* RESTO DE POSICIONES - MÁS CLARAS */
+.ranking-item:not(.top1):not(.top2):not(.top3) {
+    border-left-color: #4a6c8f; /* Azul más visible */
+    background: rgba(40, 55, 70, 0.85); /* Más claro */
+    color: #ffffff;
+}
+
+.ranking-item:not(.top1):not(.top2):not(.top3):hover {
+    background: rgba(55, 70, 85, 0.95);
 }
 
 .ranking-position {
     width: 40px;
     font-weight: bold;
     font-size: 1.2rem;
+    color: inherit;
 }
 
 .ranking-name {
@@ -2266,12 +2302,25 @@ html, body {
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 1px;
+    color: inherit;
 }
 
 .ranking-score {
     font-weight: bold;
     font-family: 'Courier New', monospace;
     font-size: 1.2rem;
+    color: inherit;
+}
+
+/* TEXTO INFORMATIVO */
+.ranking-container div[style*="color: #888"] {
+    color: #cccccc !important; /* Más claro */
+    font-size: 1.1rem;
+    padding: 30px;
+    text-align: center;
+    background: rgba(30, 40, 50, 0.5);
+    border-radius: 8px;
+    margin: 10px 0;
 }
 
 .ranking-input {
@@ -2283,7 +2332,7 @@ html, body {
 
 .ranking-input input {
     flex: 1;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(30, 40, 50, 0.9);
     border: 2px solid var(--gold);
     color: var(--gold);
     padding: 12px 15px;
@@ -2298,7 +2347,7 @@ html, body {
 .ranking-input input:focus {
     border-color: #ffaa00;
     box-shadow: 0 0 15px var(--gold);
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(40, 50, 60, 0.95);
 }
 
 .ranking-input input::placeholder {
@@ -2356,7 +2405,7 @@ html, body {
     transform: scale(0.98);
 }
 
-/* Scrollbar personalizada para el ranking */
+/* Scrollbar personalizada */
 .ranking-list::-webkit-scrollbar {
     width: 6px;
 }
