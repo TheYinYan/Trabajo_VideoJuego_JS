@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5.1-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -42,18 +42,20 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5
+## ✨ NOVEDADES EN VERSIÓN 2.5.1
 
 ### 🎯 Mejoras Visuales
 
+- ✅ **Nuevo sistema de tooltips** - Información detallada al pasar el ratón sobre las clases
+- ✅ **Nuevo diseño de tarjetas de jugador** - Más visuales y con iconos
+
 - ✅ **Panel de estadísticas rediseñado** - Más compacto y profesional
-- ✅ **Tooltips de clases minimalistas** - Información al pasar el ratón
 - ✅ **Indicadores de color por clase** - Cada clase tiene su propio color
 - ✅ **Diseño responsive mejorado** - Mejor adaptación a móviles
 
 ### 🚀 Mejoras Técnicas
 
-- ✅ **Carga inicial corregida** - El tablero se genera correctamente a la primera
+- ✅ **Corrección de carga inicial** - El tablero se muestra correctamente al cargar la página
 - ✅ **Sistema de espera de dimensiones** - Espera a que el contenedor tenga tamaño real
 - ✅ **Múltiples reintentos** - Si falla la carga, usa valores por defecto
 - ✅ **Código más modular** - Funciones separadas para mejor mantenimiento
@@ -67,20 +69,12 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 - ✅ **Tanque (T)** - Vida: 200, Daño: 10%, Habilidad: Alta resistencia
 - ✅ **Brujo (U)** - Vida: 90, Daño: 25%, Habilidad: Roba 10% vida
 
-### Ideas
+### Notas de Actualización
 
-#### Por ahora se han implementado las siguientes mejoras:
-
-- Nuevo diseño del panel de estadísticas, más compacto y profesional
-- Tooltips de clases minimalistas con información al pasar el ratón
-- Indicadores de color por clase para fácil identificación
-- Sistema de espera de dimensiones para evitar problemas de carga
-- Múltiples reintentos para generar el tablero si falla la carga initial
-- Código más modular y organizado para mejor mantenimiento
-- Corrección de errores relacionados con la carga del tablero y las estadísticas
-- Optimización de la lógica de combate y generación de personajes
-- Mejoras en la interfaz de usuario para una experiencia más fluida
-- Parece que esta duplicando los personajes. HAY 3 MALOS Y DICE QUE hay 6 y con los buenos pasa igual ya que vas poniendo uno y dice 2 y si pones otro dice 4. Creo que el problema esta en la función generarPersonajeConClase() ya que cada vez que se llama a esa función se incrementa el contador de personajes sin importar si realmente se ha generado un nuevo personaje o no. Deberías revisar esa función para asegurarte de que solo se incrementa el contador cuando realmente se ha generado un nuevo personaje y no cuando simplemente se ha intentado generar uno.
+- Se han corregido problemas de carga inicial del tablero
+- Se ha implementado un sistema de espera para asegurar que el tablero tenga dimensiones antes de iniciar la simulación
+- Se han añadido múltiples reintentos para manejar casos donde el tablero no se carga correctamente
+- Se ha rediseñado el panel de estadísticas para hacerlo más compacto y visualmente atractivo
 
 #### Próximas mejoras visuales y de funcionalidad:
 

@@ -18,6 +18,22 @@ let gameOverCoins = 0;
 
 // Dimensiones variables
 let alturaActual = 0;
+let pixelPerfect = false; // cuando es true simulamos 1 div por píxel
+const MAX_PIXEL_CELLS = 200000; // límite para evitar congelar la página
+
+function togglePixelMode() {
+    pixelPerfect = !pixelPerfect;
+    actualizarPixelToggle();
+    añadirLog(`🧱 Modo pixel ${pixelPerfect ? 'activado' : 'desactivado'}`, 'system');
+    recalcularDimensiones();
+    if (opcionSeleccionada === 'survivor') crearTableroSurvivor();
+    else crearTableroNormal();
+}
+
+function actualizarPixelToggle() {
+    const cb = document.getElementById('pixelToggle');
+    if (cb) cb.checked = pixelPerfect;
+}
 let anchuraActual = 0;
 
 // Referencias DOM
@@ -115,7 +131,7 @@ function validarBotonInicio() {
     }
 }
 
-// ===== FUNCIÓN PARA CALCULAR DIMENSIONES =====
+// ===== FUNCIÓN PARA CALCULAR DIMENSIONES - CORREGIDA (PRIORIZA ANCHO) =====
 function recalcularDimensiones() {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
@@ -125,90 +141,123 @@ function recalcularDimensiones() {
     const container = document.querySelector('.game-board-container');
     if (!container) return;
 
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
+    // Obtener dimensiones del contenedor restando paddings
+    const style = getComputedStyle(container);
+    const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
+    const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
+    
+    const containerWidth = container.clientWidth - padX;
+    const containerHeight = container.clientHeight - padY;
 
-    console.log(`📏 Contenedor: ${containerWidth}x${containerHeight}`);
+    console.log(`📏 Contenedor útil: ${containerWidth}x${containerHeight}`);
 
     if (containerWidth === 0 || containerHeight === 0) {
         console.warn('⚠️ Contenedor sin dimensiones');
-        alturaActual = 12;
-        anchuraActual = 16;
+        alturaActual = 15;
+        anchuraActual = 20;
         return;
     }
 
+
+
+    // ===== PRIORIZAR ANCHO =====
+    // Queremos que el tablero ocupe TODO el ancho disponible
+    // Calculamos el tamaño de celda basado en el ancho deseado
     let tamanoObjetivo;
     if (window.innerWidth <= 480) {
-        tamanoObjetivo = 28;
+        tamanoObjetivo = 28;   // móvil: celdas de 28px
     } else if (window.innerWidth <= 768) {
-        tamanoObjetivo = 32;
+        tamanoObjetivo = 32;   // tablet: celdas de 32px
     } else {
-        tamanoObjetivo = 36;
+        tamanoObjetivo = 36;   // desktop: celdas de 36px
     }
 
+    // Calcular cuántas celdas caben en el ancho (para OCUPAR TODO EL ANCHO)
     let celdasPorAncho = Math.floor(containerWidth / tamanoObjetivo);
-    let celdasPorAlto = Math.floor(containerHeight / tamanoObjetivo);
+    
+    // Ahora calculamos el tamaño REAL de celda para que ocupe exactamente el ancho
+    let tamañoRealCelda = containerWidth / celdasPorAncho;
+    
+    // Con ese tamaño, calculamos cuántas celdas caben en el alto
+    let celdasPorAlto = Math.floor(containerHeight / tamañoRealCelda);
 
-    celdasPorAncho = Math.floor(celdasPorAncho * 0.9);
-    celdasPorAlto = Math.floor(celdasPorAlto * 0.9);
+    // Ajustar si el alto se desborda
+    if (celdasPorAlto * tamañoRealCelda > containerHeight) {
+        // Si no cabe, reducimos una fila
+        celdasPorAlto--;
+    }
 
-    celdasPorAncho = Math.min(30, Math.max(10, celdasPorAncho));
-    celdasPorAlto = Math.min(20, Math.max(6, celdasPorAlto));
+    // Establecer mínimos y máximos razonables
+    celdasPorAncho = Math.min(45, Math.max(12, celdasPorAncho));
+    celdasPorAlto = Math.min(30, Math.max(6, celdasPorAlto));
 
-    if (celdasPorAncho > celdasPorAlto * 2) {
-        celdasPorAncho = Math.floor(celdasPorAlto * 1.6);
+    // Verificar que el alto no se desborde con los nuevos valores
+    let altoTotal = celdasPorAlto * tamañoRealCelda;
+    if (altoTotal > containerHeight) {
+        // Si aún se desborda, reducir hasta que quepa
+        while (altoTotal > containerHeight && celdasPorAlto > 6) {
+            celdasPorAlto--;
+            altoTotal = celdasPorAlto * tamañoRealCelda;
+        }
     }
 
     alturaActual = celdasPorAlto;
     anchuraActual = celdasPorAncho;
 
+    // Asegurar que sean números pares para el modo normal
     if (opcionSeleccionada !== 'survivor') {
         if (alturaActual % 2 !== 0) alturaActual--;
         if (anchuraActual % 2 !== 0) anchuraActual--;
     }
 
     console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
+    console.log(`📐 Tamaño celda: ${tamañoRealCelda.toFixed(1)}px`);
+    console.log(`📊 Total ocupado: ${anchuraActual * tamañoRealCelda}x${alturaActual * tamañoRealCelda}`);
 }
 
-// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO =====
+// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO - CORREGIDA =====
 function redimensionarTablero() {
-    if (!gameBoard || !arrayEntidades) return;
-
-    const altura = arrayEntidades.length;
-    const anchura = arrayEntidades[0].length;
+    if (!gameBoard) return;
 
     const container = gameBoard.parentElement;
     if (!container) return;
 
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-
+    const style = getComputedStyle(container);
+    const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
+    const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
+    
+    const containerWidth = container.clientWidth - padX;
+    const containerHeight = container.clientHeight - padY;
+    
     if (containerWidth === 0 || containerHeight === 0) return;
 
-    const paddingTotal = 20;
-    const gapTotal = (anchura - 1) * 2;
+    
 
-    const anchoDisponible = containerWidth - paddingTotal - gapTotal;
-    const altoDisponible = containerHeight - paddingTotal - gapTotal;
+    // modo normal
+    if (!arrayEntidades) return;
+    const altura = arrayEntidades.length;
+    const anchura = arrayEntidades[0].length;
 
-    let cellSizeByWidth = Math.floor(anchoDisponible / anchura);
-    let cellSizeByHeight = Math.floor(altoDisponible / altura);
-
-    let cellSize = Math.min(cellSizeByWidth, cellSizeByHeight);
-
-    if (window.innerWidth <= 480) {
-        cellSize = Math.max(20, Math.min(cellSize, 35));
-    } else if (window.innerWidth <= 768) {
-        cellSize = Math.max(24, Math.min(cellSize, 40));
-    } else {
-        cellSize = Math.max(28, Math.min(cellSize, 45));
+    // Calcular tamaño de celda para ocupar TODO el ancho
+    let cellSize = containerWidth / anchura;
+    
+    // Verificar si cabe en el alto
+    let altoTotal = cellSize * altura;
+    
+    if (altoTotal > containerHeight) {
+        // Si no cabe, reducir tamaño
+        cellSize = containerHeight / altura;
     }
 
+    // Tamaños mínimos para legibilidad
+    cellSize = Math.max(16, cellSize);
+    
     const fontSize = Math.floor(cellSize * 0.6);
 
+    // Aplicar tamaño
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
-
+    
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
 
@@ -220,6 +269,8 @@ function redimensionarTablero() {
         cell.style.fontSize = `${fontSize}px`;
         cell.style.lineHeight = `${cellSize}px`;
     }
+    
+    console.log(`📏 Celda redimensionada: ${cellSize.toFixed(1)}px`);
 }
 
 // ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
@@ -284,31 +335,63 @@ function crearTableroConDimensiones(altura, anchura) {
     gameBoard.style = '';
 
     gameBoard.style.display = 'grid';
-    gameBoard.style.gap = '2px';
     gameBoard.style.backgroundColor = '#24408e';
-    gameBoard.style.padding = '5px';
-    gameBoard.style.borderRadius = '10px';
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
     gameBoard.style.boxSizing = 'border-box';
-    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
-    gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
 
-    for (let i = 0; i < altura; i++) {
-        for (let j = 0; j < anchura; j++) {
-            const cellDiv = document.createElement('div');
-            cellDiv.style.display = 'flex';
-            cellDiv.style.alignItems = 'center';
-            cellDiv.style.justifyContent = 'center';
-            cellDiv.style.fontWeight = 'bold';
-            cellDiv.style.width = '100%';
-            cellDiv.style.height = '100%';
-            cellDiv.style.boxSizing = 'border-box';
-            cellDiv.textContent = '·';
-            cellDiv.style.color = '#ffff00';
-            cellDiv.style.backgroundColor = '#24408e';
+    if (pixelPerfect) {
+        // estilo mínimo en pixel mode para evitar pérdida de espacio
+        gameBoard.style.gap = '0';
+        gameBoard.style.padding = '0';
+        gameBoard.style.borderRadius = '0';
 
-            gameBoard.appendChild(cellDiv);
+        // evitar freeze: límite máximo de celdas
+        if (altura * anchura > MAX_PIXEL_CELLS) {
+            console.warn('⚠️ Modo pixel demasiado grande, se desactiva automáticamente');
+            pixelPerfect = false;
+            actualizarPixelToggle();
+            return crearTableroConDimensiones(altura, anchura);
+        }
+        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1px)`;
+        gameBoard.style.gridTemplateRows = `repeat(${altura}, 1px)`;
+
+        for (let i = 0; i < altura; i++) {
+            for (let j = 0; j < anchura; j++) {
+                const cellDiv = document.createElement('div');
+                cellDiv.style.width = '1px';
+                cellDiv.style.height = '1px';
+                cellDiv.style.boxSizing = 'border-box';
+                cellDiv.textContent = '';
+                cellDiv.style.backgroundColor = '#24408e';
+                gameBoard.appendChild(cellDiv);
+            }
+        }
+    } else {
+        // estilo normal - minimizar gap/padding para usar todo el espacio
+        gameBoard.style.gap = '0px';
+        gameBoard.style.padding = '0px';
+        gameBoard.style.borderRadius = '0px';
+
+        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
+        gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
+
+        for (let i = 0; i < altura; i++) {
+            for (let j = 0; j < anchura; j++) {
+                const cellDiv = document.createElement('div');
+                cellDiv.style.display = 'flex';
+                cellDiv.style.alignItems = 'center';
+                cellDiv.style.justifyContent = 'center';
+                cellDiv.style.fontWeight = 'bold';
+                cellDiv.style.width = '100%';
+                cellDiv.style.height = '100%';
+                cellDiv.style.boxSizing = 'border-box';
+                cellDiv.textContent = '·';
+                cellDiv.style.color = '#ffff00';
+                cellDiv.style.backgroundColor = '#24408e';
+
+                gameBoard.appendChild(cellDiv);
+            }
         }
     }
 
@@ -699,6 +782,8 @@ function esperarDimensionesYIniciar(intentos = 0) {
 
 // ===== FUNCIÓN PARA CREAR TABLERO NORMAL =====
 function crearTableroNormal() {
+    // recalcular dimensiones cada vez en caso de modo pixel
+    recalcularDimensiones();
     const altura = alturaActual;
     const anchura = anchuraActual;
     const totalCeldas = altura * anchura;
@@ -1014,38 +1099,38 @@ function generarOleadaMalos() {
 // ===== VERIFICAR RONDA COMPLETADA - CORREGIDO =====
 function verificarRondaCompletada() {
     if (!modoSurvivorActivo) return;
-    
+
     // Solo verificar si hay buenos vivos
     if (Buenos.getnBuenos() === 0) {
         console.log('⚠️ No se puede completar ronda: no hay buenos');
         return;
     }
-    
+
     if (Malos.getnMalos() === 0) {
         rondasSuperadas++;
         puntosTotales += 100 * rondasSuperadas;
         monedasSurvivor += 50 * rondasSuperadas;
-        
+
         malosEnRonda = Math.floor(3 + rondasSuperadas * 1.5);
-        
+
         añadirLog(`🎉 ¡RONDA ${rondasSuperadas} COMPLETADA! +${50 * rondasSuperadas}💰`, 'victory');
         añadirLog(`⏸️ PAUSA - Coloca tus nuevos personajes`, 'system');
         añadirLog(`👹 Próxima ronda: ${malosEnRonda} malos`, 'system');
-        
+
         detenerSimulacion();
         document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
-        
+
         setTimeout(() => {
             hacerCeldaClickeable();
         }, 200);
-        
+
         setTimeout(() => {
             if (modoSurvivorActivo && Buenos.getnBuenos() > 0) {
                 generarOleadaMalos();
                 actualizarTodoElTablero();
             }
         }, 500);
-        
+
         actualizarPanelSurvivor();
     }
 }
@@ -1387,14 +1472,14 @@ function mostrarResultadoSurvivor() {
     if (modoSurvivorActivo) {
         detenerSimulacion();
         detenerReloj();
-        
+
         // Determinar quién ganó
         if (Buenos.getnBuenos() <= 0) {
             añadirLog(`💀 MALOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         } else {
             añadirLog(`✨ BUENOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         }
-        
+
         // SIEMPRE mostrar ranking si ha superado al menos 1 ronda
         if (rondasSuperadas > 0) {
             console.log('🏆 Mostrando ranking por haber superado', rondasSuperadas, 'rondas');
@@ -1403,7 +1488,7 @@ function mostrarResultadoSurvivor() {
             console.log('🔄 No se superaron rondas, volviendo al menú');
             volverAlMenu();
         }
-        
+
         modoSurvivorActivo = false;
         document.getElementById('survivorPanel')?.classList.add('hidden');
         document.getElementById('simulationControls').classList.add('hidden');
@@ -1609,20 +1694,20 @@ function añadirPuntuacion(nombre, puntos) {
 // ===== MOSTRAR RANKING - CORREGIDO =====
 function mostrarRanking() {
     cargarRanking();
-    
+
     const rankingHTML = rankingJugadores.map((entry, index) => {
         let clase = '';
         if (index === 0) clase = 'top1';
         else if (index === 1) clase = 'top2';
         else if (index === 2) clase = 'top3';
-        
+
         return `<div class="ranking-item ${clase}">
             <span class="ranking-position">#${index + 1}</span>
             <span class="ranking-name">${entry.nombre}</span>
             <span class="ranking-score">${entry.puntos}</span>
         </div>`;
     }).join('');
-    
+
     // Crear modal
     const modal = document.createElement('div');
     modal.className = 'ranking-modal';
@@ -1639,15 +1724,15 @@ function mostrarRanking() {
             <button onclick="cerrarRanking()" style="width:100%; margin-top:10px; padding:8px; background:var(--red); border:none; border-radius:8px; color:white; cursor:pointer;">CERRAR</button>
         </div>
     `;
-    
+
     // Asegurar que no haya otros modales
     const modalExistente = document.querySelector('.ranking-modal');
     if (modalExistente) {
         modalExistente.remove();
     }
-    
+
     document.body.appendChild(modal);
-    
+
     // Enfocar el input automáticamente
     setTimeout(() => {
         const input = document.getElementById('rankingName');
@@ -1661,16 +1746,16 @@ function guardarPuntuacion() {
         console.error('❌ No se encuentra el input de nombre');
         return;
     }
-    
+
     const nombre = input.value.trim().toUpperCase();
-    
+
     if (nombre) {
         // Limitar a 8 caracteres
         const nombreCorto = nombre.substring(0, 8);
-        
+
         añadirPuntuacion(nombreCorto, puntosTotales);
         añadirLog(`🏆 Puntuación guardada: ${nombreCorto} - ${puntosTotales} puntos`, 'victory');
-        
+
         cerrarRanking();
         volverAlMenu();
     } else {
@@ -1725,6 +1810,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     actualizarTooltipsClases();
+    actualizarPixelToggle();
 
     if (coins === 0) {
         document.querySelectorAll('#menuCard .mode-btn').forEach(btn => {

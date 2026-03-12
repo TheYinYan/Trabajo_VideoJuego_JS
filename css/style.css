@@ -750,6 +750,62 @@ html, body {
     border-color: white;
 }
 
+/* ===== MODALES ===== */
+.ranking-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.ranking-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    text-align: center;
+}
+.ranking-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.ranking-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+.ranking-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+.ranking-position { font-weight: bold; }
+.ranking-name { flex: 1; margin: 0 10px; text-align: left; }
+.ranking-score { font-weight: bold; }
+.ranking-input input {
+    width: 60%;
+    padding: 4px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.ranking-input button {
+    padding: 5px 8px;
+    border: none;
+    background: var(--blue);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 /* ===== CONTENIDO CENTRAL ===== */
 .arcade-center {
     flex: 1;
@@ -799,8 +855,8 @@ html, body {
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: stretch;
     background: var(--black);
     border: 4px solid var(--pacman-blue);
     border-radius: 20px;
@@ -813,11 +869,12 @@ html, body {
 }
 
 .game-board {
+    flex: 1;
     display: grid;
-    gap: 1px;
+    gap: 0px;
     background-color: var(--pacman-blue);
     border-radius: 8px; /* Reducido de 10px */
-    padding: 3px; /* Reducido de 5px */
+    padding: 0px; /* Reducido de 3px */
     margin: 0;
     width: 100%; /* Forzar que ocupe el 100% del contenedor */
     height: 100%; /* Forzar que ocupe el 100% del contenedor */
@@ -933,7 +990,7 @@ html, body {
     to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes fadeOut {
+@keyframes fadeOut {    
     from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.8); }
 }
@@ -2403,7 +2460,7 @@ html, body {
         gap: 10px;
     }
     
-    .speed-section, .coin-section, .action-section {
+    .speed-section, .coin-section, .action-section, .pixel-section {
         width: 100%;
         max-width: 300px;
     }
@@ -2475,6 +2532,14 @@ html, body {
     }
     
     .speed-section {
+
+    /* nuevo control pixel */
+    .pixel-section {
+        text-align: center;
+        color: var(--white);
+        font-size: 0.85rem;
+        margin: 4px 0;
+    }
         flex-direction: column;
         padding: 6px;
     }
