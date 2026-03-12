@@ -2145,6 +2145,92 @@ html, body {
     border: 1px solid rgba(51,255,51,0.3);
 }
 
+/* ===== BOTÓN DE RANKING - MISMO TAMAÑO QUE LOS PANELES ===== */
+.ranking-view-button {
+    width: 100%;
+    margin: 5px 0;
+    padding: 12px 15px;
+    background: linear-gradient(145deg, rgba(15, 26, 47, 0.9), rgba(10, 18, 32, 0.95));
+    border: 2px solid var(--gold);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 10px rgba(255,215,0,0.3);
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+.ranking-view-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%);
+    animation: shine 4s infinite;
+    pointer-events: none;
+}
+
+.ranking-view-button:hover {
+    transform: translateY(-2px);
+    border-color: #ffaa00;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 20px var(--gold);
+}
+
+.ranking-view-button:active {
+    transform: translateY(1px);
+}
+
+.ranking-view-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 5px var(--gold));
+    animation: rankingPulse 2s infinite;
+}
+
+@keyframes rankingPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px var(--gold)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 10px var(--gold)); }
+}
+
+.ranking-view-text {
+    color: var(--gold);
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px var(--gold);
+}
+
+.ranking-view-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.ranking-view-button:hover .ranking-view-glow {
+    opacity: 1;
+}
+
+/* Ajuste para que tenga el mismo padding que los paneles */
+.stats-content .ranking-view-button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 /* ===== RANKING MODAL - VENTANA EMERGENTE ===== */
 .ranking-modal {
     position: fixed;
@@ -2223,65 +2309,65 @@ html, body {
     align-items: center;
     padding: 12px 15px;
     margin: 6px 0;
-    background: rgba(30, 40, 50, 0.8); /* Más claro que antes */
+    background: rgba(40, 55, 70, 0.85);
     border-radius: 8px;
     border-left: 4px solid;
     font-size: 1rem;
     transition: all 0.2s ease;
-    color: #ffffff; /* Texto blanco para mejor contraste */
+    color: #ffffff;
     text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .ranking-item:hover {
     transform: translateX(5px);
-    background: rgba(50, 60, 70, 0.9);
+    background: rgba(55, 70, 85, 0.95);
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 /* TOP 1 - ORO */
 .ranking-item.top1 {
     border-left-color: var(--gold);
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.3), rgba(30, 40, 50, 0.8));
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.3), rgba(40, 55, 70, 0.85));
     color: var(--gold);
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255,215,0,0.5);
 }
 
 .ranking-item.top1:hover {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.4), rgba(40, 50, 60, 0.9));
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.4), rgba(55, 70, 85, 0.95));
 }
 
 /* TOP 2 - PLATA */
 .ranking-item.top2 {
     border-left-color: #c0c0c0;
-    background: linear-gradient(90deg, rgba(192, 192, 192, 0.3), rgba(30, 40, 50, 0.8));
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.3), rgba(40, 55, 70, 0.85));
     color: #e0e0e0;
     font-weight: bold;
     text-shadow: 0 0 8px rgba(192,192,192,0.5);
 }
 
 .ranking-item.top2:hover {
-    background: linear-gradient(90deg, rgba(192, 192, 192, 0.4), rgba(40, 50, 60, 0.9));
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.4), rgba(55, 70, 85, 0.95));
 }
 
 /* TOP 3 - BRONCE */
 .ranking-item.top3 {
     border-left-color: #cd7f32;
-    background: linear-gradient(90deg, rgba(205, 127, 50, 0.3), rgba(30, 40, 50, 0.8));
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.3), rgba(40, 55, 70, 0.85));
     color: #ffb347;
     font-weight: bold;
     text-shadow: 0 0 8px rgba(205,127,50,0.5);
 }
 
 .ranking-item.top3:hover {
-    background: linear-gradient(90deg, rgba(205, 127, 50, 0.4), rgba(40, 50, 60, 0.9));
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.4), rgba(55, 70, 85, 0.95));
 }
 
 /* RESTO DE POSICIONES - MÁS CLARAS */
 .ranking-item:not(.top1):not(.top2):not(.top3) {
-    border-left-color: #4a6c8f; /* Azul más visible */
-    background: rgba(40, 55, 70, 0.85); /* Más claro */
+    border-left-color: #4a6c8f;
+    background: rgba(40, 55, 70, 0.85);
     color: #ffffff;
 }
 
@@ -2314,7 +2400,7 @@ html, body {
 
 /* TEXTO INFORMATIVO */
 .ranking-container div[style*="color: #888"] {
-    color: #cccccc !important; /* Más claro */
+    color: #cccccc !important;
     font-size: 1.1rem;
     padding: 30px;
     text-align: center;
@@ -2405,7 +2491,7 @@ html, body {
     transform: scale(0.98);
 }
 
-/* Scrollbar personalizada */
+/* Scrollbar personalizada para el ranking */
 .ranking-list::-webkit-scrollbar {
     width: 6px;
 }
@@ -2884,90 +2970,4 @@ html, body {
         padding: 10px;
         margin: 10px 0;
     }
-}
-
-/* ===== BOTÓN DE RANKING - MISMO TAMAÑO QUE LOS PANELES ===== */
-.ranking-view-button {
-    width: 100%;
-    margin: 5px 0;
-    padding: 12px 15px;
-    background: linear-gradient(145deg, rgba(15, 26, 47, 0.9), rgba(10, 18, 32, 0.95));
-    border: 2px solid var(--gold); /* Mismo borde que stats-panel */
-    border-radius: 15px; /* Mismo radio que stats-panel */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 10px rgba(255,215,0,0.3);
-    backdrop-filter: blur(5px); /* Mismo efecto que los paneles */
-    z-index: 10;
-}
-
-.ranking-view-button::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%);
-    animation: shine 4s infinite;
-    pointer-events: none;
-}
-
-.ranking-view-button:hover {
-    transform: translateY(-2px);
-    border-color: #ffaa00;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 20px var(--gold);
-}
-
-.ranking-view-button:active {
-    transform: translateY(1px);
-}
-
-.ranking-view-icon {
-    font-size: 1.5rem; /* Mismo tamaño que los iconos de jugador */
-    filter: drop-shadow(0 0 5px var(--gold));
-    animation: rankingPulse 2s infinite;
-}
-
-@keyframes rankingPulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px var(--gold)); }
-    50% { transform: scale(1.05); filter: drop-shadow(0 0 10px var(--gold)); }
-}
-
-.ranking-view-text {
-    color: var(--gold);
-    font-size: 0.9rem; /* Mismo tamaño que los headers de clase */
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 5px var(--gold);
-}
-
-.ranking-view-glow {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.15), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.ranking-view-button:hover .ranking-view-glow {
-    opacity: 1;
-}
-
-/* Ajuste para que tenga el mismo padding que los paneles */
-.stats-content .ranking-view-button {
-    margin-top: 8px;
-    margin-bottom: 8px;
 }
