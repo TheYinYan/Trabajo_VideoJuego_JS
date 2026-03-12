@@ -1,5 +1,3 @@
-Aquí tienes el README.md actualizado con la versión 2.5.1:
-
 # [⚔️ SURVIVORS - Batalla Épica](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
