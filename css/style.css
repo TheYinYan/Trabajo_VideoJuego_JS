@@ -1386,34 +1386,6 @@ html, body {
     flex-shrink: 0;
 }
 
-/* Pixel section */
-.pixel-section {
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid var(--blue);
-    border-radius: 30px;
-    padding: 4px 12px;
-    color: var(--blue);
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-}
-
-.pixel-section input {
-    accent-color: var(--blue);
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.pixel-section label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
 /* ===== MODO SURVIVOR ===== */
 .survivor-panel {
     background: linear-gradient(145deg, #1a2a3a, #0a1a2a);
