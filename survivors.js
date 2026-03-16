@@ -115,7 +115,7 @@ function validarBotonInicio() {
     }
 }
 
-// ===== FUNCIÓN PARA CALCULAR DIMENSIONES - CORREGIDA (PRIORIZA ANCHO) =====
+// ===== FUNCIÓN PARA CALCULAR DIMENSIONES =====
 function recalcularDimensiones() {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
@@ -125,11 +125,10 @@ function recalcularDimensiones() {
     const container = document.querySelector('.game-board-container');
     if (!container) return;
 
-    // Obtener dimensiones del contenedor restando paddings
     const style = getComputedStyle(container);
     const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
     const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
-    
+
     const containerWidth = container.clientWidth - padX;
     const containerHeight = container.clientHeight - padY;
 
@@ -142,41 +141,28 @@ function recalcularDimensiones() {
         return;
     }
 
-    // ===== PRIORIZAR ANCHO =====
-    // Queremos que el tablero ocupe TODO el ancho disponible
-    // Calculamos el tamaño de celda basado en el ancho deseado
     let tamanoObjetivo;
     if (window.innerWidth <= 480) {
-        tamanoObjetivo = 28;   // móvil: celdas de 28px
+        tamanoObjetivo = 28;
     } else if (window.innerWidth <= 768) {
-        tamanoObjetivo = 32;   // tablet: celdas de 32px
+        tamanoObjetivo = 32;
     } else {
-        tamanoObjetivo = 36;   // desktop: celdas de 36px
+        tamanoObjetivo = 36;
     }
 
-    // Calcular cuántas celdas caben en el ancho (para OCUPAR TODO EL ANCHO)
     let celdasPorAncho = Math.floor(containerWidth / tamanoObjetivo);
-    
-    // Ahora calculamos el tamaño REAL de celda para que ocupe exactamente el ancho
     let tamañoRealCelda = containerWidth / celdasPorAncho;
-    
-    // Con ese tamaño, calculamos cuántas celdas caben en el alto
     let celdasPorAlto = Math.floor(containerHeight / tamañoRealCelda);
 
-    // Ajustar si el alto se desborda
     if (celdasPorAlto * tamañoRealCelda > containerHeight) {
-        // Si no cabe, reducimos una fila
         celdasPorAlto--;
     }
 
-    // Establecer mínimos y máximos razonables
     celdasPorAncho = Math.min(45, Math.max(12, celdasPorAncho));
     celdasPorAlto = Math.min(30, Math.max(6, celdasPorAlto));
 
-    // Verificar que el alto no se desborde con los nuevos valores
     let altoTotal = celdasPorAlto * tamañoRealCelda;
     if (altoTotal > containerHeight) {
-        // Si aún se desborda, reducir hasta que quepa
         while (altoTotal > containerHeight && celdasPorAlto > 6) {
             celdasPorAlto--;
             altoTotal = celdasPorAlto * tamañoRealCelda;
@@ -186,15 +172,12 @@ function recalcularDimensiones() {
     alturaActual = celdasPorAlto;
     anchuraActual = celdasPorAncho;
 
-    // Asegurar que sean números pares para el modo normal
     if (opcionSeleccionada !== 'survivor') {
         if (alturaActual % 2 !== 0) alturaActual--;
         if (anchuraActual % 2 !== 0) anchuraActual--;
     }
 
     console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
-    console.log(`📐 Tamaño celda: ${tamañoRealCelda.toFixed(1)}px`);
-    console.log(`📊 Total ocupado: ${anchuraActual * tamañoRealCelda}x${alturaActual * tamañoRealCelda}`);
 }
 
 // ===== FUNCIÓN PARA RECALCULAR DIMENSIONES OPTIMIZADAS =====
@@ -207,11 +190,10 @@ function recalcularDimensionesOptimizadas() {
     const container = document.querySelector('.game-board-container');
     if (!container) return;
 
-    // Obtener dimensiones del contenedor restando paddings
     const style = getComputedStyle(container);
     const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
     const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
-    
+
     const containerWidth = container.clientWidth - padX;
     const containerHeight = container.clientHeight - padY;
 
@@ -224,28 +206,21 @@ function recalcularDimensionesOptimizadas() {
         return;
     }
 
-    // ===== CALCULAR DIMENSIONES ÓPTIMAS =====
-    // Determinar tamaño de celda ideal según el dispositivo
     let tamanoObjetivo;
     if (window.innerWidth <= 480) {
-        tamanoObjetivo = 28; // Móvil
+        tamanoObjetivo = 28;
     } else if (window.innerWidth <= 768) {
-        tamanoObjetivo = 32; // Tablet
+        tamanoObjetivo = 32;
     } else {
-        tamanoObjetivo = 36; // Desktop
+        tamanoObjetivo = 36;
     }
 
-    // Calcular cuántas celdas caben en el ancho
     let celdasPorAncho = Math.floor(containerWidth / tamanoObjetivo);
-    
-    // Calcular cuántas celdas caben en el alto (usando el mismo tamaño)
     let celdasPorAlto = Math.floor(containerHeight / tamanoObjetivo);
 
-    // Ajustar para que el tablero sea proporcionado
     celdasPorAncho = Math.min(45, Math.max(12, celdasPorAncho));
     celdasPorAlto = Math.min(30, Math.max(8, celdasPorAlto));
 
-    // Para modo normal, asegurar números pares
     if (opcionSeleccionada !== 'survivor') {
         if (celdasPorAlto % 2 !== 0) celdasPorAlto--;
         if (celdasPorAncho % 2 !== 0) celdasPorAncho--;
@@ -257,67 +232,47 @@ function recalcularDimensionesOptimizadas() {
     console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
 }
 
-// ===== FUNCIÓN PARA REDIMENSIONAR TABLERO (COMPATIBILIDAD) =====
+// ===== FUNCIÓN PARA REDIMENSIONAR TABLERO =====
 function redimensionarTablero() {
-    redimensionarTableroUnificado();
-}
-
-// ===== FUNCIÓN PARA REDIMENSIONAR TABLERO - VERSIÓN UNIFICADA (RESPONSIVA) =====
-function redimensionarTableroUnificado() {
     if (!gameBoard || !arrayEntidades) return;
 
     const container = gameBoard.parentElement;
     if (!container) return;
 
-    // Obtener dimensiones del contenedor restando paddings
     const style = getComputedStyle(container);
     const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
     const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
-    
+
     const containerWidth = container.clientWidth - padX;
     const containerHeight = container.clientHeight - padY;
-    
+
     if (containerWidth === 0 || containerHeight === 0) return;
 
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
 
-    // ===== SISTEMA RESPONSIVO INTELIGENTE =====
-    // Determinar tamaño de celda basado en el ancho del contenedor
     let cellSize;
-    
+
     if (window.innerWidth <= 480) {
-        // Móvil: celdas más pequeñas pero legibles
         cellSize = Math.min(containerWidth / anchura, 32);
     } else if (window.innerWidth <= 768) {
-        // Tablet: tamaño intermedio
         cellSize = Math.min(containerWidth / anchura, 40);
     } else {
-        // Desktop: tamaño óptimo
         cellSize = Math.min(containerWidth / anchura, 48);
     }
-    
-    // Verificar si cabe en el alto
+
     const altoTotal = cellSize * altura;
-    
+
     if (altoTotal > containerHeight) {
-        // Si no cabe en el alto, recalcular basado en el alto
         cellSize = containerHeight / altura;
     }
-    
-    // Asegurar tamaño mínimo para legibilidad
-    cellSize = Math.max(20, Math.min(cellSize, 60));
-    
-    // Calcular tamaño de fuente proporcional
-    const fontSize = Math.max(12, Math.floor(cellSize * 0.5));
-    
-    console.log(`📐 Redimensionando: celda=${cellSize.toFixed(1)}px, fuente=${fontSize}px`);
 
-    // Aplicar grid con tamaños fijos
+    cellSize = Math.max(20, Math.min(cellSize, 60));
+    const fontSize = Math.max(12, Math.floor(cellSize * 0.5));
+
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
-    
-    // Ajustar tamaño de las celdas
+
     const cells = gameBoard.children;
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
@@ -328,7 +283,7 @@ function redimensionarTableroUnificado() {
     }
 }
 
-// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA - CORREGIDA CON COLORES POR CLASE =====
+// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
 function aplicarColorCelda(cellDiv, celda) {
     if (!celda) {
         cellDiv.style.backgroundColor = '#24408e';
@@ -340,22 +295,21 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Buenos) {
         cellDiv.style.backgroundColor = '#24408e';
-        
-        // Asignar color según la subclase de Buenos
+
         if (celda instanceof Curandero) {
-            cellDiv.style.color = '#ffff00'; // Amarillo para Curandero
+            cellDiv.style.color = '#ffff00';
             cellDiv.style.textShadow = '0 0 8px #ffff00';
         } else if (celda instanceof Paladin) {
-            cellDiv.style.color = '#33ccff'; // Azul para Paladín
+            cellDiv.style.color = '#33ccff';
             cellDiv.style.textShadow = '0 0 8px #33ccff';
         } else if (celda instanceof Mago) {
-            cellDiv.style.color = '#9933ff'; // Púrpura para Mago
+            cellDiv.style.color = '#9933ff';
             cellDiv.style.textShadow = '0 0 8px #9933ff';
         } else {
-            cellDiv.style.color = '#ffff00'; // Amarillo para Buenos genérico
+            cellDiv.style.color = '#ffff00';
             cellDiv.style.textShadow = '0 0 8px #ffff00';
         }
-        
+
         cellDiv.textContent = celda.toString();
         cellDiv.style.borderRadius = '0';
 
@@ -368,22 +322,21 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Malos) {
         cellDiv.style.backgroundColor = '#24408e';
-        
-        // Asignar color según la subclase de Malos
+
         if (celda instanceof Asesino) {
-            cellDiv.style.color = '#ff3333'; // Rojo para Asesino
+            cellDiv.style.color = '#ff3333';
             cellDiv.style.textShadow = '0 0 8px #ff3333';
         } else if (celda instanceof Tanque) {
-            cellDiv.style.color = '#ff8800'; // Naranja para Tanque
+            cellDiv.style.color = '#ff8800';
             cellDiv.style.textShadow = '0 0 8px #ff8800';
         } else if (celda instanceof Brujo) {
-            cellDiv.style.color = '#ff44aa'; // Rosa para Brujo
+            cellDiv.style.color = '#ff44aa';
             cellDiv.style.textShadow = '0 0 8px #ff44aa';
         } else {
-            cellDiv.style.color = '#ff0000'; // Rojo para Malos genérico
+            cellDiv.style.color = '#ff0000';
             cellDiv.style.textShadow = '0 0 8px #ff0000';
         }
-        
+
         cellDiv.textContent = celda.toString();
         cellDiv.style.borderRadius = '0';
 
@@ -405,7 +358,7 @@ function aplicarColorCelda(cellDiv, celda) {
     }
 }
 
-// ===== FUNCIÓN PARA CREAR TABLERO CON DIMENSIONES - VERSIÓN UNIFICADA (RESPONSIVA) =====
+// ===== FUNCIÓN PARA CREAR TABLERO CON DIMENSIONES =====
 function crearTableroConDimensiones(altura, anchura) {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
@@ -414,11 +367,9 @@ function crearTableroConDimensiones(altura, anchura) {
 
     console.log(`📋 Creando tablero con dimensiones: ${anchura}x${altura}`);
 
-    // Limpiar tablero
     gameBoard.innerHTML = '';
     gameBoard.style = '';
 
-    // Configurar grid
     gameBoard.style.display = 'grid';
     gameBoard.style.backgroundColor = '#24408e';
     gameBoard.style.width = '100%';
@@ -428,7 +379,6 @@ function crearTableroConDimensiones(altura, anchura) {
     gameBoard.style.padding = '0px';
     gameBoard.style.borderRadius = '0px';
 
-    // Crear celdas
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const cellDiv = document.createElement('div');
@@ -441,8 +391,7 @@ function crearTableroConDimensiones(altura, anchura) {
             cellDiv.style.boxSizing = 'border-box';
             cellDiv.style.transition = 'all 0.15s ease-out';
             cellDiv.style.willChange = 'transform, background-color';
-            
-            // Estilo inicial
+
             cellDiv.textContent = '·';
             cellDiv.style.color = '#ffff00';
             cellDiv.style.backgroundColor = '#24408e';
@@ -454,19 +403,17 @@ function crearTableroConDimensiones(altura, anchura) {
 
     console.log(`✅ Tablero creado con ${altura * anchura} celdas`);
 
-    // Redimensionar el tablero para que se ajuste perfectamente
-    setTimeout(() => redimensionarTableroUnificado(), 10);
-    setTimeout(() => redimensionarTableroUnificado(), 50);
-    setTimeout(() => redimensionarTableroUnificado(), 150);
-    setTimeout(() => redimensionarTableroUnificado(), 300);
+    setTimeout(() => redimensionarTablero(), 10);
+    setTimeout(() => redimensionarTablero(), 50);
+    setTimeout(() => redimensionarTablero(), 150);
+    setTimeout(() => redimensionarTablero(), 300);
 
-    // Si es modo survivor, hacer celdas clicables
     if (modoSurvivorActivo) {
         setTimeout(() => hacerCeldaClickeable(), 200);
     }
 }
 
-// ===== FUNCIÓN PARA HACER CELDAS CLICKEABLES - CORREGIDA =====
+// ===== FUNCIÓN PARA HACER CELDAS CLICKEABLES =====
 function hacerCeldaClickeable() {
     if (!gameBoard || !arrayEntidades) return;
 
@@ -479,23 +426,15 @@ function hacerCeldaClickeable() {
         const fila = Math.floor(i / anchura);
         const columna = i % anchura;
 
-        // Eliminar onclick anterior para evitar duplicados
         cell.onclick = null;
-        
-        // Añadir nuevo onclick con validación
+
         cell.onclick = (e) => {
             e.stopPropagation();
-            
-            // Solo procesar si:
-            // 1. Está en modo survivor
-            // 2. El juego está pausado
-            // 3. Hay un personaje seleccionado en la tienda
-            // 4. La celda está vacía (esta validación ya está en comprarPersonaje)
+
             if (modoSurvivorActivo && simulacionPausada && personajeSeleccionado) {
                 console.log(`👆 Clic en celda [${fila},${columna}] con personaje: ${personajeSeleccionado}`);
                 comprarPersonaje(personajeSeleccionado, fila, columna);
             } else if (!personajeSeleccionado && modoSurvivorActivo) {
-                // Si no hay personaje seleccionado, mostrar mensaje informativo
                 añadirLog('⚠️ Primero selecciona un personaje en la tienda', 'info');
             }
         };
@@ -520,7 +459,7 @@ function generarPersonajeConClase(tipo, y, x) {
     }
 }
 
-// ===== FUNCIÓN DE COMBATE - CORREGIDA CON PALADINES =====
+// ===== FUNCIÓN DE COMBATE =====
 function combatirConClases(atacante, defensor) {
     let dañoPorcentaje;
 
@@ -537,7 +476,6 @@ function combatirConClases(atacante, defensor) {
     let daño = Math.floor(defensor.vida * (dañoPorcentaje / 100));
     daño = Math.max(1, daño);
 
-    // Si el defensor es un Paladín, aplica su reducción de daño
     if (defensor instanceof Paladin) {
         const dañoOriginal = daño;
         daño = defensor.recibirDaño(daño);
@@ -637,7 +575,6 @@ function marcarDaño(row, col) {
 
 // ===== FUNCIÓN PRINCIPAL DEL JUEGO =====
 function actualizarJuego(altura, anchura, nPersonajes) {
-    // 1. ASIGNAR ENEMIGOS CERCANOS
     for (let i = 0; i < nPersonajes; i++) {
         if (!arrayPersonajes[i]) continue;
 
@@ -668,7 +605,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
 
-    // 2. MOVER PERSONAJES
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
@@ -680,7 +616,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
         }
     }
 
-    // 3. COMBATIR
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             if (arrayEntidades[i][j] instanceof Personajes) {
@@ -703,7 +638,6 @@ function actualizarJuego(altura, anchura, nPersonajes) {
                         const defensor = arrayEntidades[newY][newX];
 
                         console.log(`⚔️ COMBATE: ${entidad.clase} vs ${defensor.clase}`);
-                        console.log(`   Defensor vida antes: ${defensor.vida}/${defensor.vidaMax}`);
 
                         marcarDaño(i, j);
                         marcarDaño(newY, newX);
@@ -743,29 +677,20 @@ function actualizarJuego(altura, anchura, nPersonajes) {
     actualizarEstadisticasClases();
     actualizarEstadisticasCombate();
 
-    // ===== LÓGICA DE GAME OVER CORREGIDA =====
     if (modoSurvivorActivo) {
-        // En survivor, game over cuando NO hay buenos
         if (Buenos.getnBuenos() <= 0) {
-            // Si es la primera ronda y aún no ha comprado personajes, NO es game over
             if (rondasSuperadas === 0 && arrayPersonajes.length === malosEnRonda) {
-                // Es normal, el jugador aún no ha comprado personajes
                 console.log('⏳ Esperando que el jugador compre personajes...');
             } else {
-                // Ya sea porque:
-                // - Los buenos murieron en combate
-                // - El jugador nunca compró personajes después de la ronda 1
                 console.log('💀 GAME OVER - No quedan buenos');
                 detenerSimulacion();
                 mostrarResultadoSurvivor();
             }
         }
-        // Verificar fin de ronda (no quedan malos)
         else if (Malos.getnMalos() <= 0 && Buenos.getnBuenos() > 0) {
             verificarRondaCompletada();
         }
     } else {
-        // Modo normal: game over cuando un bando se queda sin personajes
         if (Buenos.getnBuenos() <= 0) {
             victoriasMalos++;
             detenerSimulacion();
@@ -816,7 +741,7 @@ function iniciarSimulacion() {
     esperarDimensionesYIniciar();
 }
 
-// ===== FUNCIÓN PARA ESPERAR DIMENSIONES - MEJORADA =====
+// ===== FUNCIÓN PARA ESPERAR DIMENSIONES =====
 function esperarDimensionesYIniciar(intentos = 0) {
     const container = document.querySelector('.game-board-container');
     if (!container) {
@@ -831,8 +756,7 @@ function esperarDimensionesYIniciar(intentos = 0) {
 
     if (containerWidth > 50 && containerHeight > 50) {
         console.log(`✅ Contenedor listo: ${containerWidth}x${containerHeight}`);
-        
-        // Recalcular dimensiones óptimas para el tablero
+
         recalcularDimensionesOptimizadas();
 
         if (opcionSeleccionada === 'survivor') {
@@ -860,7 +784,6 @@ function esperarDimensionesYIniciar(intentos = 0) {
 
 // ===== FUNCIÓN PARA CREAR TABLERO NORMAL =====
 function crearTableroNormal() {
-    // recalcular dimensiones cada vez
     recalcularDimensionesOptimizadas();
     const altura = alturaActual;
     const anchura = anchuraActual;
@@ -990,8 +913,7 @@ function crearTableroSurvivor() {
         detenerSimulacion();
         añadirLog('⏸️ TIEMPO DE PREPARACIÓN - Compra y coloca tus personajes', 'system');
         añadirLog(`💰 Monedas iniciales: ${monedasSurvivor}`, 'system');
-        
-        // ACTUALIZAR VISIBILIDAD DE CONTROLES
+
         actualizarVisibilidadControles();
 
         setTimeout(() => {
@@ -1005,7 +927,6 @@ function crearTableroSurvivor() {
 }
 
 // ===== FUNCIONES SURVIVOR =====
-
 function seleccionarModoSurvivor() {
     opcionSeleccionada = 'survivor';
     document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('selected'));
@@ -1030,68 +951,54 @@ function iniciarSurvivor() {
     iniciarSimulacion();
 }
 
-// ===== SELECCIONAR PERSONAJE EN TIENDA =====
 function seleccionarPersonajeTienda(tipo, costo) {
-    // Validar modo survivor
     if (!modoSurvivorActivo) {
         añadirLog('❌ Modo survivor no activo', 'info');
         return;
     }
-    
-    // Validar que el juego esté pausado
+
     if (!simulacionPausada) {
         añadirLog('❌ Debes estar en pausa para comprar', 'info');
         return;
     }
 
-    // Mostrar mensaje con el costo actual
     añadirLog(`💰 Monedas disponibles: ${monedasSurvivor} - Costo: ${costo}`, 'info');
 
-    // Establecer personaje seleccionado
     personajeSeleccionado = tipo;
     costoseleccionado = costo;
-    
-    // Actualizar interfaz
+
     document.getElementById('shopStatus').innerHTML = `✅ ${tipo.toUpperCase()} seleccionado - Haz clic en una casilla vacía (${costo}💰)`;
     añadirLog(`🛒 Selecciona una casilla para colocar ${tipo} (${costo}💰)`, 'system');
-    
-    // Actualizar cursor de las celdas
+
     hacerCeldaClickeable();
 }
 
-// ===== COMPRAR PERSONAJE - CORREGIDO (CREACIÓN DESPUÉS DE VERIFICAR) =====
 function comprarPersonaje(tipo, fila, columna) {
-    // Validar modo survivor
     if (!modoSurvivorActivo) {
         console.log('❌ No se puede comprar: modo survivor inactivo');
         return false;
     }
-    
-    // Validar que el juego esté pausado
+
     if (!simulacionPausada) {
         añadirLog('❌ Debes estar en pausa para comprar', 'info');
         return false;
     }
-    
-    // Validar que haya un personaje seleccionado
+
     if (!personajeSeleccionado) {
         añadirLog('❌ No hay personaje seleccionado', 'info');
         return false;
     }
-    
-    // Validar que el tipo coincida con el seleccionado
+
     if (tipo !== personajeSeleccionado) {
         console.log('⚠️ Tipo de personaje no coincide con el seleccionado');
         return false;
     }
-    
-    // Validar coordenadas
+
     if (fila === undefined || columna === undefined) {
         añadirLog('❌ Debes seleccionar una casilla', 'info');
         return false;
     }
 
-    // Validar que arrayEntidades existe
     if (!arrayEntidades) {
         añadirLog('❌ No hay tablero activo', 'info');
         return false;
@@ -1100,75 +1007,64 @@ function comprarPersonaje(tipo, fila, columna) {
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
 
-    // Validar límites del tablero
     if (fila < 0 || fila >= altura || columna < 0 || columna >= anchura) {
         añadirLog('❌ Casilla fuera del tablero', 'info');
         return false;
     }
 
-    // Validar que la casilla esté vacía
     if (arrayEntidades[fila][columna] !== null) {
         añadirLog('❌ Casilla ocupada', 'info');
         return false;
     }
 
-    // Determinar costo
     let costo = 20;
     switch (tipo) {
         case 'curandero': costo = 25; break;
         case 'paladin': costo = 30; break;
         case 'mago': costo = 35; break;
         case 'soldado': costo = 20; break;
-        default: 
+        default:
             añadirLog('❌ Tipo de personaje no válido', 'info');
             return false;
     }
 
-    // ===== IMPORTANTE: Verificar monedas ANTES de crear el personaje =====
     if (monedasSurvivor < costo) {
         añadirLog(`❌ Monedas insuficientes (tienes ${monedasSurvivor}💰, necesitas ${costo}💰)`, 'info');
         return false;
     }
 
-    // ===== AHORA SÍ, crear el personaje (después de verificar monedas) =====
     let nuevoPersonaje = null;
     switch (tipo) {
-        case 'curandero': 
-            nuevoPersonaje = new Curandero(fila, columna); 
+        case 'curandero':
+            nuevoPersonaje = new Curandero(fila, columna);
             break;
-        case 'paladin': 
-            nuevoPersonaje = new Paladin(fila, columna); 
+        case 'paladin':
+            nuevoPersonaje = new Paladin(fila, columna);
             break;
-        case 'mago': 
-            nuevoPersonaje = new Mago(fila, columna); 
+        case 'mago':
+            nuevoPersonaje = new Mago(fila, columna);
             break;
-        case 'soldado': 
-            nuevoPersonaje = new Buenos(fila, columna); 
+        case 'soldado':
+            nuevoPersonaje = new Buenos(fila, columna);
             break;
     }
 
-    // Realizar la compra (restar monedas)
     monedasSurvivor -= costo;
-    
-    // Colocar el personaje en el tablero
+
     arrayEntidades[fila][columna] = nuevoPersonaje;
     arrayPersonajes.push(nuevoPersonaje);
 
-    // Actualizar celda visualmente
     actualizarCelda(fila, columna, nuevoPersonaje);
-    
-    // Logs y actualizaciones
+
     añadirLog(`✅ Colocado: ${nuevoPersonaje.clase} en [${fila},${columna}] (${costo}💰)`, 'system');
     añadirLog(`💰 Monedas restantes: ${monedasSurvivor}`, 'system');
-    
+
     actualizarPanelSurvivor();
     actualizarContadoresVisuales();
 
-    // Limpiar selección
     personajeSeleccionado = null;
     document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
-    
-    // Actualizar cursor de las celdas
+
     hacerCeldaClickeable();
 
     return true;
@@ -1194,8 +1090,7 @@ function iniciarRonda() {
         continuarSimulacion();
         añadirLog(`⚔️ ¡RONDA ${rondasSuperadas + 1} COMENZADA!`, 'system');
         document.getElementById('shopStatus').innerHTML = '⚔️ Batalla en curso...';
-        
-        // ACTUALIZAR VISIBILIDAD DE CONTROLES (vuelve al modo normal)
+
         actualizarVisibilidadControles();
     }
 }
@@ -1260,11 +1155,9 @@ function generarOleadaMalos() {
     return malosColocados;
 }
 
-// ===== VERIFICAR RONDA COMPLETADA - CORREGIDO =====
 function verificarRondaCompletada() {
     if (!modoSurvivorActivo) return;
 
-    // Solo verificar si hay buenos vivos
     if (Buenos.getnBuenos() === 0) {
         console.log('⚠️ No se puede completar ronda: no hay buenos');
         return;
@@ -1283,8 +1176,7 @@ function verificarRondaCompletada() {
 
         detenerSimulacion();
         document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
-        
-        // ACTUALIZAR VISIBILIDAD DE CONTROLES (vuelve a modo survivor)
+
         actualizarVisibilidadControles();
 
         setTimeout(() => {
@@ -1321,8 +1213,7 @@ function detenerSimulacion() {
         intervaloSimulacion = null;
         simulacionPausada = true;
         añadirLog('⏸️ Juego pausado', 'system');
-        
-        // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo survivor si aplica)
+
         actualizarVisibilidadControles();
     }
 }
@@ -1358,43 +1249,36 @@ function actualizarIndicadorVelocidad() {
     else display.setAttribute('data-speed', 'rapida');
 }
 
-// ===== FUNCIÓN DE RELOJ - CORREGIDA =====
+// ===== FUNCIÓN DE RELOJ =====
 function iniciarReloj() {
-    // Detener cualquier reloj anterior
     if (intervaloReloj) {
         clearInterval(intervaloReloj);
         intervaloReloj = null;
     }
-    
-    // Establecer tiempo de inicio AHORA MISMO
+
     tiempoInicio = Date.now();
-    
-    // Mostrar 00:00 inmediatamente
+
     const relojDisplay = document.getElementById('tiempoPartida');
     if (relojDisplay) {
         relojDisplay.textContent = '00:00';
     }
-    
-    // Crear nuevo intervalo
+
     intervaloReloj = setInterval(() => {
-        // No actualizar si el juego está pausado o no hay entidades
         if (!arrayEntidades || simulacionPausada) return;
-        
-        // Calcular tiempo transcurrido desde tiempoInicio
+
         const tiempoTranscurrido = Math.floor((Date.now() - tiempoInicio) / 1000);
         const minutos = Math.floor(tiempoTranscurrido / 60).toString().padStart(2, '0');
         const segundos = (tiempoTranscurrido % 60).toString().padStart(2, '0');
-        
+
         const relojDisplay = document.getElementById('tiempoPartida');
         if (relojDisplay) {
             relojDisplay.textContent = `${minutos}:${segundos}`;
         }
     }, 1000);
-    
+
     console.log('⏱️ Reloj iniciado desde 00:00');
 }
 
-// ===== DETENER RELOJ =====
 function detenerReloj() {
     if (intervaloReloj) {
         clearInterval(intervaloReloj);
@@ -1520,6 +1404,7 @@ function actualizarBotonReintentar() {
 function actualizarVictoriasVisuales() {
     document.getElementById('victoriasBuenos').textContent = victoriasBuenos;
     document.getElementById('victoriasMalos').textContent = victoriasMalos;
+    actualizarRatioVictorias();
 }
 
 function guardarVictorias() {
@@ -1558,8 +1443,6 @@ function actualizarContadoresVisuales() {
     document.getElementById('totalStats').textContent = total;
     document.getElementById('buenosStats').textContent = buenos;
     document.getElementById('malosStats').textContent = malos;
-    document.getElementById('buenosStatsCard').textContent = buenos;
-    document.getElementById('malosStatsCard').textContent = malos;
 }
 
 function iniciarJuego() {
@@ -1659,20 +1542,17 @@ function mostrarResultado() {
     detenerReloj();
 }
 
-// ===== MOSTRAR RESULTADO SURVIVOR - CORREGIDO =====
 function mostrarResultadoSurvivor() {
     if (modoSurvivorActivo) {
         detenerSimulacion();
         detenerReloj();
 
-        // Determinar quién ganó
         if (Buenos.getnBuenos() <= 0) {
             añadirLog(`💀 MALOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         } else {
             añadirLog(`✨ BUENOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         }
 
-        // SIEMPRE mostrar ranking si ha superado al menos 1 ronda
         if (rondasSuperadas > 0) {
             console.log('🏆 Mostrando ranking por haber superado', rondasSuperadas, 'rondas');
             mostrarRanking();
@@ -1684,8 +1564,7 @@ function mostrarResultadoSurvivor() {
         modoSurvivorActivo = false;
         document.getElementById('survivorPanel')?.classList.add('hidden');
         document.getElementById('simulationControls').classList.add('hidden');
-        
-        // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo normal)
+
         actualizarVisibilidadControles();
     }
 }
@@ -1718,7 +1597,6 @@ function volverAlMenu() {
 
     if (gameBoard) gameBoard.innerHTML = '';
 
-    // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo normal)
     actualizarVisibilidadControles();
 
     añadirLog('🏠 Volviendo al menú principal', 'system');
@@ -1770,60 +1648,7 @@ function filtrarLogs(tipo) {
     }
 }
 
-// ===== CERRAR CONTROLES EMERGENTE =====
-function cerrarControlesEmergente() {
-    console.log('🔚 Cerrando controles emergentes');
-    const modal = document.querySelector('.controls-modal');
-    if (modal) {
-        modal.remove();
-        añadirLog('📋 Controles cerrados', 'system');
-    }
-}
-
-function mostrarAyudaTeclado() {
-    const ayuda = `
-╔════════════════════════════╗
-║     CONTROLES DE TECLADO    ║
-╠════════════════════════════╣
-║ ESPACIO  - Insertar moneda  ║
-║ ENTER    - Jugar/Reintentar ║
-║ P        - Pausar juego      ║
-║ C        - Continuar juego   ║
-║ R        - Reiniciar         ║
-║ ESC      - Volver al menú    ║
-║ + / -    - Velocidad         ║
-║ 0        - Velocidad normal  ║
-║ 1        - Velocidad lenta   ║
-║ 2        - Velocidad rápida  ║
-║ L        - Limpiar bitácora  ║
-║ F1       - Mostrar esta ayuda║
-╚════════════════════════════╝
-    `;
-    console.log(ayuda);
-    añadirLog('📋 Controles mostrados en consola', 'system');
-}
-
-// ===== FUNCIÓN PARA CAMBIAR TEMA =====
-function cambiarTema(tema) {
-    const themeLink = document.getElementById('theme-style') || document.createElement('link');
-    if (!themeLink.id) {
-        themeLink.id = 'theme-style';
-        themeLink.rel = 'stylesheet';
-        document.head.appendChild(themeLink);
-    }
-
-    themeLink.href = `css/style-${tema}.css`;
-
-    document.getElementById('themePacman')?.classList.remove('active');
-    document.getElementById('themeClassic')?.classList.remove('active');
-    document.getElementById(`theme${tema.charAt(0).toUpperCase() + tema.slice(1)}`)?.classList.add('active');
-    document.getElementById('themeIndicator').textContent = tema.toUpperCase();
-
-    localStorage.setItem('survivors-theme', tema);
-    añadirLog(`🎨 Tema cambiado a: ${tema.toUpperCase()}`, 'system');
-}
-
-// ===== CARGAR RANKING =====
+// ===== FUNCIONES DE RANKING =====
 function cargarRanking() {
     const guardado = localStorage.getItem(STORAGE_RANKING);
     if (guardado) {
@@ -1838,16 +1663,12 @@ function cargarRanking() {
     }
 }
 
-// ===== GUARDAR RANKING =====
 function guardarRanking() {
-    // Ordenar por puntos (mayor a menor)
     rankingJugadores.sort((a, b) => b.puntos - a.puntos);
-    // Mantener solo top 10
     rankingJugadores = rankingJugadores.slice(0, 10);
     localStorage.setItem(STORAGE_RANKING, JSON.stringify(rankingJugadores));
 }
 
-// ===== AÑADIR PUNTUACIÓN =====
 function añadirPuntuacion(nombre, puntos) {
     rankingJugadores.push({
         nombre: nombre,
@@ -1857,7 +1678,6 @@ function añadirPuntuacion(nombre, puntos) {
     guardarRanking();
 }
 
-// ===== MOSTRAR RANKING =====
 function mostrarRanking() {
     cargarRanking();
 
@@ -1874,7 +1694,6 @@ function mostrarRanking() {
         </div>`;
     }).join('');
 
-    // Crear modal
     const modal = document.createElement('div');
     modal.className = 'ranking-modal';
     modal.innerHTML = `
@@ -1891,7 +1710,6 @@ function mostrarRanking() {
         </div>
     `;
 
-    // Asegurar que no haya otros modales
     const modalExistente = document.querySelector('.ranking-modal');
     if (modalExistente) {
         modalExistente.remove();
@@ -1899,21 +1717,17 @@ function mostrarRanking() {
 
     document.body.appendChild(modal);
 
-    // Enfocar el input automáticamente
     setTimeout(() => {
         const input = document.getElementById('rankingName');
         if (input) {
             input.focus();
-            
-            // IMPORTANTE: Prevenir que el modal se cierre al escribir
             input.addEventListener('keydown', (e) => {
-                e.stopPropagation(); // Evita que el evento llegue a los controles globales
+                e.stopPropagation();
             });
         }
     }, 100);
 }
 
-// ===== GUARDAR PUNTUACIÓN - CORREGIDO =====
 function guardarPuntuacion() {
     const input = document.getElementById('rankingName');
     if (!input) {
@@ -1924,7 +1738,6 @@ function guardarPuntuacion() {
     const nombre = input.value.trim().toUpperCase();
 
     if (nombre) {
-        // Limitar a 8 caracteres
         const nombreCorto = nombre.substring(0, 8);
 
         añadirPuntuacion(nombreCorto, puntosTotales);
@@ -1937,7 +1750,6 @@ function guardarPuntuacion() {
     }
 }
 
-// ===== CERRAR RANKING =====
 function cerrarRanking() {
     const modal = document.querySelector('.ranking-modal');
     if (modal) {
@@ -1945,58 +1757,83 @@ function cerrarRanking() {
     }
 }
 
-// ===== FUNCIÓN DE DEPURACIÓN PARA PALADINES =====
-function debugPaladin() {
-    console.log('=== DEBUG PALADINES ===');
-    let paladines = [];
-    for (let i = 0; i < arrayPersonajes.length; i++) {
-        if (arrayPersonajes[i] instanceof Paladin) {
-            paladines.push({
-                pos: [arrayPersonajes[i].y, arrayPersonajes[i].x],
-                vida: arrayPersonajes[i].vida,
-                vidaMax: arrayPersonajes[i].vidaMax
-            });
-        }
+function mostrarRankingSoloVer() {
+    cargarRanking();
+
+    const rankingHTML = rankingJugadores.map((entry, index) => {
+        let clase = '';
+        if (index === 0) clase = 'top1';
+        else if (index === 1) clase = 'top2';
+        else if (index === 2) clase = 'top3';
+
+        return `<div class="ranking-item ${clase}">
+            <span class="ranking-position">#${index + 1}</span>
+            <span class="ranking-name">${entry.nombre}</span>
+            <span class="ranking-score">${entry.puntos}</span>
+        </div>`;
+    }).join('');
+
+    const modal = document.createElement('div');
+    modal.className = 'ranking-modal';
+    modal.innerHTML = `
+        <div class="ranking-container">
+            <div class="ranking-title">🏆 RANKING</div>
+            <div class="ranking-list">
+                ${rankingHTML || '<div style="color: #888; text-align: center; padding: 30px; font-size: 1.2rem;">No hay puntuaciones aún</div>'}
+            </div>
+            <div style="text-align: center; margin: 20px 0; color: var(--gold); font-size: 1rem;">
+                ⭐ Top 10 mejores puntuaciones ⭐
+            </div>
+            <button class="ranking-close" onclick="cerrarRanking()">CERRAR</button>
+        </div>
+    `;
+
+    const modalExistente = document.querySelector('.ranking-modal');
+    if (modalExistente) {
+        modalExistente.remove();
     }
-    console.log('Paladines encontrados:', paladines.length);
-    console.log(paladines);
-    console.log('======================');
+
+    document.body.appendChild(modal);
+
+    const cerrarEsc = (e) => {
+        if (e.key === 'Escape') {
+            cerrarRanking();
+            document.removeEventListener('keydown', cerrarEsc);
+        }
+    };
+    document.addEventListener('keydown', cerrarEsc);
+
+    añadirLog('👀 Visualizando ranking', 'system');
 }
 
-// ===== ACTUALIZAR VISIBILIDAD DE CONTROLES =====
+// ===== FUNCIONES DE VISIBILIDAD =====
 function actualizarVisibilidadControles() {
     const helpPanel = document.getElementById('helpPanel');
     const survivorBtn = document.getElementById('survivorControlsBtn');
     const survivorPanel = document.getElementById('survivorPanel');
-    
+
     if (!helpPanel || !survivorBtn) return;
-    
-    // Verificar si estamos en modo survivor con tienda visible
+
     const tiendaVisible = survivorPanel && !survivorPanel.classList.contains('hidden');
-    
+
     if (modoSurvivorActivo && tiendaVisible) {
-        // En survivor con tienda visible: ocultar panel de ayuda, mostrar botón
         helpPanel.classList.add('hidden');
         survivorBtn.classList.remove('hidden');
     } else {
-        // En cualquier otro caso: mostrar panel de ayuda, ocultar botón
         helpPanel.classList.remove('hidden');
         survivorBtn.classList.add('hidden');
     }
 }
 
-// ===== MOSTRAR CONTROLES EMERGENTE (SOLO EN SURVIVOR) =====
 function mostrarControlesEmergente() {
-    // Solo abrir si estamos en modo survivor con tienda visible
     const survivorPanel = document.getElementById('survivorPanel');
     const tiendaVisible = survivorPanel && !survivorPanel.classList.contains('hidden');
-    
+
     if (!modoSurvivorActivo || !tiendaVisible) {
         console.log('❌ Controles emergentes solo disponibles en modo survivor');
         return;
     }
-    
-    // Crear modal de controles
+
     const modal = document.createElement('div');
     modal.className = 'controls-modal';
     modal.innerHTML = `
@@ -2060,16 +1897,14 @@ function mostrarControlesEmergente() {
             <button class="controls-close" onclick="cerrarControlesEmergente()">CERRAR</button>
         </div>
     `;
-    
-    // Asegurar que no haya otros modales
+
     const modalExistente = document.querySelector('.controls-modal');
     if (modalExistente) {
         modalExistente.remove();
     }
-    
+
     document.body.appendChild(modal);
-    
-    // Añadir evento para cerrar con Escape
+
     const cerrarEsc = (e) => {
         if (e.key === 'Escape') {
             cerrarControlesEmergente();
@@ -2077,129 +1912,95 @@ function mostrarControlesEmergente() {
         }
     };
     document.addEventListener('keydown', cerrarEsc);
-    
+
     añadirLog('📋 Controles emergentes - Modo survivor', 'system');
 }
 
-// ===== MOSTRAR RANKING SOLO VER (SIN INPUT) =====
-function mostrarRankingSoloVer() {
-    cargarRanking();
-    
-    const rankingHTML = rankingJugadores.map((entry, index) => {
-        let clase = '';
-        if (index === 0) clase = 'top1';
-        else if (index === 1) clase = 'top2';
-        else if (index === 2) clase = 'top3';
-        
-        return `<div class="ranking-item ${clase}">
-            <span class="ranking-position">#${index + 1}</span>
-            <span class="ranking-name">${entry.nombre}</span>
-            <span class="ranking-score">${entry.puntos}</span>
-        </div>`;
-    }).join('');
-    
-    // Crear modal solo para visualización (sin input)
-    const modal = document.createElement('div');
-    modal.className = 'ranking-modal';
-    modal.innerHTML = `
-        <div class="ranking-container">
-            <div class="ranking-title">🏆 RANKING</div>
-            <div class="ranking-list">
-                ${rankingHTML || '<div style="color: #888; text-align: center; padding: 30px; font-size: 1.2rem;">No hay puntuaciones aún</div>'}
-            </div>
-            <div style="text-align: center; margin: 20px 0; color: var(--gold); font-size: 1rem;">
-                ⭐ Top 10 mejores puntuaciones ⭐
-            </div>
-            <button class="ranking-close" onclick="cerrarRanking()">CERRAR</button>
-        </div>
-    `;
-    
-    // Asegurar que no haya otros modales
-    const modalExistente = document.querySelector('.ranking-modal');
-    if (modalExistente) {
-        modalExistente.remove();
+function cerrarControlesEmergente() {
+    console.log('🔚 Cerrando controles emergentes');
+    const modal = document.querySelector('.controls-modal');
+    if (modal) {
+        modal.remove();
+        añadirLog('📋 Controles cerrados', 'system');
     }
-    
-    document.body.appendChild(modal);
-    
-    // Añadir evento para cerrar con Escape
-    const cerrarEsc = (e) => {
-        if (e.key === 'Escape') {
-            cerrarRanking();
-            document.removeEventListener('keydown', cerrarEsc);
-        }
-    };
-    document.addEventListener('keydown', cerrarEsc);
-    
-    añadirLog('👀 Visualizando ranking', 'system');
+}
+
+function mostrarAyudaTeclado() {
+    const ayuda = `
+╔════════════════════════════╗
+║     CONTROLES DE TECLADO    ║
+╠════════════════════════════╣
+║ ESPACIO  - Insertar moneda  ║
+║ ENTER    - Jugar/Reintentar ║
+║ P        - Pausar juego      ║
+║ C        - Continuar juego   ║
+║ R        - Reiniciar         ║
+║ ESC      - Volver al menú    ║
+║ + / -    - Velocidad         ║
+║ 0        - Velocidad normal  ║
+║ 1        - Velocidad lenta   ║
+║ 2        - Velocidad rápida  ║
+║ L        - Limpiar bitácora  ║
+║ F1       - Mostrar esta ayuda║
+╚════════════════════════════╝
+    `;
+    console.log(ayuda);
+    añadirLog('📋 Controles mostrados en consola', 'system');
 }
 
 // ===== CONTROLES DE TECLADO UNIFICADO =====
 function iniciarControlesTeclado() {
     document.addEventListener('keydown', (e) => {
-        // IMPORTANTE: Verificar si hay un input enfocado (como el del ranking)
-        const inputActivo = document.activeElement && 
-                           (document.activeElement.tagName === 'INPUT' || 
-                            document.activeElement.tagName === 'TEXTAREA' ||
-                            document.activeElement.tagName === 'BUTTON');
-        
-        // Si hay un input activo, permitir escribir sin interferencias
+        const inputActivo = document.activeElement &&
+            (document.activeElement.tagName === 'INPUT' ||
+                document.activeElement.tagName === 'TEXTAREA' ||
+                document.activeElement.tagName === 'BUTTON');
+
         if (inputActivo) {
-            // Solo prevenir teclas específicas que podrían cerrar el modal
             if (e.key === 'Escape') {
-                // Cerrar ranking si está abierto
                 cerrarRanking();
                 cerrarControlesEmergente();
                 e.preventDefault();
             }
-            return; // No procesar más atajos de teclado
+            return;
         }
-        
-        // Resto del código solo se ejecuta si NO hay input activo
+
         if (e.ctrlKey || e.altKey || e.metaKey) return;
 
         const tecla = e.key.toLowerCase();
-        
-        // Obtener el estado actual de las pantallas
+
         const menuVisible = !document.getElementById('menuScreen').classList.contains('hidden');
         const gameOverVisible = !document.getElementById('gameOverPanel').classList.contains('hidden');
         const rankingVisible = !!document.querySelector('.ranking-modal');
         const controlesVisible = !!document.querySelector('.controls-modal');
-        
-        // Tecla F1 o ? siempre muestra ayuda
+
         if (tecla === 'f1' || tecla === '?') {
             e.preventDefault();
             mostrarAyudaTeclado();
             return;
         }
 
-        // ===== ATAJOS GLOBALES (funcionan siempre) =====
         switch (tecla) {
             case ' ':
             case 'space':
                 e.preventDefault();
                 insertCoin();
                 break;
-                
             case 'l':
                 e.preventDefault();
                 limpiarLogs();
                 break;
         }
 
-        // ===== ATAJOS QUE FUNCIONAN EN EL MENÚ PRINCIPAL =====
         if (menuVisible) {
-            // En el menú, las teclas numéricas seleccionan modos
             if (tecla === '1' || tecla === '2' || tecla === '3') {
                 e.preventDefault();
-                // Simular clic en el botón correspondiente
                 const btn = document.getElementById(`opcion${tecla}Btn`);
                 if (btn && !btn.disabled) {
                     btn.click();
                 }
             }
-            
-            // ENTER inicia el juego si hay monedas
+
             if (tecla === 'enter') {
                 e.preventDefault();
                 if (coins > 0) {
@@ -2208,11 +2009,8 @@ function iniciarControlesTeclado() {
                     añadirLog('❌ Inserta una moneda primero', 'info');
                 }
             }
-            
-            // ESC no hace nada en el menú (ya está)
         }
-        
-        // ===== ATAJOS QUE FUNCIONAN EN EL JUEGO (máquina recreativa) =====
+
         if (!menuVisible) {
             switch (tecla) {
                 case 'enter':
@@ -2223,7 +2021,6 @@ function iniciarControlesTeclado() {
                         añadirLog('❌ No hay monedas. Usa ESPACIO para insertar', 'info');
                     }
                     break;
-                    
                 case 'p':
                     e.preventDefault();
                     if (intervaloSimulacion) {
@@ -2232,31 +2029,26 @@ function iniciarControlesTeclado() {
                         continuarSimulacion();
                     }
                     break;
-                    
                 case 'c':
                     e.preventDefault();
                     if (simulacionPausada) {
                         continuarSimulacion();
                     }
                     break;
-                    
                 case 'r':
                     e.preventDefault();
                     volverAlMenu();
                     break;
-                    
                 case '+':
                 case '=':
                     e.preventDefault();
                     ajustarVelocidad(-25);
                     break;
-                    
                 case '-':
                 case '_':
                     e.preventDefault();
                     ajustarVelocidad(25);
                     break;
-                    
                 case '0':
                     e.preventDefault();
                     velocidadActual = 200;
@@ -2268,7 +2060,6 @@ function iniciarControlesTeclado() {
                     }
                     añadirLog('⚡ Velocidad normal (200ms)', 'system');
                     break;
-                    
                 case '1':
                     e.preventDefault();
                     velocidadActual = 300;
@@ -2280,7 +2071,6 @@ function iniciarControlesTeclado() {
                     }
                     añadirLog('🐢 Velocidad lenta (300ms)', 'system');
                     break;
-                    
                 case '2':
                     e.preventDefault();
                     velocidadActual = 120;
@@ -2295,13 +2085,11 @@ function iniciarControlesTeclado() {
             }
         }
 
-        // ===== ATAJO PARA GAME OVER =====
         if (gameOverVisible && tecla === 'enter') {
             e.preventDefault();
             reintentarPartida();
         }
-        
-        // ===== ATAJO PARA CERRAR MODALES CON ESC =====
+
         if (tecla === 'escape') {
             if (rankingVisible) {
                 cerrarRanking();
@@ -2310,7 +2098,6 @@ function iniciarControlesTeclado() {
                 cerrarControlesEmergente();
                 e.preventDefault();
             } else if (!menuVisible) {
-                // Si no hay modales y no estamos en el menú, volver al menú
                 volverAlMenu();
                 e.preventDefault();
             }
@@ -2318,29 +2105,26 @@ function iniciarControlesTeclado() {
     });
 }
 
-// ===== FUNCIÓN PARA SELECCIONAR OPCIÓN - CORREGIDA =====
+// ===== FUNCIÓN PARA SELECCIONAR OPCIÓN =====
 function seleccionarOpcion(opcion) {
     console.log(`🎮 Seleccionando modo: ${opcion}`);
     opcionSeleccionada = opcion;
-    
-    // Quitar clase selected de todos los botones
+
     document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.classList.remove('selected');
     });
-    
-    // Añadir clase selected al botón actual
+
     const botones = {
         1: document.getElementById('opcion1Btn'),
         2: document.getElementById('opcion2Btn'),
         3: document.getElementById('opcion3Btn'),
         'survivor': document.getElementById('survivorBtn')
     };
-    
+
     if (botones[opcion]) {
         botones[opcion].classList.add('selected');
     }
-    
-    // Mostrar/ocultar campo de número de personajes
+
     const nPersonajesRow = document.getElementById('nPersonajesRow');
     if (opcion === 1) {
         nPersonajesRow.classList.remove('hidden');
@@ -2349,9 +2133,75 @@ function seleccionarOpcion(opcion) {
         nPersonajesRow.classList.add('hidden');
         añadirLog(`⚙️ Modo ${opcion} seleccionado`, 'info');
     }
-    
-    // Habilitar botón START
+
     validarBotonInicio();
+}
+
+// ===== FUNCIÓN PARA CAMBIAR TEMA =====
+function cambiarTema(tema) {
+    const themeLink = document.getElementById('theme-style') || document.createElement('link');
+    if (!themeLink.id) {
+        themeLink.id = 'theme-style';
+        themeLink.rel = 'stylesheet';
+        document.head.appendChild(themeLink);
+    }
+
+    themeLink.href = `css/style-${tema}.css`;
+
+    document.getElementById('themePacman')?.classList.remove('active');
+    document.getElementById('themeClassic')?.classList.remove('active');
+    document.getElementById(`theme${tema.charAt(0).toUpperCase() + tema.slice(1)}`)?.classList.add('active');
+    document.getElementById('themeIndicator').textContent = tema.toUpperCase();
+
+    localStorage.setItem('survivors-theme', tema);
+    añadirLog(`🎨 Tema cambiado a: ${tema.toUpperCase()}`, 'system');
+}
+
+// ===== FUNCIÓN DE DEPURACIÓN =====
+function debugPaladin() {
+    console.log('=== DEBUG PALADINES ===');
+    let paladines = [];
+    for (let i = 0; i < arrayPersonajes.length; i++) {
+        if (arrayPersonajes[i] instanceof Paladin) {
+            paladines.push({
+                pos: [arrayPersonajes[i].y, arrayPersonajes[i].x],
+                vida: arrayPersonajes[i].vida,
+                vidaMax: arrayPersonajes[i].vidaMax
+            });
+        }
+    }
+    console.log('Paladines encontrados:', paladines.length);
+    console.log(paladines);
+    console.log('======================');
+}
+
+// ===== ACTUALIZAR RATIO DE VICTORIAS =====
+function actualizarRatioVictorias() {
+    const totalVictorias = victoriasBuenos + victoriasMalos;
+    let ratio = 0;
+
+    if (totalVictorias > 0) {
+        ratio = Math.round((victoriasBuenos / totalVictorias) * 100);
+    }
+
+    const ratioElement = document.getElementById('winRatio');
+    if (ratioElement) {
+        const ratioValue = ratioElement.querySelector('.ratio-value');
+        if (ratioValue) {
+            ratioValue.textContent = ratio + '%';
+
+            if (ratio >= 60) {
+                ratioValue.style.color = '#00ff00';
+                ratioValue.style.textShadow = '0 0 10px #00ff00';
+            } else if (ratio >= 40) {
+                ratioValue.style.color = '#ffff00';
+                ratioValue.style.textShadow = '0 0 10px #ffff00';
+            } else {
+                ratioValue.style.color = '#ff6b6b';
+                ratioValue.style.textShadow = '0 0 10px #ff6b6b';
+            }
+        }
+    }
 }
 
 // ===== INICIALIZACIÓN =====

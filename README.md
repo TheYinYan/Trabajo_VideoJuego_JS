@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5.3-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5.5-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -12,7 +12,7 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-- [✨ NOVEDADES EN VERSIÓN 2.5.3](#-novedades-en-versión-253)
+- [✨ NOVEDADES EN VERSIÓN 2.5.5](#-novedades-en-versión-255)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
@@ -45,50 +45,27 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5.3
+## ✨ NOVEDADES EN VERSIÓN 2.5.5
 
-### Opciones
+### 📋 Notas de la versión
 
-- Añadir nuevas clases (Arquero, Guerrero, etc.)
-- Mejorar el sistema de habilidades (curar aliados, efectos de área)
-- Añadir efectos de sonido (combates, monedas, victoria)
-- Mejorar animaciones (efectos visuales más vistosos)
+- **Eliminadas todas las redundancias** en el panel HIGH SCORE
+- **Unificados los IDs** `buenosStats` y `malosStats` para evitar duplicación
+- **Panel más limpio y eficiente** sin elementos duplicados
+- **Mejoras en el diseño responsive** de las tarjetas de jugadores
+- **Optimización general del código** para mejor mantenimiento
 
 ### 🎯 Mejoras Visuales
-- ✅ **Nuevo sistema de tooltips** - Información detallada al pasar el ratón sobre las clases
-- ✅ **Nuevo diseño de tarjetas de jugador** - Más visuales y con iconos representativos
-- ✅ **Panel de estadísticas rediseñado** - Más compacto, profesional y con mejor distribución
-- ✅ **Indicadores de color por clase** - Cada clase tiene su propio color para fácil identificación
-- ✅ **Botón de ranking en barra derecha** - Visualización rápida del top 10
-- ✅ **Diseño responsive mejorado** - Mejor adaptación a móviles, tablets y pantallas grandes
+- ✅ **Panel HIGH SCORE simplificado** - Sin elementos redundantes
+- ✅ **Tarjetas de jugadores optimizadas** - Usan los mismos IDs que los contadores
+- ✅ **Diseño más limpio** - Eliminadas clases CSS duplicadas
+- ✅ **Mejor organización** - Estructura de código más clara y mantenible
 
 ### 🚀 Mejoras Técnicas
-- ✅ **Corrección de carga inicial** - El tablero se muestra correctamente al cargar la página
-- ✅ **Sistema de espera de dimensiones** - Espera a que el contenedor tenga tamaño real antes de crear el tablero
-- ✅ **Múltiples reintentos** - Si falla la carga, usa valores por defecto para garantizar la jugabilidad
-- ✅ **Código más modular** - Funciones separadas por responsabilidad para mejor mantenimiento
-- ✅ **Optimización de rendimiento** - Cálculos de dimensiones más eficientes
-- ✅ **Corrección de contadores** - Las victorias se suman correctamente (1 por partida)
-
-### ⚔️ Sistema de Clases
-- ✅ **Curandero (C)** - Vida: 120, Daño: 5%, Habilidad: Cura +10% a aliados cercanos
-- ✅ **Paladín (P)** - Vida: 150, Daño: 10%, Habilidad: Reduce el daño recibido un 50%
-- ✅ **Mago (W)** - Vida: 80, Daño: 20%, Habilidad: Daño mágico (sin resistencia)
-- ✅ **Asesino (A)** - Vida: 70, Daño: 30%, Habilidad: 15% de probabilidad de crítico (x2 daño)
-- ✅ **Tanque (T)** - Vida: 200, Daño: 10%, Habilidad: Alta resistencia
-- ✅ **Brujo (U)** - Vida: 90, Daño: 25%, Habilidad: Roba 10% de la vida infligida
-
-### 🎮 Modo Pixel Perfect
-- ✅ **Nuevo modo de visualización** - Actívalo con el checkbox en el panel de control
-- ✅ **Una celda por píxel** - Para una experiencia de juego única
-- ✅ **Límite de seguridad** - Máximo 200,000 celdas para evitar congelar la página
-- ✅ **Desactivación automática** - Si el contenedor es demasiado grande, se desactiva solo
-
-### 🏆 Sistema de Ranking
-- ✅ **Ranking local** - Guarda las 10 mejores puntuaciones
-- ✅ **Visualización rápida** - Botón "VER RANKING" en barra derecha
-- ✅ **Top 3 con colores** - Oro, plata y bronce
-- ✅ **Sin modificaciones** - Solo visualización, no se pueden añadir puntos
+- ✅ **Eliminados IDs redundantes**: `buenosStatsCard` y `malosStatsCard`
+- ✅ **Unificación de datos**: Un solo ID para cada estadística
+- ✅ **Código más eficiente**: Una línea de JavaScript actualiza ambos elementos
+- ✅ **Mejor rendimiento**: Menos manipulaciones del DOM
 
 ---
 
@@ -98,7 +75,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 survivors-js/
 │
 ├── 📄 index.html                          # Interfaz de usuario
-├── 📄 survivors.js                        # Control principal (ACTUALIZADO v2.5.1)
+├── 📄 survivors.js                        # Control principal (v2.5.5)
 ├── 📁 css/
 │   ├── 📄 style.css                        # Estilos principales (ACTUALIZADO)
 │   ├── 📄 style-pacman.css                  # Tema Pac-Man
@@ -158,7 +135,7 @@ survivors-js/
 | **Estadísticas Tiempo Real** | Total, Buenos, Malos, victorias, combates, daño |
 | **Control de Velocidad** | Ajusta la velocidad de la simulación en tiempo real |
 | **Persistencia Local** | Las victorias y rankings se guardan entre sesiones |
-| **Modo Pixel Perfect** | Visualización experimental con una celda por píxel |
+| **Sin Redundancias** | Código optimizado sin elementos duplicados |
 | **Responsive Design** | Se adapta perfectamente a móviles, tablets y desktop |
 
 ---
@@ -175,7 +152,6 @@ survivors-js/
 | **SALIR** | Volver al menú principal |
 | **⚔️ - / +** | Cambiar velocidad de simulación |
 | **↺** | Reiniciar contadores de victorias |
-| **Pixel Perfect** | Activar/desactivar modo pixel |
 | **🏆 VER RANKING** | Mostrar ranking (solo visualización) |
 
 ### Controles de teclado
@@ -236,17 +212,16 @@ survivors-js/
 
 ## 📊 PANEL DE ESTADÍSTICAS
 
-El panel lateral derecho muestra información en tiempo real:
+El panel lateral derecho muestra información en tiempo real, ahora **sin redundancias**:
 
-### HIGH SCORE (Compacto)
+### HIGH SCORE (Panel Único)
 - **TOTAL** - Número total de personajes vivos
-- **😇** - Contador de Buenos
-- **😈** - Contador de Malos
-- **↺** - Botón para reiniciar victorias
+- **😇 BUENOS** - Contador de Buenos (mismo ID que en tarjetas)
+- **😈 MALOS** - Contador de Malos (mismo ID que en tarjetas)
 
-### Tarjetas de Jugadores
-- **1UP** - Buenos con icono y contador
-- **2UP** - Malos con icono y contador
+### Tarjetas de Jugadores (Usan los mismos IDs)
+- **1UP** - Buenos con icono y contador (usa `buenosStats`)
+- **2UP** - Malos con icono y contador (usa `malosStats`)
 - **🏆** - Victorias acumuladas (persisten entre sesiones)
 
 ### CLASES (Con tooltips interactivos)
@@ -380,9 +355,9 @@ const CLASES_CONFIG = {
 | **Error de dimensiones** | El sistema usa valores por defecto (12x16) después de 20 intentos |
 | **Clases no se muestran** | Verifica el orden de carga de scripts en el HTML |
 | **Monedas no se actualizan** | Revisa los IDs en el HTML: `coinCount`, `gameCoinCount`, `panelCoinCount` |
-| **Modo pixel no funciona** | El contenedor puede ser demasiado grande (>200,000 celdas potenciales) |
 | **Ranking no aparece** | Asegura que localStorage está habilitado en el navegador |
 | **Las victorias suman de más** | Verifica que no haya game over duplicado (usar flag `gameOverProcesado`) |
+| **Datos duplicados en panel** | Actualiza a v2.5.5 que elimina todas las redundancias |
 
 ---
 
@@ -403,17 +378,17 @@ Entidad
 └── Obstaculos (█)
 ```
 
-### IDs Importantes
+### IDs Importantes (v2.5.5)
 ```html
 <!-- Monedas -->
 <span id="coinCount">0</span>
 <span id="gameCoinCount">0</span>
 <span id="panelCoinCount">0</span>
 
-<!-- Estadísticas -->
+<!-- Estadísticas (SIN REDUNDANCIAS) -->
 <span id="totalStats">0</span>
-<span id="buenosStats">0</span>
-<span id="malosStats">0</span>
+<span id="buenosStats">0</span>  <!-- Usado en contadores y tarjetas -->
+<span id="malosStats">0</span>   <!-- Usado en contadores y tarjetas -->
 
 <!-- Clases -->
 <span id="curanderoCount">0</span>
@@ -426,16 +401,16 @@ Entidad
 iniciarSimulacion()      // Inicia la batalla con todas las configuraciones
 combatirConClases()      // Lógica de combate entre clases
 actualizarTooltipsClases() // Actualiza tooltips dinámicamente
-recalcularDimensiones()  // Calcula dimensiones del tablero (prioriza ancho)
+recalcularDimensiones()  // Calcula dimensiones del tablero
 redimensionarTablero()   // Ajusta el tamaño de las celdas
-togglePixelMode()        // Activa/desactiva modo Pixel Perfect
+actualizarContadoresVisuales() // Actualiza estadísticas (ahora sin redundancias)
 mostrarRankingSoloVer()  // Muestra ranking sin opción de guardar
 ```
 
 ### Variables Importantes
 ```javascript
-pixelPerfect             // true/false - Modo Pixel Perfect
-MAX_PIXEL_CELLS = 200000 // Límite de celdas en modo pixel
+simulacionPausada        // true/false - Estado de pausa
+modoSurvivorActivo       // true/false - Modo survivor activo
 monedasSurvivor = 125    // Monedas iniciales en modo SURVIVOR
 gameOverProcesado        // Evita game over duplicado
 ```
@@ -444,13 +419,19 @@ gameOverProcesado        // Evita game over duplicado
 
 ## 🚀 HOJA DE RUTA
 
+### ✅ Completado en v2.5.5
+- [x] **Eliminadas todas las redundancias** del panel HIGH SCORE
+- [x] **Unificados los IDs** de estadísticas (buenosStats y malosStats)
+- [x] **Código más limpio y eficiente** sin elementos duplicados
+- [x] **Panel más compacto** con mejor organización visual
+- [x] **Mantenida toda la funcionalidad** con menos código
+
 ### ✅ Completado en v2.5.1
 - [x] Panel de estadísticas compacto y rediseñado
 - [x] Tooltips minimalistas por clase con colores identificativos
 - [x] Sistema de espera de dimensiones (hasta 20 intentos)
 - [x] Carga inicial corregida con múltiples reintentos
 - [x] Código más modular y optimizado
-- [x] Modo Pixel Perfect (experimental)
 - [x] Sistema de ranking local con top 10
 - [x] Botón de ranking en barra derecha (solo visualización)
 - [x] Corrección de contadores de victorias (1 por partida)
@@ -516,22 +497,18 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 ---
 
-*Última actualización: Marzo 2026*
+*Última actualización: Marzo 2026 - Versión 2.5.5*
 
-## Principales actualizaciones:
+## Principales novedades en v2.5.5:
 
-### ✅ **Versión 2.5.1**
-- Añadido sistema de ranking completo
-- Botón "VER RANKING" en barra derecha
-- Modo Pixel Perfect documentado
-- Monedas iniciales en survivor: 125💰
-- Corrección de contadores de victorias
+### ✅ **Eliminadas todas las redundancias**
+- Eliminados IDs `buenosStatsCard` y `malosStatsCard`
+- Unificado: `buenosStats` y `malosStats` se usan en TODOS los lugares
+- Panel HIGH SCORE más limpio y eficiente
+- Código más fácil de mantener
 
-### 📊 **Nuevas secciones:**
-- **SISTEMA DE RANKING** - Explicación detallada del ranking
-- **MODOS DE JUEGO** - Tabla con todos los modos disponibles
-- **Notas para desarrolladores** - Variables importantes añadidas
-
-### 🐛 **Solución de problemas:**
-- Añadido caso de "victorias suman de más"
-- Recomendación de flag `gameOverProcesado`
+### 📊 **Mejoras en el panel**
+- Contadores principales y tarjetas comparten los mismos datos
+- Una sola línea de JavaScript actualiza ambos elementos
+- Diseño más compacto sin perder información
+- Mejor rendimiento general

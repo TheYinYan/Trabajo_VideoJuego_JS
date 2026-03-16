@@ -33,11 +33,8 @@
                 <div class="menu-buttons">
                     <button class="mode-btn" id="opcion1Btn" onclick="seleccionarOpcion(1)" disabled>⚖️ MITAD Y
                         MITAD</button>
-                    <!-- MODO 2 - Totalmente aleatorio -->
                     <button class="mode-btn" id="opcion2Btn" onclick="seleccionarOpcion(2)" disabled>🎲 TOTALMENTE
                         ALEATORIO</button>
-
-                    <!-- MODO 3 - Mitad aleatoria -->
                     <button class="mode-btn" id="opcion3Btn" onclick="seleccionarOpcion(3)" disabled>🔄 MITAD
                         ALEATORIA</button>
                     <button class="mode-btn" id="survivorBtn" onclick="seleccionarModoSurvivor()" disabled>⚔️ MODO
@@ -60,14 +57,13 @@
 
     <!-- MÁQUINA RECREATIVA -->
     <div class="arcade-machine hidden" id="arcadeMachine">
-        <!-- Contenedor principal de 3 columnas -->
         <div class="arcade-container">
             <!-- BARRA LATERAL IZQUIERDA -->
             <div class="left-bar">
                 <div class="bar-content">
                     <div class="bar-decoration top"></div>
 
-                    <!-- ===== PANEL MODO SURVIVOR ===== -->
+                    <!-- PANEL MODO SURVIVOR -->
                     <div class="survivor-panel hidden" id="survivorPanel">
                         <div class="survivor-stats">
                             <div class="survivor-stat">
@@ -124,7 +120,7 @@
                         </div>
                     </div>
 
-                    <!-- PANEL DE AYUDA CON CONTROLES (se oculta en survivor) -->
+                    <!-- PANEL DE AYUDA -->
                     <div class="help-panel" id="helpPanel">
                         <div class="help-header">🎮 CONTROLES</div>
                         <div class="help-content">
@@ -204,8 +200,9 @@
                         </div>
                     </div>
 
-                    <!-- ===== BOTÓN DE CONTROLES (SOLO VISIBLE EN SURVIVOR) ===== -->
-                    <div class="survivor-controls-button hidden" id="survivorControlsBtn" onclick="mostrarControlesEmergente()">
+                    <!-- BOTÓN DE CONTROLES SURVIVOR -->
+                    <div class="survivor-controls-button hidden" id="survivorControlsBtn"
+                        onclick="mostrarControlesEmergente()">
                         <div class="survivor-controls-icon">🎮</div>
                         <div class="survivor-controls-text">CONTROLES</div>
                         <div class="survivor-controls-glow"></div>
@@ -218,7 +215,6 @@
 
             <!-- CONTENIDO CENTRAL -->
             <div class="arcade-center">
-                <!-- MARQUESINA -->
                 <div class="marquee">
                     <h1>SURVIVORS</h1>
                     <div class="coin-display">
@@ -227,12 +223,10 @@
                     </div>
                 </div>
 
-                <!-- TABLERO DE JUEGO -->
                 <div class="game-board-container">
                     <div class="game-board" id="gameBoard"></div>
                 </div>
 
-                <!-- PANEL DE CONTROL -->
                 <div class="control-panel">
                     <div class="speed-section">
                         <span class="speed-label">⚡ VEL</span>
@@ -277,60 +271,66 @@
                 <div class="bar-content stats-content">
                     <div class="bar-decoration top"></div>
 
-                    <!-- HIGH SCORE COMPACTO -->
-                    <div class="stats-panel">
-                        <div class="stats-header">HIGH SCORE</div>
-                        <div class="stats-row">
-                            <div class="stat-item">
-                                <span class="stat-label-small">TOTAL</span>
+                    <!-- PANEL HIGH SCORE - SIN REDUNDANCIAS -->
+                    <div class="stats-panel highscore-deluxe">
+                        <div class="stats-header">🏆 HIGH SCORE 🏆</div>
+                        
+                        <!-- CONTADORES PRINCIPALES -->
+                        <div class="stats-row main-counters">
+                            <div class="stat-item total-counter">
+                                <span class="stat-label">TOTAL</span>
                                 <span class="stat-value-large" id="totalStats">0</span>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-label-small">😇</span>
-                                <span class="stat-value-large good" id="buenosStats">0</span>
+                        </div>
+
+                        <!-- TARJETAS DE JUGADORES (USAN LOS MISMOS IDs) -->
+                        <div class="players-row deluxe">
+                            <!-- JUGADOR 1 (BUENOS) -->
+                            <div class="player-card good enhanced">
+                                <div class="player-avatar good">
+                                    <span class="player-symbol">B</span>
+                                    <div class="player-glow"></div>
+                                </div>
+                                <div class="player-info">
+                                    <span class="player-label">1UP</span>
+                                    <span class="player-value good" id="buenosStats">0</span>
+                                    <div class="player-wins">
+                                        <span class="wins-icon">🏆</span>
+                                        <span class="wins-number" id="victoriasBuenos">0</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-label-small">😈</span>
-                                <span class="stat-value-large bad" id="malosStats">0</span>
+
+                            <!-- JUGADOR 2 (MALOS) -->
+                            <div class="player-card bad enhanced">
+                                <div class="player-avatar bad">
+                                    <span class="player-symbol">M</span>
+                                    <div class="player-glow"></div>
+                                </div>
+                                <div class="player-info">
+                                    <span class="player-label">2UP</span>
+                                    <span class="player-value bad" id="malosStats">0</span>
+                                    <div class="player-wins">
+                                        <span class="wins-icon">🏆</span>
+                                        <span class="wins-number" id="victoriasMalos">0</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="reset-btn-small" onclick="reiniciarVictorias()" title="Reiniciar victorias">↺
+                        </div>
+
+                        <!-- BARRA DE ACCIÓN -->
+                        <div class="stats-footer">
+                            <div class="reset-btn" onclick="reiniciarVictorias()" title="Reiniciar victorias">
+                                <span class="reset-icon">↺</span>
+                                <span class="reset-text">REINICIAR</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TARJETAS DE JUGADORES COMPACTAS -->
-                    <div class="players-row">
-                        <div class="player-card good">
-                            <div class="player-icon-small good">B</div>
-                            <div class="player-info-compact">
-                                <span class="player-label">1UP</span>
-                                <span class="player-number good" id="buenosStatsCard">0</span>
-                            </div>
-                            <div class="player-wins-compact">
-                                <span>🏆</span>
-                                <span id="victoriasBuenos">0</span>
-                            </div>
-                        </div>
-
-                        <div class="player-card bad">
-                            <div class="player-icon-small bad">M</div>
-                            <div class="player-info-compact">
-                                <span class="player-label">2UP</span>
-                                <span class="player-number bad" id="malosStatsCard">0</span>
-                            </div>
-                            <div class="player-wins-compact">
-                                <span>🏆</span>
-                                <span id="victoriasMalos">0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CLASES VIVAS - CON TOOLTIPS E INDICADORES DE COLOR -->
+                    <!-- CLASES VIVAS -->
                     <div class="class-stats-panel">
                         <div class="class-stats-header">📊 CLASES</div>
                         <div class="class-stats-grid">
-
-                            <!-- CURANDERO (Amarillo) -->
                             <div class="class-stat-compact" data-class="curandero" data-tooltip="CURANDERO
 ❤️ 120  ⚔️ 5%
 ✨ Cura +10% a aliados">
@@ -339,7 +339,6 @@
                                 <span class="class-count-mini" id="curanderoCount">0</span>
                             </div>
 
-                            <!-- PALADÍN (Azul) -->
                             <div class="class-stat-compact" data-class="paladin" data-tooltip="PALADÍN
 ❤️ 150  ⚔️ 10%
 ✨ Reduce daño 50%">
@@ -348,7 +347,6 @@
                                 <span class="class-count-mini" id="paladinCount">0</span>
                             </div>
 
-                            <!-- MAGO (Púrpura) -->
                             <div class="class-stat-compact" data-class="mago" data-tooltip="MAGO
 ❤️ 80  ⚔️ 20%
 ✨ Daño mágico">
@@ -357,7 +355,6 @@
                                 <span class="class-count-mini" id="magoCount">0</span>
                             </div>
 
-                            <!-- ASESINO (Rojo) -->
                             <div class="class-stat-compact" data-class="asesino" data-tooltip="ASESINO
 ❤️ 70  ⚔️ 30%
 ✨ 15% crítico x2">
@@ -366,7 +363,6 @@
                                 <span class="class-count-mini" id="asesinoCount">0</span>
                             </div>
 
-                            <!-- TANQUE (Naranja) -->
                             <div class="class-stat-compact" data-class="tanque" data-tooltip="TANQUE
 ❤️ 200  ⚔️ 10%
 ✨ Alta resistencia">
@@ -375,7 +371,6 @@
                                 <span class="class-count-mini" id="tanqueCount">0</span>
                             </div>
 
-                            <!-- BRUJO (Rosa) -->
                             <div class="class-stat-compact" data-class="brujo" data-tooltip="BRUJO
 ❤️ 90  ⚔️ 25%
 ✨ Roba 10% vida">
@@ -383,11 +378,10 @@
                                 <span class="class-name-mini">Brujo</span>
                                 <span class="class-count-mini" id="brujoCount">0</span>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- COMBATES - CUADRÍCULA COMPACTA -->
+                    <!-- COMBATES -->
                     <div class="combat-stats-panel">
                         <div class="combat-stats-header">⚔️ COMBATES</div>
                         <div class="combat-stats-grid">
@@ -410,13 +404,13 @@
                         </div>
                     </div>
 
-                    <!-- TIEMPO COMPACTO -->
+                    <!-- TIEMPO -->
                     <div class="time-panel">
                         <span class="time-header">⏱️ TIEMPO</span>
                         <span class="time-display" id="tiempoPartida">00:00</span>
                     </div>
 
-                    <!-- ===== BOTÓN DE RANKING (SOLO VER) EN BARRA DERECHA ===== -->
+                    <!-- BOTÓN DE RANKING -->
                     <div class="ranking-view-button" onclick="mostrarRankingSoloVer()">
                         <div class="ranking-view-icon">🏆</div>
                         <div class="ranking-view-text">VER RANKING</div>
@@ -428,7 +422,7 @@
             </div>
         </div>
 
-        <!-- GAME OVER (flotante) -->
+        <!-- GAME OVER -->
         <div class="game-over hidden" id="gameOverPanel">
             <div class="game-over-title">GAME OVER</div>
             <div class="game-over-winner" id="resultadoTitulo"></div>
@@ -459,28 +453,21 @@
             </div>
         </div>
 
-        <!-- ALTAVOZ -->
         <div class="speaker"></div>
     </div>
 
-    <!-- SCRIPTS BASE -->
+    <!-- SCRIPTS -->
     <script src="Entidades/Entidad.js"></script>
     <script src="Entidades/Personajes.js"></script>
     <script src="Entidades/Buenos.js"></script>
     <script src="Entidades/Malos.js"></script>
     <script src="Entidades/Obstaculos.js"></script>
-
-    <!-- CLASES ESPECIALES - BUENAS -->
     <script src="Entidades/ClasesBuenas/Curandero.js"></script>
     <script src="Entidades/ClasesBuenas/Paladin.js"></script>
     <script src="Entidades/ClasesBuenas/Mago.js"></script>
-
-    <!-- CLASES ESPECIALES - MALAS -->
     <script src="Entidades/ClasesMalas/Asesino.js"></script>
     <script src="Entidades/ClasesMalas/Tanque.js"></script>
     <script src="Entidades/ClasesMalas/Brujo.js"></script>
-
-    <!-- FUNCIONES Y CONTROL PRINCIPAL -->
     <script src="Entidades/ListFunciones/Funciones.js"></script>
     <script src="survivors.js"></script>
 </body>
