@@ -22,7 +22,6 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 - [📊 PANEL DE ESTADÍSTICAS](#-panel-de-estadísticas)
 - [📋 BITÁCORA DE COMBATE](#-bitácora-de-combate)
 - [🏆 SISTEMA DE RANKING](#-sistema-de-ranking)
-- [🎨 TEMAS DISPONIBLES](#-temas-disponibles)
 - [🛠️ PERSONALIZACIÓN](#️-personalización)
 - [🐛 SOLUCIÓN DE PROBLEMAS](#-solución-de-problemas)
 - [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
@@ -77,9 +76,7 @@ survivors-js/
 ├── 📄 index.html                          # Interfaz de usuario
 ├── 📄 survivors.js                        # Control principal (v2.5.6)
 ├── 📁 css/
-│   ├── 📄 style.css                        # Estilos principales (ACTUALIZADO)
-│   ├── 📄 style-pacman.css                  # Tema Pac-Man
-│   └── 📄 style-classic.css                 # Tema Clásico
+│   ├── 📄 style.css                        # Estilos
 ├── 📁 assets/
 │   └── 📁 images/
 │       └── 📄 favicon.svg                    # Icono de la pestaña
@@ -281,30 +278,6 @@ El panel lateral izquierdo incluye una bitácora con registro de eventos:
 - **Nombre**: 8 caracteres máximo (mayúsculas)
 - **Puntos**: Puntuación total de la partida
 - **Fecha**: Se guarda automáticamente
-
----
-
-## 🎨 TEMAS DISPONIBLES
-
-### Tema Pac-Man 👻
-```css
---primary: #ffff00;
---secondary: #24408e;
---accent: #ffd700;
-```
-- Estilo arcade clásico de los años 80
-- Efectos de neón y brillos dorados
-- Ambiente auténtico de sala de juegos
-
-### Tema Clásico 🕹️
-```css
---primary: #33ff33;
---secondary: #0a2a0a;
---accent: #00ff00;
-```
-- Estilo terminal/matrix verde
-- Efectos de brillo en verde fosforito
-- Ambiente hacker/retro
 
 ---
 
