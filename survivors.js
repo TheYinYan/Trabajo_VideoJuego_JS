@@ -197,13 +197,79 @@ function recalcularDimensiones() {
     console.log(`📊 Total ocupado: ${anchuraActual * tamañoRealCelda}x${alturaActual * tamañoRealCelda}`);
 }
 
-// ===== FUNCIÓN PARA REDIMENSIONAR EL TABLERO - CORREGIDA =====
+// ===== FUNCIÓN PARA RECALCULAR DIMENSIONES OPTIMIZADAS =====
+function recalcularDimensionesOptimizadas() {
+    if (!gameBoard) {
+        gameBoard = document.getElementById('gameBoard');
+        if (!gameBoard) return;
+    }
+
+    const container = document.querySelector('.game-board-container');
+    if (!container) return;
+
+    // Obtener dimensiones del contenedor restando paddings
+    const style = getComputedStyle(container);
+    const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
+    const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
+    
+    const containerWidth = container.clientWidth - padX;
+    const containerHeight = container.clientHeight - padY;
+
+    console.log(`📏 Contenedor útil: ${containerWidth}x${containerHeight}`);
+
+    if (containerWidth === 0 || containerHeight === 0) {
+        console.warn('⚠️ Contenedor sin dimensiones');
+        alturaActual = 12;
+        anchuraActual = 16;
+        return;
+    }
+
+    // ===== CALCULAR DIMENSIONES ÓPTIMAS =====
+    // Determinar tamaño de celda ideal según el dispositivo
+    let tamanoObjetivo;
+    if (window.innerWidth <= 480) {
+        tamanoObjetivo = 28; // Móvil
+    } else if (window.innerWidth <= 768) {
+        tamanoObjetivo = 32; // Tablet
+    } else {
+        tamanoObjetivo = 36; // Desktop
+    }
+
+    // Calcular cuántas celdas caben en el ancho
+    let celdasPorAncho = Math.floor(containerWidth / tamanoObjetivo);
+    
+    // Calcular cuántas celdas caben en el alto (usando el mismo tamaño)
+    let celdasPorAlto = Math.floor(containerHeight / tamanoObjetivo);
+
+    // Ajustar para que el tablero sea proporcionado
+    celdasPorAncho = Math.min(45, Math.max(12, celdasPorAncho));
+    celdasPorAlto = Math.min(30, Math.max(8, celdasPorAlto));
+
+    // Para modo normal, asegurar números pares
+    if (opcionSeleccionada !== 'survivor') {
+        if (celdasPorAlto % 2 !== 0) celdasPorAlto--;
+        if (celdasPorAncho % 2 !== 0) celdasPorAncho--;
+    }
+
+    alturaActual = celdasPorAlto;
+    anchuraActual = celdasPorAncho;
+
+    console.log(`📏 Dimensiones finales: ${anchuraActual}x${alturaActual} (${anchuraActual * alturaActual} celdas)`);
+}
+
+// ===== FUNCIÓN PARA REDIMENSIONAR TABLERO (COMPATIBILIDAD) =====
 function redimensionarTablero() {
-    if (!gameBoard) return;
+    redimensionarTableroUnificado();
+}
+
+// ===== FUNCIÓN PARA REDIMENSIONAR TABLERO - VERSIÓN UNIFICADA (RESPONSIVA) =====
+function redimensionarTableroUnificado() {
+    if (!gameBoard || !arrayEntidades) return;
 
     const container = gameBoard.parentElement;
     if (!container) return;
 
+    // Obtener dimensiones del contenedor restando paddings
     const style = getComputedStyle(container);
     const padX = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
     const padY = parseInt(style.paddingTop) + parseInt(style.paddingBottom);
@@ -213,34 +279,45 @@ function redimensionarTablero() {
     
     if (containerWidth === 0 || containerHeight === 0) return;
 
-    // modo normal
-    if (!arrayEntidades) return;
     const altura = arrayEntidades.length;
     const anchura = arrayEntidades[0].length;
 
-    // Calcular tamaño de celda para ocupar TODO el ancho
-    let cellSize = containerWidth / anchura;
+    // ===== SISTEMA RESPONSIVO INTELIGENTE =====
+    // Determinar tamaño de celda basado en el ancho del contenedor
+    let cellSize;
+    
+    if (window.innerWidth <= 480) {
+        // Móvil: celdas más pequeñas pero legibles
+        cellSize = Math.min(containerWidth / anchura, 32);
+    } else if (window.innerWidth <= 768) {
+        // Tablet: tamaño intermedio
+        cellSize = Math.min(containerWidth / anchura, 40);
+    } else {
+        // Desktop: tamaño óptimo
+        cellSize = Math.min(containerWidth / anchura, 48);
+    }
     
     // Verificar si cabe en el alto
-    let altoTotal = cellSize * altura;
+    const altoTotal = cellSize * altura;
     
     if (altoTotal > containerHeight) {
-        // Si no cabe, reducir tamaño
+        // Si no cabe en el alto, recalcular basado en el alto
         cellSize = containerHeight / altura;
     }
-
-    // Tamaños mínimos para legibilidad
-    cellSize = Math.max(16, cellSize);
     
-    const fontSize = Math.floor(cellSize * 0.6);
+    // Asegurar tamaño mínimo para legibilidad
+    cellSize = Math.max(20, Math.min(cellSize, 60));
+    
+    // Calcular tamaño de fuente proporcional
+    const fontSize = Math.max(12, Math.floor(cellSize * 0.5));
+    
+    console.log(`📐 Redimensionando: celda=${cellSize.toFixed(1)}px, fuente=${fontSize}px`);
 
-    // Aplicar tamaño
+    // Aplicar grid con tamaños fijos
     gameBoard.style.gridTemplateColumns = `repeat(${anchura}, ${cellSize}px)`;
     gameBoard.style.gridTemplateRows = `repeat(${altura}, ${cellSize}px)`;
     
-    gameBoard.style.width = '100%';
-    gameBoard.style.height = '100%';
-
+    // Ajustar tamaño de las celdas
     const cells = gameBoard.children;
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
@@ -249,8 +326,6 @@ function redimensionarTablero() {
         cell.style.fontSize = `${fontSize}px`;
         cell.style.lineHeight = `${cellSize}px`;
     }
-    
-    console.log(`📏 Celda redimensionada: ${cellSize.toFixed(1)}px`);
 }
 
 // ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA - CORREGIDA CON COLORES POR CLASE =====
@@ -294,7 +369,7 @@ function aplicarColorCelda(cellDiv, celda) {
     } else if (celda instanceof Malos) {
         cellDiv.style.backgroundColor = '#24408e';
         
-        // Asignar color según la subclase de Malos (¡AQUÍ ESTÁ LA CORRECCIÓN!)
+        // Asignar color según la subclase de Malos
         if (celda instanceof Asesino) {
             cellDiv.style.color = '#ff3333'; // Rojo para Asesino
             cellDiv.style.textShadow = '0 0 8px #ff3333';
@@ -330,7 +405,7 @@ function aplicarColorCelda(cellDiv, celda) {
     }
 }
 
-// ===== FUNCIÓN PARA CREAR TABLERO CON DIMENSIONES =====
+// ===== FUNCIÓN PARA CREAR TABLERO CON DIMENSIONES - VERSIÓN UNIFICADA (RESPONSIVA) =====
 function crearTableroConDimensiones(altura, anchura) {
     if (!gameBoard) {
         gameBoard = document.getElementById('gameBoard');
@@ -339,9 +414,11 @@ function crearTableroConDimensiones(altura, anchura) {
 
     console.log(`📋 Creando tablero con dimensiones: ${anchura}x${altura}`);
 
+    // Limpiar tablero
     gameBoard.innerHTML = '';
     gameBoard.style = '';
 
+    // Configurar grid
     gameBoard.style.display = 'grid';
     gameBoard.style.backgroundColor = '#24408e';
     gameBoard.style.width = '100%';
@@ -351,9 +428,7 @@ function crearTableroConDimensiones(altura, anchura) {
     gameBoard.style.padding = '0px';
     gameBoard.style.borderRadius = '0px';
 
-    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
-    gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
-
+    // Crear celdas
     for (let i = 0; i < altura; i++) {
         for (let j = 0; j < anchura; j++) {
             const cellDiv = document.createElement('div');
@@ -364,9 +439,14 @@ function crearTableroConDimensiones(altura, anchura) {
             cellDiv.style.width = '100%';
             cellDiv.style.height = '100%';
             cellDiv.style.boxSizing = 'border-box';
+            cellDiv.style.transition = 'all 0.15s ease-out';
+            cellDiv.style.willChange = 'transform, background-color';
+            
+            // Estilo inicial
             cellDiv.textContent = '·';
             cellDiv.style.color = '#ffff00';
             cellDiv.style.backgroundColor = '#24408e';
+            cellDiv.style.textShadow = '0 0 5px #ffff00';
 
             gameBoard.appendChild(cellDiv);
         }
@@ -374,10 +454,13 @@ function crearTableroConDimensiones(altura, anchura) {
 
     console.log(`✅ Tablero creado con ${altura * anchura} celdas`);
 
-    setTimeout(() => redimensionarTablero(), 10);
-    setTimeout(() => redimensionarTablero(), 50);
-    setTimeout(() => redimensionarTablero(), 150);
+    // Redimensionar el tablero para que se ajuste perfectamente
+    setTimeout(() => redimensionarTableroUnificado(), 10);
+    setTimeout(() => redimensionarTableroUnificado(), 50);
+    setTimeout(() => redimensionarTableroUnificado(), 150);
+    setTimeout(() => redimensionarTableroUnificado(), 300);
 
+    // Si es modo survivor, hacer celdas clicables
     if (modoSurvivorActivo) {
         setTimeout(() => hacerCeldaClickeable(), 200);
     }
@@ -388,11 +471,13 @@ function hacerCeldaClickeable() {
     if (!gameBoard || !arrayEntidades) return;
 
     const cells = gameBoard.children;
+    const altura = arrayEntidades.length;
+    const anchura = arrayEntidades[0].length;
 
     for (let i = 0; i < cells.length; i++) {
         const cell = cells[i];
-        const fila = Math.floor(i / anchuraActual);
-        const columna = i % anchuraActual;
+        const fila = Math.floor(i / anchura);
+        const columna = i % anchura;
 
         // Eliminar onclick anterior para evitar duplicados
         cell.onclick = null;
@@ -409,12 +494,12 @@ function hacerCeldaClickeable() {
             if (modoSurvivorActivo && simulacionPausada && personajeSeleccionado) {
                 console.log(`👆 Clic en celda [${fila},${columna}] con personaje: ${personajeSeleccionado}`);
                 comprarPersonaje(personajeSeleccionado, fila, columna);
-            } else if (!personajeSeleccionado) {
+            } else if (!personajeSeleccionado && modoSurvivorActivo) {
                 // Si no hay personaje seleccionado, mostrar mensaje informativo
                 añadirLog('⚠️ Primero selecciona un personaje en la tienda', 'info');
             }
         };
-        cell.style.cursor = 'pointer';
+        cell.style.cursor = modoSurvivorActivo && simulacionPausada && personajeSeleccionado ? 'pointer' : 'default';
     }
 }
 
@@ -731,7 +816,7 @@ function iniciarSimulacion() {
     esperarDimensionesYIniciar();
 }
 
-// ===== FUNCIÓN PARA ESPERAR DIMENSIONES =====
+// ===== FUNCIÓN PARA ESPERAR DIMENSIONES - MEJORADA =====
 function esperarDimensionesYIniciar(intentos = 0) {
     const container = document.querySelector('.game-board-container');
     if (!container) {
@@ -746,7 +831,9 @@ function esperarDimensionesYIniciar(intentos = 0) {
 
     if (containerWidth > 50 && containerHeight > 50) {
         console.log(`✅ Contenedor listo: ${containerWidth}x${containerHeight}`);
-        recalcularDimensiones();
+        
+        // Recalcular dimensiones óptimas para el tablero
+        recalcularDimensionesOptimizadas();
 
         if (opcionSeleccionada === 'survivor') {
             crearTableroSurvivor();
@@ -774,7 +861,7 @@ function esperarDimensionesYIniciar(intentos = 0) {
 // ===== FUNCIÓN PARA CREAR TABLERO NORMAL =====
 function crearTableroNormal() {
     // recalcular dimensiones cada vez
-    recalcularDimensiones();
+    recalcularDimensionesOptimizadas();
     const altura = alturaActual;
     const anchura = anchuraActual;
     const totalCeldas = altura * anchura;
@@ -967,6 +1054,9 @@ function seleccionarPersonajeTienda(tipo, costo) {
     // Actualizar interfaz
     document.getElementById('shopStatus').innerHTML = `✅ ${tipo.toUpperCase()} seleccionado - Haz clic en una casilla vacía (${costo}💰)`;
     añadirLog(`🛒 Selecciona una casilla para colocar ${tipo} (${costo}💰)`, 'system');
+    
+    // Actualizar cursor de las celdas
+    hacerCeldaClickeable();
 }
 
 // ===== COMPRAR PERSONAJE - CORREGIDO (CREACIÓN DESPUÉS DE VERIFICAR) =====
@@ -1077,6 +1167,9 @@ function comprarPersonaje(tipo, fila, columna) {
     // Limpiar selección
     personajeSeleccionado = null;
     document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
+    
+    // Actualizar cursor de las celdas
+    hacerCeldaClickeable();
 
     return true;
 }
@@ -1677,153 +1770,6 @@ function filtrarLogs(tipo) {
     }
 }
 
-// ===== CONTROLES DE TECLADO =====
-function iniciarControlesTeclado() {
-    document.addEventListener('keydown', (e) => {
-        // IMPORTANTE: Verificar si hay un input enfocado (como el del ranking)
-        const inputActivo = document.activeElement && 
-                           (document.activeElement.tagName === 'INPUT' || 
-                            document.activeElement.tagName === 'TEXTAREA');
-        
-        // Si hay un input activo, permitir escribir sin interferencias
-        if (inputActivo) {
-            // Solo prevenir teclas específicas que podrían cerrar el modal
-            if (e.key === 'Escape') {
-                // Cerrar ranking si está abierto
-                cerrarRanking();
-                cerrarControlesEmergente();
-                e.preventDefault();
-            }
-            return; // No procesar más atajos de teclado
-        }
-        
-        // Resto del código solo se ejecuta si NO hay input activo
-        if (e.ctrlKey || e.altKey || e.metaKey) return;
-
-        const tecla = e.key.toLowerCase();
-        const juegoActivo = !document.getElementById('menuScreen').classList.contains('hidden');
-        const gameOverVisible = !document.getElementById('gameOverPanel').classList.contains('hidden');
-
-        if (tecla === 'f1' || tecla === '?') {
-            e.preventDefault();
-            mostrarAyudaTeclado();
-            return;
-        }
-
-        // Atajos globales (funcionan siempre que no haya input)
-        switch (tecla) {
-            case ' ':
-            case 'space':
-                e.preventDefault();
-                insertCoin();
-                break;
-                
-            case 'l':
-                e.preventDefault();
-                limpiarLogs();
-                break;
-                
-            case 'escape':
-                e.preventDefault();
-                if (!document.getElementById('menuScreen').classList.contains('hidden')) {
-                    // Ya está en el menú
-                } else {
-                    volverAlMenu();
-                }
-                break;
-        }
-
-        // Atajos solo cuando el juego está activo
-        if (juegoActivo) {
-            switch (tecla) {
-                case 'enter':
-                    e.preventDefault();
-                    if (coins > 0) {
-                        useCoin();
-                    } else {
-                        añadirLog('❌ No hay monedas. Usa ESPACIO para insertar', 'info');
-                    }
-                    break;
-                    
-                case 'p':
-                    e.preventDefault();
-                    if (intervaloSimulacion) {
-                        detenerSimulacion();
-                    } else if (simulacionPausada) {
-                        continuarSimulacion();
-                    }
-                    break;
-                    
-                case 'c':
-                    e.preventDefault();
-                    if (simulacionPausada) {
-                        continuarSimulacion();
-                    }
-                    break;
-                    
-                case 'r':
-                    e.preventDefault();
-                    volverAlMenu();
-                    break;
-                    
-                case '+':
-                case '=':
-                    e.preventDefault();
-                    ajustarVelocidad(-25);
-                    break;
-                    
-                case '-':
-                case '_':
-                    e.preventDefault();
-                    ajustarVelocidad(25);
-                    break;
-                    
-                case '0':
-                    e.preventDefault();
-                    velocidadActual = 200;
-                    document.getElementById('velocidadDisplay').textContent = '200ms';
-                    actualizarIndicadorVelocidad();
-                    if (intervaloSimulacion) {
-                        detenerSimulacion();
-                        continuarSimulacion();
-                    }
-                    añadirLog('⚡ Velocidad normal (200ms)', 'system');
-                    break;
-                    
-                case '1':
-                    e.preventDefault();
-                    velocidadActual = 300;
-                    document.getElementById('velocidadDisplay').textContent = '300ms';
-                    actualizarIndicadorVelocidad();
-                    if (intervaloSimulacion) {
-                        detenerSimulacion();
-                        continuarSimulacion();
-                    }
-                    añadirLog('🐢 Velocidad lenta (300ms)', 'system');
-                    break;
-                    
-                case '2':
-                    e.preventDefault();
-                    velocidadActual = 120;
-                    document.getElementById('velocidadDisplay').textContent = '120ms';
-                    actualizarIndicadorVelocidad();
-                    if (intervaloSimulacion) {
-                        detenerSimulacion();
-                        continuarSimulacion();
-                    }
-                    añadirLog('🚀 Velocidad rápida (120ms)', 'system');
-                    break;
-            }
-        }
-
-        // Atajo para game over
-        if (gameOverVisible && tecla === 'enter') {
-            e.preventDefault();
-            reintentarPartida();
-        }
-    });
-}
-
 // ===== CERRAR CONTROLES EMERGENTE =====
 function cerrarControlesEmergente() {
     console.log('🔚 Cerrando controles emergentes');
@@ -2017,41 +1963,6 @@ function debugPaladin() {
     console.log('======================');
 }
 
-// ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Inicializando juego...');
-    gameBoard = document.getElementById('gameBoard');
-
-    document.getElementById('numPersonajes').addEventListener('input', () => {
-        nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
-        validarBotonInicio();
-    });
-
-    cargarVictorias();
-    actualizarCoinDisplay();
-    iniciarControlesTeclado();
-
-    window.addEventListener('resize', () => {
-        if (arrayEntidades) {
-            redimensionarTablero();
-        }
-    });
-
-    actualizarTooltipsClases();
-
-    if (coins === 0) {
-        document.querySelectorAll('#menuCard .mode-btn').forEach(btn => {
-            btn.disabled = true;
-        });
-        document.querySelectorAll('#menuCard input').forEach(el => {
-            el.disabled = true;
-        });
-        document.getElementById('startBtn').disabled = true;
-    }
-
-    console.log('✅ Inicialización completa');
-});
-
 // ===== ACTUALIZAR VISIBILIDAD DE CONTROLES =====
 function actualizarVisibilidadControles() {
     const helpPanel = document.getElementById('helpPanel');
@@ -2223,7 +2134,7 @@ function mostrarRankingSoloVer() {
     añadirLog('👀 Visualizando ranking', 'system');
 }
 
-// ===== CONTROLES DE TECLADO =====
+// ===== CONTROLES DE TECLADO UNIFICADO =====
 function iniciarControlesTeclado() {
     document.addEventListener('keydown', (e) => {
         // IMPORTANTE: Verificar si hay un input enfocado (como el del ranking)
@@ -2442,6 +2353,41 @@ function seleccionarOpcion(opcion) {
     // Habilitar botón START
     validarBotonInicio();
 }
+
+// ===== INICIALIZACIÓN =====
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 Inicializando juego...');
+    gameBoard = document.getElementById('gameBoard');
+
+    document.getElementById('numPersonajes').addEventListener('input', () => {
+        nPersonajesConfig = parseInt(document.getElementById('numPersonajes').value);
+        validarBotonInicio();
+    });
+
+    cargarVictorias();
+    actualizarCoinDisplay();
+    iniciarControlesTeclado();
+
+    window.addEventListener('resize', () => {
+        if (arrayEntidades) {
+            redimensionarTablero();
+        }
+    });
+
+    actualizarTooltipsClases();
+
+    if (coins === 0) {
+        document.querySelectorAll('#menuCard .mode-btn').forEach(btn => {
+            btn.disabled = true;
+        });
+        document.querySelectorAll('#menuCard input').forEach(el => {
+            el.disabled = true;
+        });
+        document.getElementById('startBtn').disabled = true;
+    }
+
+    console.log('✅ Inicialización completa');
+});
 
 // ===== EXPORTAR FUNCIONES GLOBALES =====
 window.iniciarJuego = iniciarJuego;
