@@ -2730,7 +2730,7 @@ html, body {
     padding: 12px 15px;
     background: linear-gradient(145deg, #1a2a3a, #0a1a2a);
     border: 3px solid var(--gold);
-    border-radius: 50px;
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
