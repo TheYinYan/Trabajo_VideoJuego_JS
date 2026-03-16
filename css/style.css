@@ -3205,3 +3205,34 @@ html, body {
     }
 }
 
+
+/* ===== COLORES POR CLASE PARA TOOLTIPS Y CELDAS ===== */
+.game-board > div[data-clase="curandero"] {
+    color: #ffff00 !important;
+    text-shadow: 0 0 8px #ffff00 !important;
+}
+
+.game-board > div[data-clase="paladin"] {
+    color: #33ccff !important;
+    text-shadow: 0 0 8px #33ccff !important;
+}
+
+.game-board > div[data-clase="mago"] {
+    color: #9933ff !important;
+    text-shadow: 0 0 8px #9933ff !important;
+}
+
+.game-board > div[data-clase="asesino"] {
+    color: #ff3333 !important;
+    text-shadow: 0 0 8px #ff3333 !important;
+}
+
+.game-board > div[data-clase="tanque"] {
+    color: #ff8800 !important;
+    text-shadow: 0 0 8px #ff8800 !important;
+}
+
+.game-board > div[data-clase="brujo"] {
+    color: #ff44aa !important;
+    text-shadow: 0 0 8px #ff44aa !important;
+}

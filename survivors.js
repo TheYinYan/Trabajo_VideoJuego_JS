@@ -253,7 +253,7 @@ function redimensionarTablero() {
     console.log(`📏 Celda redimensionada: ${cellSize.toFixed(1)}px`);
 }
 
-// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA =====
+// ===== FUNCIÓN PARA APLICAR COLOR A UNA CELDA - CORREGIDA CON COLORES POR CLASE =====
 function aplicarColorCelda(cellDiv, celda) {
     if (!celda) {
         cellDiv.style.backgroundColor = '#24408e';
@@ -265,9 +265,23 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Buenos) {
         cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ffff00';
+        
+        // Asignar color según la subclase de Buenos
+        if (celda instanceof Curandero) {
+            cellDiv.style.color = '#ffff00'; // Amarillo para Curandero
+            cellDiv.style.textShadow = '0 0 8px #ffff00';
+        } else if (celda instanceof Paladin) {
+            cellDiv.style.color = '#33ccff'; // Azul para Paladín
+            cellDiv.style.textShadow = '0 0 8px #33ccff';
+        } else if (celda instanceof Mago) {
+            cellDiv.style.color = '#9933ff'; // Púrpura para Mago
+            cellDiv.style.textShadow = '0 0 8px #9933ff';
+        } else {
+            cellDiv.style.color = '#ffff00'; // Amarillo para Buenos genérico
+            cellDiv.style.textShadow = '0 0 8px #ffff00';
+        }
+        
         cellDiv.textContent = celda.toString();
-        cellDiv.style.textShadow = '0 0 8px #ffff00';
         cellDiv.style.borderRadius = '0';
 
         const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
@@ -279,9 +293,23 @@ function aplicarColorCelda(cellDiv, celda) {
         cellDiv.classList.remove('taking-damage');
     } else if (celda instanceof Malos) {
         cellDiv.style.backgroundColor = '#24408e';
-        cellDiv.style.color = '#ff0000';
+        
+        // Asignar color según la subclase de Malos (¡AQUÍ ESTÁ LA CORRECCIÓN!)
+        if (celda instanceof Asesino) {
+            cellDiv.style.color = '#ff3333'; // Rojo para Asesino
+            cellDiv.style.textShadow = '0 0 8px #ff3333';
+        } else if (celda instanceof Tanque) {
+            cellDiv.style.color = '#ff8800'; // Naranja para Tanque
+            cellDiv.style.textShadow = '0 0 8px #ff8800';
+        } else if (celda instanceof Brujo) {
+            cellDiv.style.color = '#ff44aa'; // Rosa para Brujo
+            cellDiv.style.textShadow = '0 0 8px #ff44aa';
+        } else {
+            cellDiv.style.color = '#ff0000'; // Rojo para Malos genérico
+            cellDiv.style.textShadow = '0 0 8px #ff0000';
+        }
+        
         cellDiv.textContent = celda.toString();
-        cellDiv.style.textShadow = '0 0 8px #ff0000';
         cellDiv.style.borderRadius = '0';
 
         const porcentaje = Math.floor((celda.vida / celda.vidaMax) * 100);
