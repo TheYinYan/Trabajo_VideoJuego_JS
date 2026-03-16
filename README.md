@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5.1-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5.2-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -45,7 +45,14 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5.1
+## ✨ NOVEDADES EN VERSIÓN 2.5.2
+
+### 📋 Notas
+
+- Solución de errores menores
+- Mejoras de rendimiento y estabilidad
+- Funcionamiento de lectura de teclado correta
+- Boton de Controles en Modo Survivor
 
 ### 🎯 Mejoras Visuales
 - ✅ **Nuevo sistema de tooltips** - Información detallada al pasar el ratón sobre las clases

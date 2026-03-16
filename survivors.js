@@ -18,22 +18,6 @@ let gameOverCoins = 0;
 
 // Dimensiones variables
 let alturaActual = 0;
-let pixelPerfect = false; // cuando es true simulamos 1 div por píxel
-const MAX_PIXEL_CELLS = 200000; // límite para evitar congelar la página
-
-function togglePixelMode() {
-    pixelPerfect = !pixelPerfect;
-    actualizarPixelToggle();
-    añadirLog(`🧱 Modo pixel ${pixelPerfect ? 'activado' : 'desactivado'}`, 'system');
-    recalcularDimensiones();
-    if (opcionSeleccionada === 'survivor') crearTableroSurvivor();
-    else crearTableroNormal();
-}
-
-function actualizarPixelToggle() {
-    const cb = document.getElementById('pixelToggle');
-    if (cb) cb.checked = pixelPerfect;
-}
 let anchuraActual = 0;
 
 // Referencias DOM
@@ -158,8 +142,6 @@ function recalcularDimensiones() {
         return;
     }
 
-
-
     // ===== PRIORIZAR ANCHO =====
     // Queremos que el tablero ocupe TODO el ancho disponible
     // Calculamos el tamaño de celda basado en el ancho deseado
@@ -230,8 +212,6 @@ function redimensionarTablero() {
     const containerHeight = container.clientHeight - padY;
     
     if (containerWidth === 0 || containerHeight === 0) return;
-
-    
 
     // modo normal
     if (!arrayEntidades) return;
@@ -339,59 +319,28 @@ function crearTableroConDimensiones(altura, anchura) {
     gameBoard.style.width = '100%';
     gameBoard.style.height = '100%';
     gameBoard.style.boxSizing = 'border-box';
+    gameBoard.style.gap = '0px';
+    gameBoard.style.padding = '0px';
+    gameBoard.style.borderRadius = '0px';
 
-    if (pixelPerfect) {
-        // estilo mínimo en pixel mode para evitar pérdida de espacio
-        gameBoard.style.gap = '0';
-        gameBoard.style.padding = '0';
-        gameBoard.style.borderRadius = '0';
+    gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
+    gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
 
-        // evitar freeze: límite máximo de celdas
-        if (altura * anchura > MAX_PIXEL_CELLS) {
-            console.warn('⚠️ Modo pixel demasiado grande, se desactiva automáticamente');
-            pixelPerfect = false;
-            actualizarPixelToggle();
-            return crearTableroConDimensiones(altura, anchura);
-        }
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1px)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, 1px)`;
+    for (let i = 0; i < altura; i++) {
+        for (let j = 0; j < anchura; j++) {
+            const cellDiv = document.createElement('div');
+            cellDiv.style.display = 'flex';
+            cellDiv.style.alignItems = 'center';
+            cellDiv.style.justifyContent = 'center';
+            cellDiv.style.fontWeight = 'bold';
+            cellDiv.style.width = '100%';
+            cellDiv.style.height = '100%';
+            cellDiv.style.boxSizing = 'border-box';
+            cellDiv.textContent = '·';
+            cellDiv.style.color = '#ffff00';
+            cellDiv.style.backgroundColor = '#24408e';
 
-        for (let i = 0; i < altura; i++) {
-            for (let j = 0; j < anchura; j++) {
-                const cellDiv = document.createElement('div');
-                cellDiv.style.width = '1px';
-                cellDiv.style.height = '1px';
-                cellDiv.style.boxSizing = 'border-box';
-                cellDiv.textContent = '';
-                cellDiv.style.backgroundColor = '#24408e';
-                gameBoard.appendChild(cellDiv);
-            }
-        }
-    } else {
-        // estilo normal - minimizar gap/padding para usar todo el espacio
-        gameBoard.style.gap = '0px';
-        gameBoard.style.padding = '0px';
-        gameBoard.style.borderRadius = '0px';
-
-        gameBoard.style.gridTemplateColumns = `repeat(${anchura}, 1fr)`;
-        gameBoard.style.gridTemplateRows = `repeat(${altura}, 1fr)`;
-
-        for (let i = 0; i < altura; i++) {
-            for (let j = 0; j < anchura; j++) {
-                const cellDiv = document.createElement('div');
-                cellDiv.style.display = 'flex';
-                cellDiv.style.alignItems = 'center';
-                cellDiv.style.justifyContent = 'center';
-                cellDiv.style.fontWeight = 'bold';
-                cellDiv.style.width = '100%';
-                cellDiv.style.height = '100%';
-                cellDiv.style.boxSizing = 'border-box';
-                cellDiv.textContent = '·';
-                cellDiv.style.color = '#ffff00';
-                cellDiv.style.backgroundColor = '#24408e';
-
-                gameBoard.appendChild(cellDiv);
-            }
+            gameBoard.appendChild(cellDiv);
         }
     }
 
@@ -796,7 +745,7 @@ function esperarDimensionesYIniciar(intentos = 0) {
 
 // ===== FUNCIÓN PARA CREAR TABLERO NORMAL =====
 function crearTableroNormal() {
-    // recalcular dimensiones cada vez en caso de modo pixel
+    // recalcular dimensiones cada vez
     recalcularDimensiones();
     const altura = alturaActual;
     const anchura = anchuraActual;
@@ -926,6 +875,9 @@ function crearTableroSurvivor() {
         detenerSimulacion();
         añadirLog('⏸️ TIEMPO DE PREPARACIÓN - Compra y coloca tus personajes', 'system');
         añadirLog(`💰 Monedas iniciales: ${monedasSurvivor}`, 'system');
+        
+        // ACTUALIZAR VISIBILIDAD DE CONTROLES
+        actualizarVisibilidadControles();
 
         setTimeout(() => {
             hacerCeldaClickeable();
@@ -1121,6 +1073,9 @@ function iniciarRonda() {
         continuarSimulacion();
         añadirLog(`⚔️ ¡RONDA ${rondasSuperadas + 1} COMENZADA!`, 'system');
         document.getElementById('shopStatus').innerHTML = '⚔️ Batalla en curso...';
+        
+        // ACTUALIZAR VISIBILIDAD DE CONTROLES (vuelve al modo normal)
+        actualizarVisibilidadControles();
     }
 }
 
@@ -1207,6 +1162,9 @@ function verificarRondaCompletada() {
 
         detenerSimulacion();
         document.getElementById('shopStatus').innerHTML = '⬆️ Selecciona un personaje y haz clic en una casilla';
+        
+        // ACTUALIZAR VISIBILIDAD DE CONTROLES (vuelve a modo survivor)
+        actualizarVisibilidadControles();
 
         setTimeout(() => {
             hacerCeldaClickeable();
@@ -1242,6 +1200,9 @@ function detenerSimulacion() {
         intervaloSimulacion = null;
         simulacionPausada = true;
         añadirLog('⏸️ Juego pausado', 'system');
+        
+        // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo survivor si aplica)
+        actualizarVisibilidadControles();
     }
 }
 
@@ -1318,7 +1279,6 @@ function detenerReloj() {
         clearInterval(intervaloReloj);
         intervaloReloj = null;
     }
-    // Nota: NO reseteamos tiempoInicio aquí para mantener el valor si es necesario
     console.log('⏱️ Reloj detenido');
 }
 
@@ -1553,8 +1513,10 @@ function mostrarResultado() {
     const malos = Malos.getnMalos() || 0;
 
     if (buenos <= 0) {
+        victoriasMalos++;
         añadirLog(`💀 MALOS GANAN - Victoria #${victoriasMalos}`, 'victory');
     } else {
+        victoriasBuenos++;
         añadirLog(`✨ BUENOS GANAN - Victoria #${victoriasBuenos}`, 'victory');
     }
 
@@ -1575,6 +1537,7 @@ function mostrarResultado() {
     actualizarBotonReintentar();
     detenerReloj();
 }
+
 // ===== MOSTRAR RESULTADO SURVIVOR - CORREGIDO =====
 function mostrarResultadoSurvivor() {
     if (modoSurvivorActivo) {
@@ -1600,6 +1563,9 @@ function mostrarResultadoSurvivor() {
         modoSurvivorActivo = false;
         document.getElementById('survivorPanel')?.classList.add('hidden');
         document.getElementById('simulationControls').classList.add('hidden');
+        
+        // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo normal)
+        actualizarVisibilidadControles();
     }
 }
 
@@ -1630,6 +1596,9 @@ function volverAlMenu() {
     actualizarCoinDisplay();
 
     if (gameBoard) gameBoard.innerHTML = '';
+
+    // ACTUALIZAR VISIBILIDAD DE CONTROLES (modo normal)
+    actualizarVisibilidadControles();
 
     añadirLog('🏠 Volviendo al menú principal', 'system');
 }
@@ -1683,6 +1652,24 @@ function filtrarLogs(tipo) {
 // ===== CONTROLES DE TECLADO =====
 function iniciarControlesTeclado() {
     document.addEventListener('keydown', (e) => {
+        // IMPORTANTE: Verificar si hay un input enfocado (como el del ranking)
+        const inputActivo = document.activeElement && 
+                           (document.activeElement.tagName === 'INPUT' || 
+                            document.activeElement.tagName === 'TEXTAREA');
+        
+        // Si hay un input activo, permitir escribir sin interferencias
+        if (inputActivo) {
+            // Solo prevenir teclas específicas que podrían cerrar el modal
+            if (e.key === 'Escape') {
+                // Cerrar ranking si está abierto
+                cerrarRanking();
+                cerrarControlesEmergente();
+                e.preventDefault();
+            }
+            return; // No procesar más atajos de teclado
+        }
+        
+        // Resto del código solo se ejecuta si NO hay input activo
         if (e.ctrlKey || e.altKey || e.metaKey) return;
 
         const tecla = e.key.toLowerCase();
@@ -1695,31 +1682,128 @@ function iniciarControlesTeclado() {
             return;
         }
 
+        // Atajos globales (funcionan siempre que no haya input)
         switch (tecla) {
-            case ' ': case 'space': e.preventDefault(); insertCoin(); break;
-            case 'l': e.preventDefault(); limpiarLogs(); break;
-            case 'escape': e.preventDefault(); if (!document.getElementById('menuScreen').classList.contains('hidden')) { } else volverAlMenu(); break;
+            case ' ':
+            case 'space':
+                e.preventDefault();
+                insertCoin();
+                break;
+                
+            case 'l':
+                e.preventDefault();
+                limpiarLogs();
+                break;
+                
+            case 'escape':
+                e.preventDefault();
+                if (!document.getElementById('menuScreen').classList.contains('hidden')) {
+                    // Ya está en el menú
+                } else {
+                    volverAlMenu();
+                }
+                break;
         }
 
+        // Atajos solo cuando el juego está activo
         if (juegoActivo) {
             switch (tecla) {
-                case 'enter': e.preventDefault(); if (coins > 0) useCoin(); else añadirLog('❌ No hay monedas. Usa ESPACIO para insertar', 'info'); break;
-                case 'p': e.preventDefault(); if (intervaloSimulacion) detenerSimulacion(); else if (simulacionPausada) continuarSimulacion(); break;
-                case 'c': e.preventDefault(); if (simulacionPausada) continuarSimulacion(); break;
-                case 'r': e.preventDefault(); volverAlMenu(); break;
-                case '+': case '=': e.preventDefault(); ajustarVelocidad(-25); break;
-                case '-': case '_': e.preventDefault(); ajustarVelocidad(25); break;
-                case '0': e.preventDefault(); velocidadActual = 200; document.getElementById('velocidadDisplay').textContent = '200ms'; actualizarIndicadorVelocidad(); if (intervaloSimulacion) { detenerSimulacion(); continuarSimulacion(); } añadirLog('⚡ Velocidad normal (200ms)', 'system'); break;
-                case '1': e.preventDefault(); velocidadActual = 300; document.getElementById('velocidadDisplay').textContent = '300ms'; actualizarIndicadorVelocidad(); if (intervaloSimulacion) { detenerSimulacion(); continuarSimulacion(); } añadirLog('🐢 Velocidad lenta (300ms)', 'system'); break;
-                case '2': e.preventDefault(); velocidadActual = 120; document.getElementById('velocidadDisplay').textContent = '120ms'; actualizarIndicadorVelocidad(); if (intervaloSimulacion) { detenerSimulacion(); continuarSimulacion(); } añadirLog('🚀 Velocidad rápida (120ms)', 'system'); break;
+                case 'enter':
+                    e.preventDefault();
+                    if (coins > 0) {
+                        useCoin();
+                    } else {
+                        añadirLog('❌ No hay monedas. Usa ESPACIO para insertar', 'info');
+                    }
+                    break;
+                    
+                case 'p':
+                    e.preventDefault();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                    } else if (simulacionPausada) {
+                        continuarSimulacion();
+                    }
+                    break;
+                    
+                case 'c':
+                    e.preventDefault();
+                    if (simulacionPausada) {
+                        continuarSimulacion();
+                    }
+                    break;
+                    
+                case 'r':
+                    e.preventDefault();
+                    volverAlMenu();
+                    break;
+                    
+                case '+':
+                case '=':
+                    e.preventDefault();
+                    ajustarVelocidad(-25);
+                    break;
+                    
+                case '-':
+                case '_':
+                    e.preventDefault();
+                    ajustarVelocidad(25);
+                    break;
+                    
+                case '0':
+                    e.preventDefault();
+                    velocidadActual = 200;
+                    document.getElementById('velocidadDisplay').textContent = '200ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('⚡ Velocidad normal (200ms)', 'system');
+                    break;
+                    
+                case '1':
+                    e.preventDefault();
+                    velocidadActual = 300;
+                    document.getElementById('velocidadDisplay').textContent = '300ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('🐢 Velocidad lenta (300ms)', 'system');
+                    break;
+                    
+                case '2':
+                    e.preventDefault();
+                    velocidadActual = 120;
+                    document.getElementById('velocidadDisplay').textContent = '120ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('🚀 Velocidad rápida (120ms)', 'system');
+                    break;
             }
         }
 
+        // Atajo para game over
         if (gameOverVisible && tecla === 'enter') {
             e.preventDefault();
             reintentarPartida();
         }
     });
+}
+
+// ===== CERRAR CONTROLES EMERGENTE =====
+function cerrarControlesEmergente() {
+    console.log('🔚 Cerrando controles emergentes');
+    const modal = document.querySelector('.controls-modal');
+    if (modal) {
+        modal.remove();
+        añadirLog('📋 Controles cerrados', 'system');
+    }
 }
 
 function mostrarAyudaTeclado() {
@@ -1799,7 +1883,7 @@ function añadirPuntuacion(nombre, puntos) {
     guardarRanking();
 }
 
-// ===== MOSTRAR RANKING - CORREGIDO =====
+// ===== MOSTRAR RANKING =====
 function mostrarRanking() {
     cargarRanking();
 
@@ -1844,9 +1928,17 @@ function mostrarRanking() {
     // Enfocar el input automáticamente
     setTimeout(() => {
         const input = document.getElementById('rankingName');
-        if (input) input.focus();
+        if (input) {
+            input.focus();
+            
+            // IMPORTANTE: Prevenir que el modal se cierre al escribir
+            input.addEventListener('keydown', (e) => {
+                e.stopPropagation(); // Evita que el evento llegue a los controles globales
+            });
+        }
     }, 100);
 }
+
 // ===== GUARDAR PUNTUACIÓN - CORREGIDO =====
 function guardarPuntuacion() {
     const input = document.getElementById('rankingName');
@@ -1918,7 +2010,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     actualizarTooltipsClases();
-    actualizarPixelToggle();
 
     if (coins === 0) {
         document.querySelectorAll('#menuCard .mode-btn').forEach(btn => {
@@ -1932,6 +2023,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('✅ Inicialización completa');
 });
+
+// ===== ACTUALIZAR VISIBILIDAD DE CONTROLES =====
+function actualizarVisibilidadControles() {
+    const helpPanel = document.getElementById('helpPanel');
+    const survivorBtn = document.getElementById('survivorControlsBtn');
+    const survivorPanel = document.getElementById('survivorPanel');
+    
+    if (!helpPanel || !survivorBtn) return;
+    
+    // Verificar si estamos en modo survivor con tienda visible
+    const tiendaVisible = survivorPanel && !survivorPanel.classList.contains('hidden');
+    
+    if (modoSurvivorActivo && tiendaVisible) {
+        // En survivor con tienda visible: ocultar panel de ayuda, mostrar botón
+        helpPanel.classList.add('hidden');
+        survivorBtn.classList.remove('hidden');
+    } else {
+        // En cualquier otro caso: mostrar panel de ayuda, ocultar botón
+        helpPanel.classList.remove('hidden');
+        survivorBtn.classList.add('hidden');
+    }
+}
+
+// ===== MOSTRAR CONTROLES EMERGENTE (SOLO EN SURVIVOR) =====
+function mostrarControlesEmergente() {
+    // Solo abrir si estamos en modo survivor con tienda visible
+    const survivorPanel = document.getElementById('survivorPanel');
+    const tiendaVisible = survivorPanel && !survivorPanel.classList.contains('hidden');
+    
+    if (!modoSurvivorActivo || !tiendaVisible) {
+        console.log('❌ Controles emergentes solo disponibles en modo survivor');
+        return;
+    }
+    
+    // Crear modal de controles
+    const modal = document.createElement('div');
+    modal.className = 'controls-modal';
+    modal.innerHTML = `
+        <div class="controls-container">
+            <div class="controls-title">🎮 CONTROLES</div>
+            <div class="controls-content">
+                <div class="controls-grid">
+                    <div class="controls-item">
+                        <span class="controls-key">ESPACIO</span>
+                        <span class="controls-desc">Insertar moneda</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">ENTER</span>
+                        <span class="controls-desc">Jugar / Reintentar</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">P</span>
+                        <span class="controls-desc">Pausar juego</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">C</span>
+                        <span class="controls-desc">Continuar juego</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">R</span>
+                        <span class="controls-desc">Reiniciar / Menú</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">ESC</span>
+                        <span class="controls-desc">Volver al menú</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">+ / -</span>
+                        <span class="controls-desc">Velocidad</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">0</span>
+                        <span class="controls-desc">Velocidad normal</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">1</span>
+                        <span class="controls-desc">Velocidad lenta</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">2</span>
+                        <span class="controls-desc">Velocidad rápida</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">L</span>
+                        <span class="controls-desc">Limpiar bitácora</span>
+                    </div>
+                    <div class="controls-item">
+                        <span class="controls-key">F1</span>
+                        <span class="controls-desc">Mostrar ayuda</span>
+                    </div>
+                </div>
+                <div class="controls-footer">
+                    ⚔️ Modo SURVIVOR - Controles rápidos ⚔️
+                </div>
+            </div>
+            <button class="controls-close" onclick="cerrarControlesEmergente()">CERRAR</button>
+        </div>
+    `;
+    
+    // Asegurar que no haya otros modales
+    const modalExistente = document.querySelector('.controls-modal');
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+    
+    document.body.appendChild(modal);
+    
+    // Añadir evento para cerrar con Escape
+    const cerrarEsc = (e) => {
+        if (e.key === 'Escape') {
+            cerrarControlesEmergente();
+            document.removeEventListener('keydown', cerrarEsc);
+        }
+    };
+    document.addEventListener('keydown', cerrarEsc);
+    
+    añadirLog('📋 Controles emergentes - Modo survivor', 'system');
+}
 
 // ===== MOSTRAR RANKING SOLO VER (SIN INPUT) =====
 function mostrarRankingSoloVer() {
@@ -1986,6 +2195,190 @@ function mostrarRankingSoloVer() {
     añadirLog('👀 Visualizando ranking', 'system');
 }
 
+// ===== CONTROLES DE TECLADO =====
+function iniciarControlesTeclado() {
+    document.addEventListener('keydown', (e) => {
+        // IMPORTANTE: Verificar si hay un input enfocado (como el del ranking)
+        const inputActivo = document.activeElement && 
+                           (document.activeElement.tagName === 'INPUT' || 
+                            document.activeElement.tagName === 'TEXTAREA' ||
+                            document.activeElement.tagName === 'BUTTON');
+        
+        // Si hay un input activo, permitir escribir sin interferencias
+        if (inputActivo) {
+            // Solo prevenir teclas específicas que podrían cerrar el modal
+            if (e.key === 'Escape') {
+                // Cerrar ranking si está abierto
+                cerrarRanking();
+                cerrarControlesEmergente();
+                e.preventDefault();
+            }
+            return; // No procesar más atajos de teclado
+        }
+        
+        // Resto del código solo se ejecuta si NO hay input activo
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+        const tecla = e.key.toLowerCase();
+        
+        // Obtener el estado actual de las pantallas
+        const menuVisible = !document.getElementById('menuScreen').classList.contains('hidden');
+        const gameOverVisible = !document.getElementById('gameOverPanel').classList.contains('hidden');
+        const rankingVisible = !!document.querySelector('.ranking-modal');
+        const controlesVisible = !!document.querySelector('.controls-modal');
+        
+        // Tecla F1 o ? siempre muestra ayuda
+        if (tecla === 'f1' || tecla === '?') {
+            e.preventDefault();
+            mostrarAyudaTeclado();
+            return;
+        }
+
+        // ===== ATAJOS GLOBALES (funcionan siempre) =====
+        switch (tecla) {
+            case ' ':
+            case 'space':
+                e.preventDefault();
+                insertCoin();
+                break;
+                
+            case 'l':
+                e.preventDefault();
+                limpiarLogs();
+                break;
+        }
+
+        // ===== ATAJOS QUE FUNCIONAN EN EL MENÚ PRINCIPAL =====
+        if (menuVisible) {
+            // En el menú, las teclas numéricas seleccionan modos
+            if (tecla === '1' || tecla === '2' || tecla === '3') {
+                e.preventDefault();
+                // Simular clic en el botón correspondiente
+                const btn = document.getElementById(`opcion${tecla}Btn`);
+                if (btn && !btn.disabled) {
+                    btn.click();
+                }
+            }
+            
+            // ENTER inicia el juego si hay monedas
+            if (tecla === 'enter') {
+                e.preventDefault();
+                if (coins > 0) {
+                    iniciarJuego();
+                } else {
+                    añadirLog('❌ Inserta una moneda primero', 'info');
+                }
+            }
+            
+            // ESC no hace nada en el menú (ya está)
+        }
+        
+        // ===== ATAJOS QUE FUNCIONAN EN EL JUEGO (máquina recreativa) =====
+        if (!menuVisible) {
+            switch (tecla) {
+                case 'enter':
+                    e.preventDefault();
+                    if (coins > 0) {
+                        useCoin();
+                    } else {
+                        añadirLog('❌ No hay monedas. Usa ESPACIO para insertar', 'info');
+                    }
+                    break;
+                    
+                case 'p':
+                    e.preventDefault();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                    } else if (simulacionPausada) {
+                        continuarSimulacion();
+                    }
+                    break;
+                    
+                case 'c':
+                    e.preventDefault();
+                    if (simulacionPausada) {
+                        continuarSimulacion();
+                    }
+                    break;
+                    
+                case 'r':
+                    e.preventDefault();
+                    volverAlMenu();
+                    break;
+                    
+                case '+':
+                case '=':
+                    e.preventDefault();
+                    ajustarVelocidad(-25);
+                    break;
+                    
+                case '-':
+                case '_':
+                    e.preventDefault();
+                    ajustarVelocidad(25);
+                    break;
+                    
+                case '0':
+                    e.preventDefault();
+                    velocidadActual = 200;
+                    document.getElementById('velocidadDisplay').textContent = '200ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('⚡ Velocidad normal (200ms)', 'system');
+                    break;
+                    
+                case '1':
+                    e.preventDefault();
+                    velocidadActual = 300;
+                    document.getElementById('velocidadDisplay').textContent = '300ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('🐢 Velocidad lenta (300ms)', 'system');
+                    break;
+                    
+                case '2':
+                    e.preventDefault();
+                    velocidadActual = 120;
+                    document.getElementById('velocidadDisplay').textContent = '120ms';
+                    actualizarIndicadorVelocidad();
+                    if (intervaloSimulacion) {
+                        detenerSimulacion();
+                        continuarSimulacion();
+                    }
+                    añadirLog('🚀 Velocidad rápida (120ms)', 'system');
+                    break;
+            }
+        }
+
+        // ===== ATAJO PARA GAME OVER =====
+        if (gameOverVisible && tecla === 'enter') {
+            e.preventDefault();
+            reintentarPartida();
+        }
+        
+        // ===== ATAJO PARA CERRAR MODALES CON ESC =====
+        if (tecla === 'escape') {
+            if (rankingVisible) {
+                cerrarRanking();
+                e.preventDefault();
+            } else if (controlesVisible) {
+                cerrarControlesEmergente();
+                e.preventDefault();
+            } else if (!menuVisible) {
+                // Si no hay modales y no estamos en el menú, volver al menú
+                volverAlMenu();
+                e.preventDefault();
+            }
+        }
+    });
+}
+
 // ===== FUNCIÓN PARA SELECCIONAR OPCIÓN - CORREGIDA =====
 function seleccionarOpcion(opcion) {
     console.log(`🎮 Seleccionando modo: ${opcion}`);
@@ -1996,20 +2389,16 @@ function seleccionarOpcion(opcion) {
         btn.classList.remove('selected');
     });
     
-    // Añadir clase selected al botón actual (usando event)
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('selected');
-    } else {
-        // Fallback por si no hay event
-        const botones = {
-            1: document.getElementById('opcion1Btn'),
-            2: document.getElementById('opcion2Btn'),
-            3: document.getElementById('opcion3Btn'),
-            'survivor': document.getElementById('survivorBtn')
-        };
-        if (botones[opcion]) {
-            botones[opcion].classList.add('selected');
-        }
+    // Añadir clase selected al botón actual
+    const botones = {
+        1: document.getElementById('opcion1Btn'),
+        2: document.getElementById('opcion2Btn'),
+        3: document.getElementById('opcion3Btn'),
+        'survivor': document.getElementById('survivorBtn')
+    };
+    
+    if (botones[opcion]) {
+        botones[opcion].classList.add('selected');
     }
     
     // Mostrar/ocultar campo de número de personajes
@@ -2035,6 +2424,9 @@ window.comprarPersonaje = comprarPersonaje;
 window.iniciarRonda = iniciarRonda;
 window.guardarPuntuacion = guardarPuntuacion;
 window.cerrarRanking = cerrarRanking;
+window.mostrarRankingSoloVer = mostrarRankingSoloVer;
+window.mostrarControlesEmergente = mostrarControlesEmergente;
+window.cerrarControlesEmergente = cerrarControlesEmergente;
 window.detenerSimulacion = detenerSimulacion;
 window.continuarSimulacion = continuarSimulacion;
 window.ajustarVelocidad = ajustarVelocidad;

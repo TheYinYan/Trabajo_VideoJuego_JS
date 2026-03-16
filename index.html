@@ -72,7 +72,7 @@
                         <div class="survivor-stats">
                             <div class="survivor-stat">
                                 <span>💰</span>
-                                <span id="survivorMonedas">100</span>
+                                <span id="survivorMonedas">125</span>
                             </div>
                             <div class="survivor-stat">
                                 <span>🏆</span>
@@ -124,8 +124,8 @@
                         </div>
                     </div>
 
-                    <!-- PANEL DE AYUDA CON CONTROLES -->
-                    <div class="help-panel">
+                    <!-- PANEL DE AYUDA CON CONTROLES (se oculta en survivor) -->
+                    <div class="help-panel" id="helpPanel">
                         <div class="help-header">🎮 CONTROLES</div>
                         <div class="help-content">
                             <div class="help-row">
@@ -202,6 +202,13 @@
                                     title="Filtrar victorias"></span>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- ===== BOTÓN DE CONTROLES (SOLO VISIBLE EN SURVIVOR) ===== -->
+                    <div class="survivor-controls-button hidden" id="survivorControlsBtn" onclick="mostrarControlesEmergente()">
+                        <div class="survivor-controls-icon">🎮</div>
+                        <div class="survivor-controls-text">CONTROLES</div>
+                        <div class="survivor-controls-glow"></div>
                     </div>
 
                     <div class="bar-decoration bottom"></div>
