@@ -1507,43 +1507,45 @@ html, body {
     overflow-y: auto;
 }
 
-/* ===== HIGH SCORE DELUXE - SIN REDUNDANCIAS ===== */
+/* ===== HIGH SCORE DELUXE - MISMO TAMAÑO QUE LOS DEMÁS PANELES ===== */
 .highscore-deluxe {
     background: linear-gradient(145deg, #1a2a3a, #0a1a2a);
-    border: 3px solid var(--gold);
-    border-radius: 15px;
-    padding: 15px;
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 12px;
     margin-bottom: 15px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,215,0,0.2);
     backdrop-filter: blur(5px);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .highscore-deluxe .stats-header {
     color: var(--gold);
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     font-weight: bold;
-    text-shadow: 0 0 10px var(--gold);
+    text-shadow: 0 0 8px var(--gold);
     padding-bottom: 8px;
-    border-bottom: 2px solid rgba(255,215,0,0.3);
+    border-bottom: 1px solid rgba(255,215,0,0.3);
 }
 
-/* CONTADORES PRINCIPALES */
+/* CONTADORES PRINCIPALES - MÁS COMPACTOS */
 .highscore-deluxe .main-counters {
     display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+    gap: 6px;
+    margin-bottom: 12px;
 }
 
 .highscore-deluxe .stat-item {
     flex: 1;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255,215,0,0.3);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255,215,0,0.2);
     border-radius: 8px;
-    padding: 8px;
+    padding: 6px 4px;
     text-align: center;
     transition: all 0.2s;
 }
@@ -1557,14 +1559,15 @@ html, body {
 .highscore-deluxe .stat-label {
     display: block;
     color: #aaa;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
 }
 
 .highscore-deluxe .stat-value-large {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
     line-height: 1.2;
 }
@@ -1584,48 +1587,48 @@ html, body {
     text-shadow: 0 0 8px #ff6b6b;
 }
 
-/* TARJETAS DE JUGADORES */
+/* TARJETAS DE JUGADORES - MÁS COMPACTAS */
 .players-row.deluxe {
     display: flex;
-    gap: 10px;
-    margin: 15px 0;
+    gap: 8px;
+    margin: 12px 0;
 }
 
 .player-card.enhanced {
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid;
-    border-radius: 12px;
-    padding: 10px;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 8px;
     transition: all 0.2s;
 }
 
 .player-card.enhanced:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .player-card.enhanced.good {
     border-color: #ffff00;
-    background: linear-gradient(145deg, rgba(255,255,0,0.1), rgba(0,0,0,0.6));
+    background: linear-gradient(145deg, rgba(255,255,0,0.1), rgba(0,0,0,0.5));
 }
 
 .player-card.enhanced.bad {
     border-color: #ff6b6b;
-    background: linear-gradient(145deg, rgba(255,107,107,0.1), rgba(0,0,0,0.6));
+    background: linear-gradient(145deg, rgba(255,107,107,0.1), rgba(0,0,0,0.5));
 }
 
 .player-avatar {
-    width: 45px;
-    height: 45px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
     flex-shrink: 0;
 }
@@ -1633,13 +1636,13 @@ html, body {
 .player-card.enhanced.good .player-avatar {
     background: #ffff00;
     color: black;
-    box-shadow: 0 0 15px #ffff00;
+    box-shadow: 0 0 10px #ffff00;
 }
 
 .player-card.enhanced.bad .player-avatar {
     background: #ff6b6b;
     color: white;
-    box-shadow: 0 0 15px #ff6b6b;
+    box-shadow: 0 0 10px #ff6b6b;
 }
 
 .player-info {
@@ -1652,13 +1655,13 @@ html, body {
 
 .player-label {
     color: #ccc;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .player-value {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     line-height: 1.2;
 }
@@ -1676,46 +1679,49 @@ html, body {
 .player-wins {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--gold);
-    border-radius: 15px;
-    padding: 2px 8px;
+    border-radius: 12px;
+    padding: 2px 6px;
     width: fit-content;
+    margin-top: 2px;
 }
 
 .wins-icon {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     filter: drop-shadow(0 0 3px var(--gold));
 }
 
 .wins-number {
     color: var(--gold);
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-shadow: 0 0 3px var(--gold);
 }
 
-/* BARRA DE ACCIÓN */
+/* BARRA DE ACCIÓN - MÁS COMPACTA */
 .stats-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255,215,0,0.3);
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,215,0,0.2);
 }
 
 .reset-btn {
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid var(--gold);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--gold);
     color: var(--gold);
-    padding: 6px 12px;
-    border-radius: 25px;
+    padding: 4px 10px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+    font-size: 0.7rem;
+    font-weight: bold;
     transition: all 0.2s;
 }
 
@@ -1723,49 +1729,25 @@ html, body {
     background: var(--gold);
     color: black;
     transform: scale(1.05);
-    box-shadow: 0 0 15px var(--gold);
+    box-shadow: 0 0 10px var(--gold);
 }
 
 .win-ratio {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--green);
-    border-radius: 15px;
-    padding: 4px 10px;
+    border-radius: 12px;
+    padding: 4px 8px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--green);
 }
 
-.ratio-label {
-    color: var(--green);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-}
-
-.ratio-value {
-    color: var(--green);
-    font-size: 1rem;
+.win-ratio .ratio-value {
+    font-size: 0.9rem;
     font-weight: bold;
     text-shadow: 0 0 5px var(--green);
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .players-row.deluxe {
-        flex-direction: column;
-    }
-    
-    .player-card.enhanced {
-        width: 100%;
-    }
-    
-    .main-counters {
-        flex-wrap: wrap;
-    }
-    
-    .stat-item {
-        min-width: 80px;
-    }
 }
 
 /* ===== ESTADÍSTICAS DE CLASES ===== */

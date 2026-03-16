@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5.5-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5.6-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -12,7 +12,7 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-- [✨ NOVEDADES EN VERSIÓN 2.5.5](#-novedades-en-versión-255)
+- [✨ NOVEDADES EN VERSIÓN 2.5.6](#-novedades-en-versión-255)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
@@ -45,7 +45,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5.5
+## ✨ NOVEDADES EN VERSIÓN 2.5.6
 
 ### 📋 Notas de la versión
 
@@ -75,7 +75,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 survivors-js/
 │
 ├── 📄 index.html                          # Interfaz de usuario
-├── 📄 survivors.js                        # Control principal (v2.5.5)
+├── 📄 survivors.js                        # Control principal (v2.5.6)
 ├── 📁 css/
 │   ├── 📄 style.css                        # Estilos principales (ACTUALIZADO)
 │   ├── 📄 style-pacman.css                  # Tema Pac-Man
@@ -357,7 +357,7 @@ const CLASES_CONFIG = {
 | **Monedas no se actualizan** | Revisa los IDs en el HTML: `coinCount`, `gameCoinCount`, `panelCoinCount` |
 | **Ranking no aparece** | Asegura que localStorage está habilitado en el navegador |
 | **Las victorias suman de más** | Verifica que no haya game over duplicado (usar flag `gameOverProcesado`) |
-| **Datos duplicados en panel** | Actualiza a v2.5.5 que elimina todas las redundancias |
+| **Datos duplicados en panel** | Actualiza a v2.5.6 que elimina todas las redundancias |
 
 ---
 
@@ -378,7 +378,7 @@ Entidad
 └── Obstaculos (█)
 ```
 
-### IDs Importantes (v2.5.5)
+### IDs Importantes (v2.5.6)
 ```html
 <!-- Monedas -->
 <span id="coinCount">0</span>
@@ -419,7 +419,7 @@ gameOverProcesado        // Evita game over duplicado
 
 ## 🚀 HOJA DE RUTA
 
-### ✅ Completado en v2.5.5
+### ✅ Completado en v2.5.6
 - [x] **Eliminadas todas las redundancias** del panel HIGH SCORE
 - [x] **Unificados los IDs** de estadísticas (buenosStats y malosStats)
 - [x] **Código más limpio y eficiente** sin elementos duplicados
@@ -497,9 +497,9 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 ---
 
-*Última actualización: Marzo 2026 - Versión 2.5.5*
+*Última actualización: Marzo 2026 - Versión 2.5.6*
 
-## Principales novedades en v2.5.5:
+## Principales novedades en v2.5.6:
 
 ### ✅ **Eliminadas todas las redundancias**
 - Eliminados IDs `buenosStatsCard` y `malosStatsCard`
