@@ -413,26 +413,12 @@ gameOverProcesado        // Evita game over duplicado
 
 ### 🔜 Próximas Versiones
 
-**v2.6.0 - Mejoras Visuales**
-- [ ] Efectos de partículas en combates
-- [ ] Animaciones de muerte para personajes
-- [ ] Iconos SVG personalizados por clase
-- [ ] Fondos dinámicos según modo de juego
-- [ ] Transiciones más suaves entre estados
-
-**v2.7.0 - Efectos de Sonido**
+**v2.6.0 - Efectos de Sonido**
 - [ ] Sonido al insertar moneda
 - [ ] Efecto de combate y golpes
 - [ ] Fanfarria de victoria
 - [ ] Música de fondo ambiental
 - [ ] Control de volumen en interfaz
-
-**v3.0.0 - Nuevas Funcionalidades**
-- [ ] Modo torneo con eliminatorias
-- [ ] Guardar y cargar partidas
-- [ ] Más clases especiales (Arquero, Guerrero, etc.)
-- [ ] Modo multijugador local (2 jugadores)
-- [ ] Logros y desbloqueables
 
 ---
 
