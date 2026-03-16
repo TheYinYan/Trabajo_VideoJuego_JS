@@ -52,11 +52,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 - Añadir nuevas clases (Arquero, Guerrero, etc.)
 - Mejorar el sistema de habilidades (curar aliados, efectos de área)
 - Añadir efectos de sonido (combates, monedas, victoria)
-- Crear más modos de juego (Modo torneo, Contrarreloj)
-- Añadir Power-ups (objetos que aparecen en el tablero)
 - Mejorar animaciones (efectos visuales más vistosos)
-- Añadir persistencia de partidas (guardar progreso)
-- Crear versión mobile app (convertir a PWA)
 
 ### 🎯 Mejoras Visuales
 - ✅ **Nuevo sistema de tooltips** - Información detallada al pasar el ratón sobre las clases
