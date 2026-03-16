@@ -47,13 +47,6 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ## ✨ NOVEDADES EN VERSIÓN 2.5.3
 
-### 📋 Notas
-
-- Solución de errores menores
-- Mejoras de rendimiento y estabilidad
-- Funcionamiento de lectura de teclado correta
-- Boton de Controles en Modo Survivor
-
 ### Opciones
 
 - Añadir nuevas clases (Arquero, Guerrero, etc.)
