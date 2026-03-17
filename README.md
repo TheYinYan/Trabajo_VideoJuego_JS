@@ -2,7 +2,7 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5.6-blue)
+![Versión](https://img.shields.io/badge/Versión-2.5.7-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
@@ -12,7 +12,7 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-- [✨ NOVEDADES EN VERSIÓN 2.5.6](#-novedades-en-versión-255)
+- [✨ NOVEDADES EN VERSIÓN 2.5.7](#-novedades-en-versión-255)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
@@ -44,15 +44,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5.6
-
-### 📋 Notas de la versión
-
-- **Eliminadas todas las redundancias** en el panel HIGH SCORE
-- **Unificados los IDs** `buenosStats` y `malosStats` para evitar duplicación
-- **Panel más limpio y eficiente** sin elementos duplicados
-- **Mejoras en el diseño responsive** de las tarjetas de jugadores
-- **Optimización general del código** para mejor mantenimiento
+## ✨ NOVEDADES EN VERSIÓN 2.5.7
 
 ### 🎯 Mejoras Visuales
 - ✅ **Panel HIGH SCORE simplificado** - Sin elementos redundantes
@@ -74,7 +66,7 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 survivors-js/
 │
 ├── 📄 index.html                          # Interfaz de usuario
-├── 📄 survivors.js                        # Control principal (v2.5.6)
+├── 📄 survivors.js                        # Control principal (v2.5.7)
 ├── 📁 css/
 │   ├── 📄 style.css                        # Estilos
 ├── 📁 assets/
@@ -330,7 +322,7 @@ const CLASES_CONFIG = {
 | **Monedas no se actualizan** | Revisa los IDs en el HTML: `coinCount`, `gameCoinCount`, `panelCoinCount` |
 | **Ranking no aparece** | Asegura que localStorage está habilitado en el navegador |
 | **Las victorias suman de más** | Verifica que no haya game over duplicado (usar flag `gameOverProcesado`) |
-| **Datos duplicados en panel** | Actualiza a v2.5.6 que elimina todas las redundancias |
+| **Datos duplicados en panel** | Actualiza a v2.5.7 que elimina todas las redundancias |
 
 ---
 
@@ -351,7 +343,7 @@ Entidad
 └── Obstaculos (█)
 ```
 
-### IDs Importantes (v2.5.6)
+### IDs Importantes (v2.5.7)
 ```html
 <!-- Monedas -->
 <span id="coinCount">0</span>
@@ -456,18 +448,11 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 ---
 
-*Última actualización: Marzo 2026 - Versión 2.5.6*
+*Última actualización: Marzo 2026 - Versión 2.5.7*
 
-## Principales novedades en v2.5.6:
+## Principales novedades en v2.5.7:
 
-### ✅ **Eliminadas todas las redundancias**
-- Eliminados IDs `buenosStatsCard` y `malosStatsCard`
-- Unificado: `buenosStats` y `malosStats` se usan en TODOS los lugares
-- Panel HIGH SCORE más limpio y eficiente
-- Código más fácil de mantener
-
-### 📊 **Mejoras en el panel**
-- Contadores principales y tarjetas comparten los mismos datos
-- Una sola línea de JavaScript actualiza ambos elementos
-- Diseño más compacto sin perder información
-- Mejor rendimiento general
+### Implementacion del Game Over en Modo SURVIVOR
+- Se muestra un panel de Game Over al finalizar la partida
+- Si se superó al menos una ronda, guardara la puntuación en el ranking
+- Si no se superó ninguna ronda, el ranking no se guardará pero se podrá visualizar

@@ -1542,33 +1542,86 @@ function mostrarResultado() {
     detenerReloj();
 }
 
+// ===== MOSTRAR RESULTADO SURVIVOR - MEJORADO CON OPCIÓN DE RANKING =====
 function mostrarResultadoSurvivor() {
     if (modoSurvivorActivo) {
         detenerSimulacion();
         detenerReloj();
 
-        if (Buenos.getnBuenos() <= 0) {
+        // Determinar quién ganó
+        const buenosVivos = Buenos.getnBuenos();
+        let mensajeVictoria = '';
+
+        if (buenosVivos <= 0) {
+            mensajeVictoria = '💀 MALOS GANAN 💀';
             añadirLog(`💀 MALOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         } else {
+            mensajeVictoria = '✨ BUENOS GANAN ✨';
             añadirLog(`✨ BUENOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         }
 
+        // Mostrar panel de GAME OVER
+        document.getElementById('resultadoTitulo').textContent = mensajeVictoria;
+        document.getElementById('resultadoTitulo').style.color = buenosVivos <= 0 ? '#ff0000' : '#00ff00';
+        document.getElementById('resultadoTotal').textContent = Personajes.getnPersonajes() || 0;
+        document.getElementById('resultadoBuenos').textContent = buenosVivos;
+        document.getElementById('resultadoMalos').textContent = Malos.getnMalos() || 0;
+
+        actualizarGameOverCoins();
+        document.getElementById('gameOverPanel').classList.remove('hidden');
+        document.getElementById('simulationControls').classList.add('hidden');
+
+        // ELIMINAR BOTONES ANTERIORES para evitar duplicados
+        const btnRankingExistente = document.getElementById('gameOverRankingBtn');
+        if (btnRankingExistente) btnRankingExistente.remove();
+
+        const btnGuardarExistente = document.getElementById('gameOverGuardarBtn');
+        if (btnGuardarExistente) btnGuardarExistente.remove();
+
+        // AÑADIR BOTONES AL PANEL DE GAME OVER
+        const gameOverControls = document.querySelector('.game-over-controls');
+
+        // 1. BOTÓN VER RANKING (visible siempre, pero solo funcional si no se superó ninguna ronda)
+        if (rondasSuperadas <= 0) {
+            const rankingBtn = document.createElement('div');
+            rankingBtn.id = 'gameOverRankingBtn';
+            rankingBtn.className = 'gameover-btn ranking-btn';
+            rankingBtn.innerHTML = `
+            <span class="btn-icon">🏆</span>
+            <span class="btn-text">VER RANKING</span>
+        `;
+            rankingBtn.onclick = function () {
+                mostrarRankingSoloVer();
+            };
+            gameOverControls.appendChild(rankingBtn);
+        }
+
+        // 2. BOTÓN GUARDAR PUNTUACIÓN (solo si hay al menos 1 ronda)
         if (rondasSuperadas > 0) {
-            console.log('🏆 Mostrando ranking por haber superado', rondasSuperadas, 'rondas');
-            mostrarRanking();
-        } else {
-            console.log('🔄 No se superaron rondas, volviendo al menú');
-            volverAlMenu();
+            const guardarBtn = document.createElement('div');
+            guardarBtn.id = 'gameOverGuardarBtn';
+            guardarBtn.className = 'gameover-btn guardar-btn';
+            guardarBtn.innerHTML = `
+                <span class="btn-icon">📝</span>
+                <span class="btn-text">GUARDAR PUNTUACIÓN (${puntosTotales})</span>
+            `;
+            guardarBtn.onclick = function () {
+                mostrarRanking();
+            };
+            gameOverControls.appendChild(guardarBtn);
+
+            añadirLog(`🏆 Has sobrevivido ${rondasSuperadas} rondas con ${puntosTotales} puntos`, 'victory');
         }
 
         modoSurvivorActivo = false;
         document.getElementById('survivorPanel')?.classList.add('hidden');
-        document.getElementById('simulationControls').classList.add('hidden');
 
         actualizarVisibilidadControles();
+        actualizarBotonReintentar();
     }
 }
 
+// ===== VOLVER AL MENÚ - LIMPIAR BOTÓN EXTRA =====
 function volverAlMenu() {
     detenerSimulacion();
     detenerReloj();
@@ -1598,6 +1651,12 @@ function volverAlMenu() {
     if (gameBoard) gameBoard.innerHTML = '';
 
     actualizarVisibilidadControles();
+
+    // ELIMINAR BOTÓN DE RANKING SI EXISTE
+    const rankingBtn = document.getElementById('gameOverRankingBtn');
+    if (rankingBtn) {
+        rankingBtn.remove();
+    }
 
     añadirLog('🏠 Volviendo al menú principal', 'system');
 }
@@ -2137,44 +2196,6 @@ function seleccionarOpcion(opcion) {
     validarBotonInicio();
 }
 
-// ===== FUNCIÓN PARA CAMBIAR TEMA =====
-function cambiarTema(tema) {
-    const themeLink = document.getElementById('theme-style') || document.createElement('link');
-    if (!themeLink.id) {
-        themeLink.id = 'theme-style';
-        themeLink.rel = 'stylesheet';
-        document.head.appendChild(themeLink);
-    }
-
-    themeLink.href = `css/style-${tema}.css`;
-
-    document.getElementById('themePacman')?.classList.remove('active');
-    document.getElementById('themeClassic')?.classList.remove('active');
-    document.getElementById(`theme${tema.charAt(0).toUpperCase() + tema.slice(1)}`)?.classList.add('active');
-    document.getElementById('themeIndicator').textContent = tema.toUpperCase();
-
-    localStorage.setItem('survivors-theme', tema);
-    añadirLog(`🎨 Tema cambiado a: ${tema.toUpperCase()}`, 'system');
-}
-
-// ===== FUNCIÓN DE DEPURACIÓN =====
-function debugPaladin() {
-    console.log('=== DEBUG PALADINES ===');
-    let paladines = [];
-    for (let i = 0; i < arrayPersonajes.length; i++) {
-        if (arrayPersonajes[i] instanceof Paladin) {
-            paladines.push({
-                pos: [arrayPersonajes[i].y, arrayPersonajes[i].x],
-                vida: arrayPersonajes[i].vida,
-                vidaMax: arrayPersonajes[i].vidaMax
-            });
-        }
-    }
-    console.log('Paladines encontrados:', paladines.length);
-    console.log(paladines);
-    console.log('======================');
-}
-
 // ===== ACTUALIZAR RATIO DE VICTORIAS =====
 function actualizarRatioVictorias() {
     const totalVictorias = victoriasBuenos + victoriasMalos;
@@ -2261,5 +2282,3 @@ window.useCoin = useCoin;
 window.reintentarPartida = reintentarPartida;
 window.limpiarLogs = limpiarLogs;
 window.filtrarLogs = filtrarLogs;
-window.cambiarTema = cambiarTema;
-window.debugPaladin = debugPaladin;
