@@ -2,17 +2,18 @@
 
 Juego de simulación donde personajes Buenos y Malos luchan en un tablero con obstáculos. Los personajes se mueven, persiguen a sus enemigos y combaten hasta que solo queda un bando.
 
-![Versión](https://img.shields.io/badge/Versión-2.5.7-blue)
+![Versión](https://img.shields.io/badge/Versión-2.6.0-blue)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
 ![Licencia](https://img.shields.io/badge/Licencia-MIT-green)
 ![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-success)
+![Sonidos](https://img.shields.io/badge/Sonidos-Integrados-orange)
 
 ---
 
 ## 📑 ÍNDICE
 
 - [🎮 DESCRIPCIÓN DEL JUEGO](#-descripción-del-juego)
-- [✨ NOVEDADES EN VERSIÓN 2.5.7](#-novedades-en-versión-255)
+- [✨ NOVEDADES EN VERSIÓN 2.6.0](#-novedades-en-versión-260)
 - [📁 ESTRUCTURA DE ARCHIVOS](#-estructura-de-archivos)
 - [🚀 CÓMO EJECUTAR](#-cómo-ejecutar)
 - [🎯 CARACTERÍSTICAS PRINCIPALES](#-características-principales)
@@ -22,6 +23,7 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 - [📊 PANEL DE ESTADÍSTICAS](#-panel-de-estadísticas)
 - [📋 BITÁCORA DE COMBATE](#-bitácora-de-combate)
 - [🏆 SISTEMA DE RANKING](#-sistema-de-ranking)
+- [🔊 SISTEMA DE SONIDOS](#-sistema-de-sonidos)
 - [🛠️ PERSONALIZACIÓN](#️-personalización)
 - [🐛 SOLUCIÓN DE PROBLEMAS](#-solución-de-problemas)
 - [📝 NOTAS PARA DESARROLLADORES](#-notas-para-desarrolladores)
@@ -39,24 +41,32 @@ Juego de simulación donde personajes Buenos y Malos luchan en un tablero con ob
 - **Obstáculos (█)** - Elementos estáticos que bloquean el paso
 - **7 clases únicas** - Cada una con estadísticas y habilidades especiales
 - **4 modos de juego** - Diferentes formas de jugar y estrategias
+- **Sistema de sonidos** - Experiencia arcade completa 🔊
 
 Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y combaten automáticamente hasta que solo queda un bando.
 
 ---
 
-## ✨ NOVEDADES EN VERSIÓN 2.5.7
+## ✨ NOVEDADES EN VERSIÓN 2.6.0
 
-### 🎯 Mejoras Visuales
-- ✅ **Panel HIGH SCORE simplificado** - Sin elementos redundantes
-- ✅ **Tarjetas de jugadores optimizadas** - Usan los mismos IDs que los contadores
-- ✅ **Diseño más limpio** - Eliminadas clases CSS duplicadas
-- ✅ **Mejor organización** - Estructura de código más clara y mantenible
+### 🔊 Sistema de Sonidos Completo
+- ✅ **Sonido al insertar moneda** - Feedback inmediato 🪙
+- ✅ **Fanfarria de victoria** - Celebración al ganar una partida 🎉
+- ✅ **Música de fondo ambiental** - Inmersión total durante el juego 🎵
+- ✅ **Pausa/Reanudación de música** - Al pausar el juego, la música también se pausa
+- ✅ **Detección automática** - Si faltan archivos de sonido, el juego continúa sin errores
+
+### 🎯 Mejoras en Game Over de SURVIVOR
+- ✅ **Panel de Game Over mejorado** con diseño arcade
+- ✅ **Botón "VER RANKING"** siempre visible (sin opción de guardar)
+- ✅ **Botón "GUARDAR PUNTUACIÓN"** visible solo si se superó al menos 1 ronda
+- ✅ **Los puntos se muestran** directamente en el botón de guardar
 
 ### 🚀 Mejoras Técnicas
-- ✅ **Eliminados IDs redundantes**: `buenosStatsCard` y `malosStatsCard`
-- ✅ **Unificación de datos**: Un solo ID para cada estadística
-- ✅ **Código más eficiente**: Una línea de JavaScript actualiza ambos elementos
-- ✅ **Mejor rendimiento**: Menos manipulaciones del DOM
+- ✅ **Sistema de sonidos robusto** con manejo de errores
+- ✅ **Volumen configurable** para cada tipo de sonido
+- ✅ **Música en loop** para ambiente continuo
+- ✅ **Sin saturación de sonidos** - Optimizado para múltiples eventos
 
 ---
 
@@ -66,12 +76,16 @@ Los personajes se mueven en 8 direcciones, persiguen a sus enemigos naturales y 
 survivors-js/
 │
 ├── 📄 index.html                          # Interfaz de usuario
-├── 📄 survivors.js                        # Control principal (v2.5.7)
+├── 📄 survivors.js                        # Control principal (v2.6.0)
 ├── 📁 css/
-│   ├── 📄 style.css                        # Estilos
+│   ├── 📄 style.css                        # Estilos principales
 ├── 📁 assets/
-│   └── 📁 images/
-│       └── 📄 favicon.svg                    # Icono de la pestaña
+│   ├── 📁 images/
+│   │   └── 📄 favicon.svg                    # Icono de la pestaña
+│   └── 📁 sounds/                             # NUEVO - Sonidos del juego
+│       ├── 📄 coin.mp3                         # Sonido al insertar moneda
+│       ├── 📄 victory.mp3                      # Fanfarria de victoria
+│       └── 📄 bgm.mp3                          # Música de fondo
 ├── 📁 Entidades/                            # Clases del juego
 │   ├── 📄 Entidad.js                          # Clase base
 │   ├── 📄 Personajes.js                       # Clase para personajes
@@ -96,11 +110,12 @@ survivors-js/
 
 ### Desde Local
 1. **Descarga todos los archivos** manteniendo la estructura de carpetas
-2. **Abre `index.html`** en cualquier navegador moderno (Chrome, Firefox, Edge, Safari)
-3. **Inserta una moneda** 🪙 (haciendo clic en INSERT o presionando ESPACIO)
-4. **Selecciona un modo de juego** y configura los parámetros
-5. **Haz clic en COMENZAR** o presiona ENTER
-6. **¡Disfruta la batalla!** ⚔️
+2. **Asegúrate de tener los archivos de sonido** en `assets/sounds/` (opcional - el juego funciona sin ellos)
+3. **Abre `index.html`** en cualquier navegador moderno (Chrome, Firefox, Edge, Safari)
+4. **Inserta una moneda** 🪙 (haciendo clic en INSERT o presionando ESPACIO)
+5. **Selecciona un modo de juego** y configura los parámetros
+6. **Haz clic en COMENZAR** o presiona ENTER
+7. **¡Disfruta la batalla con sonidos!** ⚔️🔊
 
 ### Online
 👉 **[JUGAR AHORA - SURVIVORS ONLINE](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)**
@@ -124,6 +139,7 @@ survivors-js/
 | **Estadísticas Tiempo Real** | Total, Buenos, Malos, victorias, combates, daño |
 | **Control de Velocidad** | Ajusta la velocidad de la simulación en tiempo real |
 | **Persistencia Local** | Las victorias y rankings se guardan entre sesiones |
+| **Sistema de Sonidos** | Efectos de moneda, victoria y música ambiental |
 | **Sin Redundancias** | Código optimizado sin elementos duplicados |
 | **Responsive Design** | Se adapta perfectamente a móviles, tablets y desktop |
 
@@ -134,11 +150,11 @@ survivors-js/
 ### Botones en pantalla
 | Botón | Función |
 |-------|---------|
-| **INSERT** | Insertar moneda |
+| **INSERT** | Insertar moneda (con sonido) |
 | **PLAY** | Usar moneda y jugar |
-| **PAUSA** | Pausar simulación |
-| **CONTINUAR** | Reanudar simulación |
-| **SALIR** | Volver al menú principal |
+| **PAUSA** | Pausar simulación (pausa la música) |
+| **CONTINUAR** | Reanudar simulación (reanuda la música) |
+| **SALIR** | Volver al menú principal (detiene la música) |
 | **⚔️ - / +** | Cambiar velocidad de simulación |
 | **↺** | Reiniciar contadores de victorias |
 | **🏆 VER RANKING** | Mostrar ranking (solo visualización) |
@@ -146,10 +162,10 @@ survivors-js/
 ### Controles de teclado
 | Tecla | Función |
 |-------|---------|
-| **ESPACIO** | Insertar moneda |
+| **ESPACIO** | Insertar moneda (con sonido) |
 | **ENTER** | Jugar / Reintentar |
-| **P** | Pausar juego |
-| **C** | Continuar juego |
+| **P** | Pausar juego (pausa la música) |
+| **C** | Continuar juego (reanuda la música) |
 | **R** | Reiniciar (volver al menú) |
 | **ESC** | Volver al menú principal |
 | **+ / -** | Aumentar/Disminuir velocidad |
@@ -195,13 +211,14 @@ survivors-js/
 - **Tienda**: Soldado (20💰), Curandero (25💰), Paladín (30💰), Mago (35💰)
 - **Oleadas**: Los malos aumentan cada ronda
 - **Recompensas**: +10-25💰 por eliminar malos según su clase
-- **Puntuación**: Se guarda en el ranking al finalizar
+- **Puntuación**: Se guarda en el ranking al finalizar (solo si hay al menos 1 ronda)
+- **Game Over**: Panel especial con opciones de ranking
 
 ---
 
 ## 📊 PANEL DE ESTADÍSTICAS
 
-El panel lateral derecho muestra información en tiempo real, ahora **sin redundancias**:
+El panel lateral derecho muestra información en tiempo real, **sin redundancias**:
 
 ### HIGH SCORE (Panel Único)
 - **TOTAL** - Número total de personajes vivos
@@ -263,13 +280,41 @@ El panel lateral izquierdo incluye una bitácora con registro de eventos:
   - 🥉 **#3 Bronce** - Fondo bronce
 
 ### Acceso al ranking
-- **Automático**: Al terminar una partida en modo SURVIVOR con ronda > 0
+- **Automático**: Al terminar una partida en modo SURVIVOR con ronda > 0 (con opción de guardar)
 - **Manual**: Botón "VER RANKING" en la barra lateral derecha (solo visualización)
+- **Game Over**: Botón "VER RANKING" siempre visible / "GUARDAR PUNTUACIÓN" si hay rondas
 
 ### Formato de puntuación
 - **Nombre**: 8 caracteres máximo (mayúsculas)
 - **Puntos**: Puntuación total de la partida
 - **Fecha**: Se guarda automáticamente
+
+---
+
+## 🔊 SISTEMA DE SONIDOS
+
+### Efectos implementados
+| Sonido | Cuándo se reproduce | Archivo |
+|--------|---------------------|---------|
+| **Moneda** | Al insertar moneda (clic o ESPACIO) | `coin.mp3` |
+| **Victoria** | Al terminar una partida (cualquier modo) | `victory.mp3` |
+| **Música fondo** | Durante toda la partida (loop) | `bgm.mp3` |
+
+### Comportamiento inteligente
+- ✅ **La música se pausa** cuando el juego está en pausa
+- ✅ **La música se reanuda** al continuar el juego
+- ✅ **La música se detiene** al volver al menú principal
+- ✅ **Tolerancia a fallos** - Si falta un archivo, el juego continúa sin errores
+- ✅ **Volumen balanceado** - Configurado para no saturar
+
+### Estructura de sonidos
+```
+assets/
+└── sounds/
+    ├── coin.mp3      # Sonido corto (0.2-0.5s)
+    ├── victory.mp3   # Fanfarria (2-3s)
+    └── bgm.mp3       # Música ambiental (loop)
+```
 
 ---
 
@@ -288,16 +333,12 @@ const CLASES_CONFIG = {
 };
 ```
 
-### Tooltips Minimalistas
-```css
-.class-stat-compact:hover::after {
-    background: rgba(20, 20, 30, 0.98);
-    border-left: 4px solid;
-    padding: 8px 12px;
-    font-size: 0.7rem;
-    border-radius: 6px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.7);
-}
+### Configuración de Sonidos
+```javascript
+// Ajustar volúmenes
+this.coin.volume = 0.5;      // 50%
+this.victory.volume = 0.7;    // 70%
+this.bgm.volume = 0.3;        // 30%
 ```
 
 ### Añadir Nueva Clase
@@ -321,8 +362,9 @@ const CLASES_CONFIG = {
 | **Clases no se muestran** | Verifica el orden de carga de scripts en el HTML |
 | **Monedas no se actualizan** | Revisa los IDs en el HTML: `coinCount`, `gameCoinCount`, `panelCoinCount` |
 | **Ranking no aparece** | Asegura que localStorage está habilitado en el navegador |
+| **No se escuchan sonidos** | Verifica que los archivos están en `assets/sounds/` (el juego funciona igual) |
 | **Las victorias suman de más** | Verifica que no haya game over duplicado (usar flag `gameOverProcesado`) |
-| **Datos duplicados en panel** | Actualiza a v2.5.7 que elimina todas las redundancias |
+| **Datos duplicados en panel** | Actualiza a v2.6.0 que elimina todas las redundancias |
 
 ---
 
@@ -343,7 +385,7 @@ Entidad
 └── Obstaculos (█)
 ```
 
-### IDs Importantes (v2.5.7)
+### IDs Importantes (v2.6.0)
 ```html
 <!-- Monedas -->
 <span id="coinCount">0</span>
@@ -363,13 +405,15 @@ Entidad
 
 ### Funciones Clave
 ```javascript
-iniciarSimulacion()      // Inicia la batalla con todas las configuraciones
+iniciarSimulacion()      // Inicia la batalla con música de fondo
 combatirConClases()      // Lógica de combate entre clases
 actualizarTooltipsClases() // Actualiza tooltips dinámicamente
 recalcularDimensiones()  // Calcula dimensiones del tablero
 redimensionarTablero()   // Ajusta el tamaño de las celdas
-actualizarContadoresVisuales() // Actualiza estadísticas (ahora sin redundancias)
+actualizarContadoresVisuales() // Actualiza estadísticas (sin redundancias)
 mostrarRankingSoloVer()  // Muestra ranking sin opción de guardar
+sonidos.playCoin()       // Reproduce sonido de moneda
+sonidos.playVictory()    // Reproduce fanfarria de victoria
 ```
 
 ### Variables Importantes
@@ -377,45 +421,40 @@ mostrarRankingSoloVer()  // Muestra ranking sin opción de guardar
 simulacionPausada        // true/false - Estado de pausa
 modoSurvivorActivo       // true/false - Modo survivor activo
 monedasSurvivor = 125    // Monedas iniciales en modo SURVIVOR
-gameOverProcesado        // Evita game over duplicado
+rondasSuperadas          // Número de rondas completadas en survivor
+puntosTotales            // Puntuación acumulada en survivor
 ```
 
 ---
 
 ## 🚀 HOJA DE RUTA
 
+### ✅ Completado en v2.6.0
+- [x] **Sistema de sonidos completo** - Moneda, victoria y música ambiental
+- [x] **Control de música** - Pausa/reanudación al pausar el juego
+- [x] **Game Over mejorado** - Botones de ranking según contexto
+- [x] **Guardado inteligente** - Solo guarda puntuación si hay al menos 1 ronda
+- [x] **Visualización siempre disponible** - Botón VER RANKING en Game Over
+- [x] **Tolerancia a fallos** - El juego funciona sin archivos de sonido
+
 ### ✅ Completado en v2.5.7
-- [x] **Implementación del Game Over en modo SURVIVOR** con panel
-- [x] **Guardado de puntuación en ranking solo si se superó al menos una ronda**
-- [x] **Botón de ranking visible siempre** pero solo funcional si no se super
+- [x] Implementación del Game Over en modo SURVIVOR con panel
+- [x] Guardado de puntuación en ranking solo si se superó al menos una ronda
+- [x] Botón de ranking visible siempre pero solo funcional según contexto
 
 ### ✅ Completado en v2.5.6
-- [x] **Eliminadas todas las redundancias** del panel HIGH SCORE
-- [x] **Unificados los IDs** de estadísticas (buenosStats y malosStats)
-- [x] **Código más limpio y eficiente** sin elementos duplicados
-- [x] **Panel más compacto** con mejor organización visual
-- [x] **Mantenida toda la funcionalidad** con menos código
+- [x] Eliminadas todas las redundancias del panel HIGH SCORE
+- [x] Unificados los IDs de estadísticas (buenosStats y malosStats)
+- [x] Código más limpio y eficiente sin elementos duplicados
+- [x] Panel más compacto con mejor organización visual
 
 ### ✅ Completado en v2.5.1
 - [x] Panel de estadísticas compacto y rediseñado
 - [x] Tooltips minimalistas por clase con colores identificativos
 - [x] Sistema de espera de dimensiones (hasta 20 intentos)
 - [x] Carga inicial corregida con múltiples reintentos
-- [x] Código más modular y optimizado
 - [x] Sistema de ranking local con top 10
-- [x] Botón de ranking en barra derecha (solo visualización)
-- [x] Corrección de contadores de victorias (1 por partida)
-- [x] Persistencia de victorias en localStorage
 - [x] Modos 1, 2, 3 y SURVIVOR completamente funcionales
-
-### 🔜 Próximas Versiones
-
-**v2.6.0 - Efectos de Sonido**
-- [ ] Sonido al insertar moneda
-- [ ] Efecto de combate y golpes
-- [ ] Fanfarria de victoria
-- [ ] Música de fondo ambiental
-- [ ] Control de volumen en interfaz
 
 ---
 
@@ -430,6 +469,7 @@ MIT © 2026 - Libre uso, modificación y distribución
 - **Desarrollador principal**: TheYinYan
 - **Inspiración**: Juegos arcade clásicos de los 80 y 90
 - **Tecnologías utilizadas**: HTML5, CSS3, JavaScript ES6+
+- **Sonidos**: Pixabay, Freesound (licencias libres)
 - **Almacenamiento**: localStorage para persistencia de datos
 - **Diseño**: Inspirado en máquinas recreativas retro
 
@@ -447,17 +487,28 @@ MIT © 2026 - Libre uso, modificación y distribución
 
 ---
 
-¡Gracias por jugar a SURVIVORS! ⚔️✨
+¡Gracias por jugar a SURVIVORS! ⚔️✨🔊
 
 **[🎮 JUGAR AHORA](https://theyinyan.github.io/Trabajo_VideoJuego_JS/)** | **[🐛 Reportar Bug](https://github.com/TheYinYan/Trabajo_VideoJuego_JS/issues)** | **[⭐ Star en GitHub](https://github.com/TheYinYan/Trabajo_VideoJuego_JS)**
 
 ---
 
-*Última actualización: Marzo 2026 - Versión 2.5.7*
+*Última actualización: Marzo 2026 - Versión 2.6.0*
 
-## Principales novedades en v2.5.7:
+## Principales novedades en v2.6.0:
 
-### Implementacion del Game Over en Modo SURVIVOR
-- Se muestra un panel de Game Over al finalizar la partida
-- Si se superó al menos una ronda, guardara la puntuación en el ranking
-- Si no se superó ninguna ronda, el ranking no se guardará pero se podrá visualizar
+### 🔊 Sistema de Sonidos
+- **Sonido al insertar moneda** - Feedback inmediato
+- **Fanfarria de victoria** - Celebración épica
+- **Música ambiental** - Inmersión total
+- **Pausa musical** - La música se detiene al pausar el juego
+
+### 🎮 Game Over Mejorado
+- **Botón VER RANKING** - Siempre visible para consultar puntuaciones
+- **Botón GUARDAR PUNTUACIÓN** - Aparece solo si superaste al menos 1 ronda
+- **Puntos visibles** - Se muestran directamente en el botón
+
+### 🚀 Experiencia Arcade Completa
+- **Sonidos sin saturación** - Optimizados para no molestar
+- **Tolerante a errores** - Si faltan sonidos, el juego sigue funcionando
+- **Inmersión total** - La música y efectos crean ambiente de arcade auténtico

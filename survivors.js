@@ -707,6 +707,8 @@ function actualizarJuego(altura, anchura, nPersonajes) {
 function iniciarSimulacion() {
     console.log('🎮 INICIANDO SIMULACIÓN...');
 
+    sonidos.playBGM();
+
     if (intervaloSimulacion) {
         clearInterval(intervaloSimulacion);
         intervaloSimulacion = null;
@@ -1212,8 +1214,8 @@ function detenerSimulacion() {
         clearInterval(intervaloSimulacion);
         intervaloSimulacion = null;
         simulacionPausada = true;
+        sonidos.pauseBGM();
         añadirLog('⏸️ Juego pausado', 'system');
-
         actualizarVisibilidadControles();
     }
 }
@@ -1225,6 +1227,7 @@ function continuarSimulacion() {
             velocidadActual
         );
         simulacionPausada = false;
+        sonidos.resumeBGM();
         añadirLog('▶️ Juego reanudado', 'system');
     }
 }
@@ -1325,6 +1328,7 @@ function actualizarEstadisticasCombate() {
 function insertCoin() {
     coins++;
     actualizarCoinDisplay();
+    sonidos.playCoin();
     añadirLog(`🪙 Moneda insertada. Total: ${coins}`, 'system');
 
     if (coins > 0) {
@@ -1524,6 +1528,8 @@ function mostrarResultado() {
         añadirLog(`✨ BUENOS GANAN - Victoria #${victoriasBuenos}`, 'victory');
     }
 
+    sonidos.playVictory();
+
     actualizarEstadisticasCombate();
     guardarVictorias();
     actualizarVictoriasVisuales();
@@ -1559,6 +1565,8 @@ function mostrarResultadoSurvivor() {
             mensajeVictoria = '✨ BUENOS GANAN ✨';
             añadirLog(`✨ BUENOS GANAN - Rondas: ${rondasSuperadas} | Puntuación: ${puntosTotales}`, 'victory');
         }
+
+        sonidos.playVictory();
 
         // Mostrar panel de GAME OVER
         document.getElementById('resultadoTitulo').textContent = mensajeVictoria;
@@ -2228,6 +2236,9 @@ function actualizarRatioVictorias() {
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Inicializando juego...');
+
+    sonidos.iniciar();
+
     gameBoard = document.getElementById('gameBoard');
 
     document.getElementById('numPersonajes').addEventListener('input', () => {
@@ -2282,3 +2293,80 @@ window.useCoin = useCoin;
 window.reintentarPartida = reintentarPartida;
 window.limpiarLogs = limpiarLogs;
 window.filtrarLogs = filtrarLogs;
+
+// ===== SISTEMA DE SONIDOS =====
+const sonidos = {
+    coin: null,
+    hit: null,
+    victory: null,
+    bgm: null,
+
+    // Inicializar sonidos
+    iniciar: function () {
+        try {
+            // Crear objetos de audio
+            this.coin = new Audio('assets/sounds/coin.mp3');
+            this.hit = new Audio('assets/sounds/hit.mp3');
+            this.victory = new Audio('assets/sounds/victory.mp3');
+            this.bgm = new Audio('assets/sounds/bgm.mp3');
+
+            // Configurar volumen
+            this.coin.volume = 0.5;
+            this.hit.volume = 0.4;
+            this.victory.volume = 0.7;
+            this.bgm.volume = 0.3;
+
+            // Loop para música de fondo
+            this.bgm.loop = true;
+
+            console.log('✅ Sistema de sonidos inicializado');
+        } catch (e) {
+            console.warn('⚠️ Error al cargar sonidos:', e);
+        }
+    },
+
+    // Reproducir sonido de moneda
+    playCoin: function () {
+        if (this.coin) {
+            this.coin.currentTime = 0;
+            this.coin.play().catch(e => console.log('🔇 Error al reproducir coin'));
+        }
+    },
+
+    // Reproducir fanfarria de victoria
+    playVictory: function () {
+        if (this.victory) {
+            this.victory.currentTime = 0;
+            this.victory.play().catch(e => console.log('🔇 Error al reproducir victory'));
+        }
+    },
+
+    // Iniciar música de fondo
+    playBGM: function () {
+        if (this.bgm) {
+            this.bgm.play().catch(e => console.log('🔇 Error al reproducir BGM'));
+        }
+    },
+
+    // Detener música de fondo
+    stopBGM: function () {
+        if (this.bgm) {
+            this.bgm.pause();
+            this.bgm.currentTime = 0;
+        }
+    },
+
+    // Pausar música
+    pauseBGM: function () {
+        if (this.bgm) {
+            this.bgm.pause();
+        }
+    },
+
+    // Reanudar música
+    resumeBGM: function () {
+        if (this.bgm) {
+            this.bgm.play().catch(e => console.log('🔇 Error al reanudar BGM'));
+        }
+    }
+};
