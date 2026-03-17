@@ -302,6 +302,7 @@ El panel lateral izquierdo incluye una bitácora con registro de eventos:
 
 ### Comportamiento inteligente
 - ✅ **La música se pausa** cuando el juego está en pausa
+- ✅ **La música se reinicia** al iniciar una nueva partida, volver al menú o nueva ronda
 - ✅ **La música se reanuda** al continuar el juego
 - ✅ **La música se detiene** al volver al menú principal
 - ✅ **Tolerancia a fallos** - Si falta un archivo, el juego continúa sin errores

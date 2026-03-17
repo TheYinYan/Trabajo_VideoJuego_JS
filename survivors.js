@@ -706,7 +706,7 @@ function actualizarJuego(altura, anchura, nPersonajes) {
 // ===== FUNCIÓN INICIAR SIMULACIÓN =====
 function iniciarSimulacion() {
     console.log('🎮 INICIANDO SIMULACIÓN...');
-
+    sonidos.resetBGM();
     sonidos.playBGM();
 
     if (intervaloSimulacion) {
@@ -1088,7 +1088,7 @@ function iniciarRonda() {
                 cells[i].style.cursor = 'default';
             }
         }
-
+        sonidos.resetBGM();
         continuarSimulacion();
         añadirLog(`⚔️ ¡RONDA ${rondasSuperadas + 1} COMENZADA!`, 'system');
         document.getElementById('shopStatus').innerHTML = '⚔️ Batalla en curso...';
@@ -2345,6 +2345,14 @@ const sonidos = {
     playBGM: function () {
         if (this.bgm) {
             this.bgm.play().catch(e => console.log('🔇 Error al reproducir BGM'));
+        }
+    },
+
+    // Reiniciar música de fondo
+    resetBGM: function () {
+        if (this.bgm) {
+            this.bgm.pause();
+            this.bgm.currentTime = 0;
         }
     },
 
