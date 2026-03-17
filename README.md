@@ -384,6 +384,11 @@ gameOverProcesado        // Evita game over duplicado
 
 ## 🚀 HOJA DE RUTA
 
+### ✅ Completado en v2.5.7
+- [x] **Implementación del Game Over en modo SURVIVOR** con panel
+- [x] **Guardado de puntuación en ranking solo si se superó al menos una ronda**
+- [x] **Botón de ranking visible siempre** pero solo funcional si no se super
+
 ### ✅ Completado en v2.5.6
 - [x] **Eliminadas todas las redundancias** del panel HIGH SCORE
 - [x] **Unificados los IDs** de estadísticas (buenosStats y malosStats)
