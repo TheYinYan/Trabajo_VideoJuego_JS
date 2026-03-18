@@ -2451,7 +2451,7 @@ const sonidos = {
             this.bgm.pause();
         }
     },
-
+ 
     // Reanudar música
     resumeBGM: function () {
         if (this.bgm) {
