@@ -1053,6 +1053,8 @@ function comprarPersonaje(tipo, fila, columna) {
 
     monedasSurvivor -= costo;
 
+    sonidos.Buyplay();
+
     arrayEntidades[fila][columna] = nuevoPersonaje;
     arrayPersonajes.push(nuevoPersonaje);
 
@@ -1171,6 +1173,9 @@ function verificarRondaCompletada() {
         monedasSurvivor += 50 * rondasSuperadas;
 
         malosEnRonda = Math.floor(3 + rondasSuperadas * 1.5);
+
+        // 🎉 SONIDO DE RONDA COMPLETADA
+        sonidos.playRoundComplete();
 
         añadirLog(`🎉 ¡RONDA ${rondasSuperadas} COMPLETADA! +${50 * rondasSuperadas}💰`, 'victory');
         añadirLog(`⏸️ PAUSA - Coloca tus nuevos personajes`, 'system');
@@ -1434,6 +1439,7 @@ function reiniciarVictorias() {
         victoriasMalos = 0;
         actualizarVictoriasVisuales();
         guardarVictorias();
+        sonidos.Restart();
         añadirLog('🏆 Contadores de victorias reiniciados', 'system');
     }
 }
@@ -1748,6 +1754,8 @@ function añadirPuntuacion(nombre, puntos) {
 function mostrarRanking() {
     cargarRanking();
 
+    sonidos.playRanking();
+    
     const rankingHTML = rankingJugadores.map((entry, index) => {
         let clase = '';
         if (index === 0) clase = 'top1';
@@ -2297,24 +2305,33 @@ window.filtrarLogs = filtrarLogs;
 // ===== SISTEMA DE SONIDOS =====
 const sonidos = {
     coin: null,
-    hit: null,
     victory: null,
     bgm: null,
+    buy: null,
+    restart: null,
+    ranking: null,
+    roundComplete: null,
 
     // Inicializar sonidos
     iniciar: function () {
         try {
             // Crear objetos de audio
             this.coin = new Audio('assets/sounds/coin.mp3');
-            this.hit = new Audio('assets/sounds/hit.mp3');
             this.victory = new Audio('assets/sounds/victory.mp3');
             this.bgm = new Audio('assets/sounds/bgm.mp3');
+            this.buy = new Audio('assets/sounds/buy.mp3')
+            this.restart = new Audio('assets/sounds/restart.mp3');
+            this.ranking = new Audio('assets/sounds/ranking.mp3');
+            this.roundComplete = new Audio('assets/sounds/round-complete.mp3');
 
             // Configurar volumen
             this.coin.volume = 0.5;
-            this.hit.volume = 0.4;
+            this.buy.volume = 0.4;
+            this.restart.volume = 0.4;
             this.victory.volume = 0.7;
             this.bgm.volume = 0.3;
+            this.ranking.volume = 0.5;
+            this.roundComplete.volume = 0.6;
 
             // Loop para música de fondo
             this.bgm.loop = true;
@@ -2330,6 +2347,38 @@ const sonidos = {
         if (this.coin) {
             this.coin.currentTime = 0;
             this.coin.play().catch(e => console.log('🔇 Error al reproducir coin'));
+        }
+    },
+
+    // Compra personaje
+    Buyplay: function () {
+        if (this.buy) {
+            this.buy.currentTime = 0
+            this.buy.play().catch(e => console.log('🔇 Error al reproducir buy'))
+        }
+    },
+
+    // Restart
+    Restart: function () {
+        if (this.restart) {
+            this.restart.currentTime = 0
+            this.restart.play().catch(e => console.log('🔇 Error al reproducir restart'))
+        }
+    },
+
+    // Reproducir sonido de ronda completada
+    playRoundComplete: function () {
+        if (this.roundComplete) {
+            this.roundComplete.currentTime = 0;
+            this.roundComplete.play().catch(e => console.log('🔇 Error al reproducir round-complete'));
+        }
+    },
+
+    // Reproducir sonido de ranking
+    playRanking: function () {
+        if (this.ranking) {
+            this.ranking.currentTime = 0;
+            this.ranking.play().catch(e => console.log('🔇 Error al reproducir ranking'));
         }
     },
 

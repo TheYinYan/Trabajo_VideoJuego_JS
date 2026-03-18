@@ -503,6 +503,8 @@ MIT © 2026 - Libre uso, modificación y distribución
 - **Fanfarria de victoria** - Celebración épica
 - **Música ambiental** - Inmersión total
 - **Pausa musical** - La música se detiene al pausar el juego
+- **Sonido de compra personaje** - Nuevo efecto al comprar en modo SURVIVOR
+- **Sonido al restart** - Nuevo efecto al pulsar boton de restart 
 
 ### 🎮 Game Over Mejorado
 - **Botón VER RANKING** - Siempre visible para consultar puntuaciones
