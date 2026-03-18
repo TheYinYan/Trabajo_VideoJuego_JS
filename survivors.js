@@ -728,16 +728,19 @@ function iniciarSimulacion() {
     document.getElementById('gameOverPanel').classList.add('hidden');
     document.getElementById('simulationControls').classList.remove('hidden');
 
+    // Resetear variables survivor SIEMPRE
+    rondasSuperadas = 0;
+    puntosTotales = 0;
+    monedasSurvivor = 125;
+    malosEnRonda = 3;
+
     if (opcionSeleccionada === 'survivor') {
         modoSurvivorActivo = true;
-        rondasSuperadas = 0;
-        puntosTotales = 0;
-        monedasSurvivor = 125;
-        malosEnRonda = 3;
-        personajeSeleccionado = null;
-
         document.getElementById('survivorPanel')?.classList.remove('hidden');
         actualizarPanelSurvivor();
+    } else {
+        modoSurvivorActivo = false;
+        document.getElementById('survivorPanel')?.classList.add('hidden');
     }
 
     esperarDimensionesYIniciar();
@@ -1470,6 +1473,12 @@ function iniciarJuego() {
 
     console.log(`🎮 Iniciando juego en modo: ${opcionSeleccionada}`);
 
+    // Resetear variables survivor ANTES de iniciar cualquier partida
+    rondasSuperadas = 0;
+    puntosTotales = 0;
+    monedasSurvivor = 125;
+    malosEnRonda = 3;
+
     if (opcionSeleccionada === 'survivor') {
         iniciarSurvivor();
         return;
@@ -1506,6 +1515,13 @@ function reintentarPartida() {
 
     coins--;
     actualizarCoinDisplay();
+    
+    // Resetear variables survivor al reintentar
+    rondasSuperadas = 0;
+    puntosTotales = 0;
+    monedasSurvivor = 125;
+    malosEnRonda = 3;
+    
     añadirLog(`🔄 Reintentando partida (monedas restantes: ${coins})`, 'system');
 
     document.getElementById('gameOverPanel').classList.add('hidden');
@@ -1595,23 +1611,21 @@ function mostrarResultadoSurvivor() {
         // AÑADIR BOTONES AL PANEL DE GAME OVER
         const gameOverControls = document.querySelector('.game-over-controls');
 
-        // 1. BOTÓN VER RANKING (visible siempre, pero solo funcional si no se superó ninguna ronda)
-        if (rondasSuperadas <= 0) {
-            const rankingBtn = document.createElement('div');
-            rankingBtn.id = 'gameOverRankingBtn';
-            rankingBtn.className = 'gameover-btn ranking-btn';
-            rankingBtn.innerHTML = `
+        // 1. BOTÓN VER RANKING (siempre visible)
+        const rankingBtn = document.createElement('div');
+        rankingBtn.id = 'gameOverRankingBtn';
+        rankingBtn.className = 'gameover-btn ranking-btn';
+        rankingBtn.innerHTML = `
             <span class="btn-icon">🏆</span>
             <span class="btn-text">VER RANKING</span>
         `;
-            rankingBtn.onclick = function () {
-                mostrarRankingSoloVer();
-            };
-            gameOverControls.appendChild(rankingBtn);
-        }
+        rankingBtn.onclick = function () {
+            mostrarRankingSoloVer();
+        };
+        gameOverControls.appendChild(rankingBtn);
 
         // 2. BOTÓN GUARDAR PUNTUACIÓN (solo si hay al menos 1 ronda)
-        if (rondasSuperadas > 0) {
+        if (rondasSuperadas > 0 && puntosTotales > 0) {
             const guardarBtn = document.createElement('div');
             guardarBtn.id = 'gameOverGuardarBtn';
             guardarBtn.className = 'gameover-btn guardar-btn';
@@ -1635,7 +1649,7 @@ function mostrarResultadoSurvivor() {
     }
 }
 
-// ===== VOLVER AL MENÚ - LIMPIAR BOTÓN EXTRA =====
+// ===== VOLVER AL MENÚ - LIMPIAR TODO =====
 function volverAlMenu() {
     detenerSimulacion();
     detenerReloj();
@@ -1646,6 +1660,12 @@ function volverAlMenu() {
     arrayPersonajes = null;
     modoSurvivorActivo = false;
     personajeSeleccionado = null;
+
+    // Resetear todas las variables de survivor
+    rondasSuperadas = 0;
+    puntosTotales = 0;
+    monedasSurvivor = 125;
+    malosEnRonda = 3;
 
     document.getElementById('arcadeMachine').classList.add('hidden');
     document.getElementById('menuScreen').classList.remove('hidden');
@@ -1666,10 +1686,15 @@ function volverAlMenu() {
 
     actualizarVisibilidadControles();
 
-    // ELIMINAR BOTÓN DE RANKING SI EXISTE
+    // ELIMINAR BOTONES DE RANKING SI EXISTEN
     const rankingBtn = document.getElementById('gameOverRankingBtn');
     if (rankingBtn) {
         rankingBtn.remove();
+    }
+    
+    const guardarBtn = document.getElementById('gameOverGuardarBtn');
+    if (guardarBtn) {
+        guardarBtn.remove();
     }
 
     añadirLog('🏠 Volviendo al menú principal', 'system');
@@ -1815,8 +1840,15 @@ function guardarPuntuacion() {
     if (nombre) {
         const nombreCorto = nombre.substring(0, 8);
 
-        añadirPuntuacion(nombreCorto, puntosTotales);
-        añadirLog(`🏆 Puntuación guardada: ${nombreCorto} - ${puntosTotales} puntos`, 'victory');
+        // Verificar que realmente hay puntos que guardar (modo survivor)
+        if (puntosTotales > 0 && rondasSuperadas > 0) {
+            añadirPuntuacion(nombreCorto, puntosTotales);
+            añadirLog(`🏆 Puntuación guardada: ${nombreCorto} - ${puntosTotales} puntos`, 'victory');
+            alert(`¡Puntuación guardada! ${nombreCorto} - ${puntosTotales} puntos`);
+        } else {
+            añadirLog(`⚠️ No hay puntuación que guardar (rondas: ${rondasSuperadas}, puntos: ${puntosTotales})`, 'info');
+            alert('❌ No hay puntuación válida para guardar');
+        }
 
         cerrarRanking();
         volverAlMenu();
